@@ -1,0 +1,123 @@
+{
+  "name": "Rewards list",
+  "list": [
+    {
+      "token_address": "",
+      "swap_address": "juno1sg6chmktuhyj4lsrxrrdflem7gsnk4ejv6zkcc4d3vcqulzp55wsf4l4gl",
+      "rewards_tokens": [
+        {
+          "rewards_address": "juno10h94gypnj05uwvskmpq9dqan5asu07p5g424hr0jgu0m4m9j06ks6wqzhn",
+          "token_address": "",
+          "swap_address": "",
+          "symbol": "JUNO",
+          "name": "Juno",
+          "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/juno.png",
+          "native": true,
+          "denom": "ujuno",
+          "decimals": 6
+        },
+        {
+          "rewards_address": "juno1r48lst84vsh8jyshqmva58znvyr59w2aejht3gkuy4ex3yd9hlzsmwp349",
+          "token_address": "juno15u3dt79t6sxxa3x3kpkhzsy56edaa5a66wvt3kxmukqjz2sx0hes5sn38g",
+          "swap_address": "juno1ehnmjq4232yxh7t2xfkjfqkeddsflcc4z5xd2f7lfcms904szf4skk7pju",
+          "symbol": "RAW",
+          "name": "Raw",
+          "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/Raw.png",
+          "native": false,
+          "denom": "raw",
+          "decimals": 6
+        }
+      ]
+    },
+    {
+      "token_address": "",
+      "swap_address": "juno1el6rfmz6h9pwpdlf6k2qf4dwt3y5wqd7k3xpyvytklsnkt9uv2aqe8aq4v",
+      "rewards_tokens": [
+        {
+          "rewards_address": "juno1zggudwdt32t6qva3a3jqg47nlz69n39ru5u7vsmvq4kyj2nr50nsv67thv",
+          "token_address": "juno15u3dt79t6sxxa3x3kpkhzsy56edaa5a66wvt3kxmukqjz2sx0hes5sn38g",
+          "swap_address": "juno1ehnmjq4232yxh7t2xfkjfqkeddsflcc4z5xd2f7lfcms904szf4skk7pju",
+          "symbol": "RAW",
+          "name": "Raw",
+          "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/Raw.png",
+          "native": false,
+          "denom": "raw",
+          "decimals": 6
+        }
+      ]
+    },
+    {
+      "token_address": "",
+      "swap_address": "juno1ctsmp54v79x7ea970zejlyws50cj9pkrmw49x46085fn80znjmpqz2n642",
+      "rewards_tokens": [
+        {
+          "rewards_address": "juno13nqp4zaryv0psnjlzdmwah4nl8fdwy9qev34kv42yp7pu4457cwquu0w6t",
+          "token_address": "",
+          "swap_address": "",
+          "symbol": "JUNO",
+          "name": "Juno",
+          "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/juno.png",
+          "native": true,
+          "denom": "ujuno",
+          "decimals": 6
+        },
+        {
+          "rewards_address": "juno15sfz9cz97uj38uc9nhuchjwcj638xkt4y5k909tq8ag5dkt8ys5qh0sjwj",
+          "token_address": "juno15u3dt79t6sxxa3x3kpkhzsy56edaa5a66wvt3kxmukqjz2sx0hes5sn38g",
+          "swap_address": "juno1ctsmp54v79x7ea970zejlyws50cj9pkrmw49x46085fn80znjmpqz2n642",
+          "symbol": "RAW",
+          "name": "Raw",
+          "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/Raw.png",
+          "native": false,
+          "denom": "raw",
+          "decimals": 6
+        }
+      ]
+    },
+    {
+      "token_address": "",
+      "swap_address": "juno124d0zymrkdxv72ccyuqrquur8dkesmxmx2unfn7dej95yqx5yn8s70x3yj",
+      "rewards_tokens": [
+        {
+          "rewards_address": "juno1clh29453aa9tndsjty7ejvc8m838nh3dn2t34k6wkl5pjnh5lxsqvs5qr5",
+          "token_address": "",
+          "swap_address": "",
+          "symbol": "JUNO",
+          "name": "Juno",
+          "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/juno.png",
+          "native": true,
+          "denom": "ujuno",
+          "decimals": 6
+        },
+        {
+          "rewards_address": "juno125rv72jrlxr5qslt8n6vrefm4es4kq0vmm4ffnvc8rvf46tp0j7qw7thfl",
+          "token_address": "juno15u3dt79t6sxxa3x3kpkhzsy56edaa5a66wvt3kxmukqjz2sx0hes5sn38g",
+          "swap_address": "juno1ehnmjq4232yxh7t2xfkjfqkeddsflcc4z5xd2f7lfcms904szf4skk7pju",
+          "symbol": "RAW",
+          "name": "Raw",
+          "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/Raw.png",
+          "native": false,
+          "denom": "raw",
+          "decimals": 6
+        }
+      ]
+    },
+    {
+      "token_address": "",
+      "swap_address": "juno1e8n6ch7msks487ecznyeagmzd5ml2pq9tgedqt2u63vra0q0r9mqrjy6ys",
+      "rewards_tokens": [
+        {
+          "rewards_address": "juno1s43j4ct4tp3s5ywk0j4flr6e5ev74ce2lnuv8xwtzx2yfr6kmwaqmxfkdt",
+          "token_address": "juno15u3dt79t6sxxa3x3kpkhzsy56edaa5a66wvt3kxmukqjz2sx0hes5sn38g",
+          "swap_address": "juno1ehnmjq4232yxh7t2xfkjfqkeddsflcc4z5xd2f7lfcms904szf4skk7pju",
+          "symbol": "RAW",
+          "name": "Raw",
+          "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/Raw.png",
+          "native": false,
+          "denom": "raw",
+          "decimals": 6
+        }
+      ]
+    }
+  ]
+}
