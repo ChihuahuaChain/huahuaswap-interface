@@ -256,10 +256,11 @@ function RemoveLiquidityContent({
     percentageInputRef.current?.focus()
   }, [])
 
-  const availableLiquidityDollarValue = dollarValueFormatter(
-    tokenAReserve * 2 * tokenAPrice
-  ) as number
+  // const availableLiquidityDollarValue = dollarValueFormatter(
+  //   tokenAReserve * 2 * tokenAPrice
+  // ) as number
 
+  const availableLiquidityDollarValue = tokenAReserve * 2 * tokenAPrice
   const liquidityToRemove = availableLiquidityDollarValue * liquidityPercentage
 
   const handleChangeLiquidity = (value) => {
