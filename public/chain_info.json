@@ -1,38 +1,38 @@
 {
-  "chainId": "juno-1",
-  "chainName": "Juno",
-  "rpc": "https://rpc-juno.itastakers.com:443/",
-  "rest": "https://lcd-juno.itastakers.com:443/",
+  "chainId": "chihuahua-1",
+  "chainName": "Chihuahua",
+  "rpc": "https://rpc.chihuahua.wtf:443/",
+  "rest": "https://api.chihuahua.wtf:443/",
   "stakeCurrency": {
-    "coinDenom": "JUNO",
-    "coinMinimalDenom": "ujuno",
+    "coinDenom": "HUAHUA",
+    "coinMinimalDenom": "uhuahua",
     "coinDecimals": 6
   },
   "bip44": {
     "coinType": 118
   },
   "bech32Config": {
-    "bech32PrefixAccAddr": "juno",
-    "bech32PrefixAccPub": "junopub",
-    "bech32PrefixValAddr": "junovaloper",
-    "bech32PrefixValPub": "junovaloperpub",
-    "bech32PrefixConsAddr": "junovalcons",
-    "bech32PrefixConsPub": "junovalconspub"
+    "bech32PrefixAccAddr": "chihuahua",
+    "bech32PrefixAccPub": "chihuahuapub",
+    "bech32PrefixValAddr": "chihuahuavaloper",
+    "bech32PrefixValPub": "chihuahuavaloperpub",
+    "bech32PrefixConsAddr": "chihuahuavalcons",
+    "bech32PrefixConsPub": "chihuahuavalconspub"
   },
   "currencies": [
     {
-      "coinDenom": "JUNO",
-      "coinMinimalDenom": "ujuno",
+      "coinDenom": "HUAHUA",
+      "coinMinimalDenom": "uhuahua",
       "coinDecimals": 6,
-      "coinGeckoId": "juno-network"
+      "coinGeckoId": "chihuahua"
     }
   ],
   "feeCurrencies": [
     {
-      "coinDenom": "JUNO",
-      "coinMinimalDenom": "ujuno",
+      "coinDenom": "HUAHUA",
+      "coinMinimalDenom": "uhuahua",
       "coinDecimals": 6,
-      "coinGeckoId": "juno-network"
+      "coinGeckoId": "chihuahua"
     }
   ],
   "coinType": 118,

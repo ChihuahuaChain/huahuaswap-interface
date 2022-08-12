@@ -217,7 +217,7 @@ export default function Pool() {
                     })
                   }
                 />
-                <ManageBondedLiquidityCard
+                {/* <ManageBondedLiquidityCard
                   onClick={() => setIsBondingDialogShowing(true)}
                   providedLiquidity={pool.liquidity.available.provided}
                   stakedLiquidity={pool.liquidity.staked.provided}
@@ -237,7 +237,7 @@ export default function Pool() {
                   pendingRewards={pendingRewards}
                   loading={isClaimingRewards}
                   supportsIncentives={supportsIncentives}
-                />
+                /> */}
               </StyledDivForCards>
             </>
             <>
