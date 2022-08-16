@@ -1,5 +1,5 @@
 import { AppLayout, PageHeader } from 'components'
-import { TokenSwapModule } from 'features/swap'
+import { CreateTokenModule } from 'features/createtoken'
 import { styled } from 'junoblocks'
 import React from 'react'
 
@@ -20,8 +20,7 @@ export default function Home() {
           title="Create Token"
           subtitle={`Create CW20 token to use in huahuaswap.`}
         />
-        <TokenSwapModule
-          initialTokenPair={getInitialTokenPairFromSearchParams()}
+        <CreateTokenModule
         />
       </StyledContainer>
     </AppLayout>

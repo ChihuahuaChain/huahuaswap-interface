@@ -1,1 +1,1 @@
-export { TokenSwapModule } from './TokenSwapModule'
+export { CreateTokenModule } from './CreateTokenModule'
