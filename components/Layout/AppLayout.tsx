@@ -1,13 +1,13 @@
 import { media, styled, useMedia } from 'junoblocks'
 import { APP_MAX_WIDTH } from 'util/constants'
 
-import { ExtensionSidebar } from './ExtensionSidebar'
+// import { ExtensionSidebar } from './ExtensionSidebar'
 import { FooterBar } from './FooterBar'
 import { NavigationSidebar } from './NavigationSidebar'
 
 export const AppLayout = ({
   navigationSidebar = <NavigationSidebar />,
-  extensionSidebar = <ExtensionSidebar />,
+  // extensionSidebar = <ExtensionSidebar />,
   footerBar = <FooterBar />,
   children,
 }) => {
@@ -38,7 +38,7 @@ export const AppLayout = ({
         <main>{children}</main>
       </StyledContainer>
 
-      {!isMediumScreen && extensionSidebar}
+      {/* {!isMediumScreen && extensionSidebar} */}
     </StyledWrapper>
   )
 }

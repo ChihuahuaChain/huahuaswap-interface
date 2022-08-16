@@ -15,6 +15,7 @@ import {
   media,
   MoonIcon,
   Open,
+  Plus,
   styled,
   Telegram,
   Text,
@@ -109,6 +110,18 @@ export function NavigationSidebar({
           Liquidity
         </Button>
       </Link>
+
+      <Link href="/createtoken" passHref>
+        <Button
+          as="a"
+          variant="menu"
+          size="large"
+          iconLeft={<IconWrapper icon={<Plus />} />}
+          selected={getIsLinkActive('/createtoken')}
+        >
+          Create Token
+        </Button>
+      </Link>
     </StyledListForLinks>
   )
 
@@ -168,7 +181,7 @@ export function NavigationSidebar({
           <Link href="/" passHref>
             <StyledDivForLogo as="a">
               <Logo data-logo="" width="37px" height="47px" />
-              <div data-logo-label="">
+              {/* <div data-logo-label="">
                 <Text
                   variant="caption"
                   color="error"
@@ -177,7 +190,7 @@ export function NavigationSidebar({
                   {__TEST_MODE__ ? 'Testnet' : 'Beta'}
                 </Text>
                 <LogoText />
-              </div>
+              </div> */}
             </StyledDivForLogo>
           </Link>
           {triggerMenuButton}
@@ -198,7 +211,7 @@ export function NavigationSidebar({
         <Link href="/" passHref>
           <StyledDivForLogo as="a">
             <Logo data-logo="" width="37px" height="47px" />
-            <div data-logo-label="">
+            {/* <div data-logo-label="">
               <Text
                 variant="caption"
                 color="error"
@@ -207,7 +220,7 @@ export function NavigationSidebar({
                 {__TEST_MODE__ ? 'Testnet' : 'Beta'}
               </Text>
               <LogoText />
-            </div>
+            </div> */}
           </StyledDivForLogo>
         </Link>
 
