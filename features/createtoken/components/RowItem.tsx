@@ -31,7 +31,7 @@ export const RowItem = ({
   disabled,
   label,
   isNumber,
-  onChange
+  onChange,
 }: RowItemProps) => {
   const wrapperRef = useRef<HTMLDivElement>()
   const inputRef = useRef<HTMLInputElement>()
@@ -40,16 +40,10 @@ export const RowItem = ({
   const handleInputChange = (inputValue) => onChange(label, inputValue)
 
   return (
-    <StyledDivForContainer
-      selected={isInputFocused}
-      ref={wrapperRef}
-    >
+    <StyledDivForContainer selected={isInputFocused} ref={wrapperRef}>
       <StyledDivForWrapper>
-
         <StyledDivForSelector>
-          <Text variant="primary">
-            {label}
-          </Text>
+          <Text variant="primary">{label}</Text>
         </StyledDivForSelector>
 
         <StyledDivForAmountWrapper>
@@ -72,10 +66,9 @@ export const RowItem = ({
   )
 }
 
-
 const StyledDivForWrapper = styled('div', {
   padding: '$5 $5 $5 $7',
-  display: 'flex',
+  display: 'flex flex-column',
   alignItems: 'center',
   justifyContent: 'space-between',
   position: 'relative',
@@ -92,7 +85,7 @@ const StyledDivForSelector = styled('div', {
 const StyledDivForAmountWrapper = styled('div', {
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'auto',
+  justifyContent: 'right',
   position: 'left',
   zIndex: 1,
   // backgroundColor: '$colors$dark0',
@@ -115,4 +108,3 @@ const StyledDivForContainer = styled('div', {
     selected: selectedVariantForInputWrapper,
   },
 })
-

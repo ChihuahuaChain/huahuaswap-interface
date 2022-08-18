@@ -23,7 +23,7 @@ export const RowInput = ({
   ...inputProps
 }: RowInputProps) => {
   
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState(placeholder)
   return (
     <Text variant="primary">
       <StyledInput
@@ -33,10 +33,11 @@ export const RowInput = ({
         lang="en-US"
         placeholder={placeholder}
         min={0}
-        onChange={({ target: { value } }) => onInputValueChange(value)}
+        onChange={({ target: { value } }) => {onInputValueChange(value); setValue(value);}}
 
         autoComplete="off"
         readOnly={disabled}
+        style={{ width: `${calculateCharactersLength(value)}ch` }}
         
         {...inputProps}
       />
@@ -45,7 +46,8 @@ export const RowInput = ({
 }
 
 const StyledInput = styled('input', {
-  minWidth:"400px",
-  textAlign: 'left',
+  minWidth: '380px',
+  maxWidth: '380px',
+  textAlign: 'right',
   color: 'inherit',
 })
