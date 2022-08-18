@@ -7,6 +7,7 @@ import {
 import React, { HTMLProps, Ref, useState } from 'react'
 
 type SelectorInputProps = {
+  isNumber: boolean
   inputValue: string
   disabled: boolean
   onInputValueChange: (value: String) => void
@@ -14,6 +15,7 @@ type SelectorInputProps = {
 } & Omit<HTMLProps<HTMLInputElement>, 'ref'>
 
 export const SelectorInput = ({
+  isNumber,
   inputValue,
   disabled,
   onInputValueChange,
@@ -25,8 +27,9 @@ export const SelectorInput = ({
   return (
     <Text variant="primary">
       <StyledInput
+
         ref={inputRef}
-        type="text"
+        type={isNumber ? "number": "text"}
         lang="en-US"
         placeholder="0.0"
         min={0}

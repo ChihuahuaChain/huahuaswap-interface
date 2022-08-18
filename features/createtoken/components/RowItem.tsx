@@ -21,6 +21,7 @@ type RowItemProps = {
   disabled?: boolean
   inputValue: string
   label: string
+  isNumber: boolean
   onChange: (label, inputValue) => void
 }
 
@@ -29,6 +30,7 @@ export const RowItem = ({
   disabled,
   inputValue,
   label,
+  isNumber,
   onChange
 }: RowItemProps) => {
   const wrapperRef = useRef<HTMLDivElement>()
@@ -52,6 +54,7 @@ export const RowItem = ({
 
         <StyledDivForAmountWrapper>
           <SelectorInput
+            isNumber={isNumber}
             inputRef={inputRef}
             inputValue={inputValue}
             disabled={!label || readOnly || disabled}
