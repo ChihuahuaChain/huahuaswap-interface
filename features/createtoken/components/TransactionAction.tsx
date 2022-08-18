@@ -1,3 +1,4 @@
+import { JsonObject } from '@cosmjs/cosmwasm-stargate'
 import { useConnectWallet } from 'hooks/useConnectWallet'
 import { useTokenBalance } from 'hooks/useTokenBalance'
 import { Button, Inline, Spinner, styled, Text } from 'junoblocks'
@@ -6,166 +7,74 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'
 import { NETWORK_FEE } from 'util/constants'
 
-import { useTokenSwap } from '../hooks'
+import { useInstantiate } from '../hooks'
 import { SlippageSelector } from './SlippageSelector'
 
 type TransactionTipsProps = {
-  isPriceLoading?: boolean
-  tokenToTokenPrice?: number
-  size?: 'small' | 'large'
+  msg: JsonObject
+  disabled: boolean
 }
 
 export const TransactionAction = ({
-  isPriceLoading,
-  tokenToTokenPrice,
-  size = 'large',
+  msg,
+  disabled  
 }: TransactionTipsProps) => {
-  // const [requestedSwap, setRequestedSwap] = useState(false)
+  const [requestedInstantiate, setRequestedInstantiate] = useState(false)
   // const { balance: tokenABalance } = useTokenBalance(tokenA?.tokenSymbol)
 
   // /* wallet state */
-  // const { status } = useRecoilValue(walletState)
-  // const { mutate: connectWallet } = useConnectWallet()
-  // const [slippage, setSlippage] = useRecoilState(slippageAtom)
+  const { status } = useRecoilValue(walletState)
+  const { mutate: connectWallet } = useConnectWallet()
 
-  // const { mutate: handleSwap, isLoading: isExecutingTransaction } =
-  //   useTokenSwap({
-  //     tokenASymbol: tokenA?.tokenSymbol,
-  //     tokenBSymbol: tokenB?.tokenSymbol,
-  //     tokenAmount: tokenA?.amount,
-  //     tokenToTokenPrice: tokenToTokenPrice || 0,
-  //   })
-
+  const { mutate: handleInstantiate, isLoading: isExecutingTransaction } = 
+    useInstantiate({
+      msg
+    })
+  
   // /* proceed with the swap only if the price is loaded */
 
-  // useEffect(() => {
-  //   const shouldTriggerTransaction =
-  //     !isPriceLoading && !isExecutingTransaction && requestedSwap
-  //   if (shouldTriggerTransaction) {
-  //     handleSwap()
-  //     setRequestedSwap(false)
-  //   }
-  // }, [isPriceLoading, isExecutingTransaction, requestedSwap, handleSwap])
+  useEffect(() => {
+    const shouldTriggerTransaction = !isExecutingTransaction && requestedInstantiate
+    if (shouldTriggerTransaction) {
+      handleInstantiate()
+      setRequestedInstantiate(false)
+    }
+  }, [isExecutingTransaction, requestedInstantiate, handleInstantiate])
 
-  // const handleSwapButtonClick = () => {
-  //   if (status === WalletStatusType.connected) {
-  //     return setRequestedSwap(true)
-  //   }
+  const shouldDisableSubmissionButton =
+    isExecutingTransaction 
 
-  //   connectWallet(null)
-  // }
+  const handleInstantiateButtonClick = () => {
+    if (status === WalletStatusType.connected) {
+      return setRequestedInstantiate(true)
+    }
 
-  // const shouldDisableSubmissionButton =
-  //   isExecutingTransaction ||
-  //   !tokenB.tokenSymbol ||
-  //   !tokenA.tokenSymbol ||
-  //   status !== WalletStatusType.connected ||
-  //   tokenA.amount <= 0 ||
-  //   tokenA?.amount > tokenABalance
-
-  // if (size === 'small') {
-  //   return (
-  //     <>
-  //       <Inline css={{ display: 'grid', padding: '$6 0' }}>
-  //         <SlippageSelector
-  //           slippage={slippage}
-  //           onSlippageChange={setSlippage}
-  //           css={{ width: '100%' }}
-  //         />
-  //       </Inline>
-  //       <Inline
-  //         justifyContent="space-between"
-  //         css={{
-  //           padding: '$8 $12',
-  //           backgroundColor: '$colors$dark10',
-  //           borderRadius: '$1',
-  //         }}
-  //       >
-  //         <Text variant="legend" transform="uppercase">
-  //           Swap fee
-  //         </Text>
-  //         <Text variant="legend">{NETWORK_FEE * 100}%</Text>
-  //       </Inline>
-  //       <Inline css={{ display: 'grid', paddingTop: '$8' }}>
-  //         <Button
-  //           variant="primary"
-  //           size="large"
-  //           disabled={shouldDisableSubmissionButton}
-  //           onClick={
-  //             !isExecutingTransaction && !isPriceLoading
-  //               ? handleSwapButtonClick
-  //               : undefined
-  //           }
-  //         >
-  //           {isExecutingTransaction ? <Spinner instant /> : 'Swap'}
-  //         </Button>
-  //       </Inline>
-  //     </>
-  //   )
-  // }
+    connectWallet(null)
+  }
 
   return (
-    <></>
-    // <StyledDivForWrapper>
-    //   <StyledDivForInfo>
-    //     <StyledDivColumnForInfo kind="slippage">
-    //       <SlippageSelector
-    //         slippage={slippage}
-    //         onSlippageChange={setSlippage}
-    //         css={{ borderRadius: '$2 0 0 $2' }}
-    //       />
-    //     </StyledDivColumnForInfo>
-    //     <StyledDivColumnForInfo kind="fees">
-    //       <Text variant="legend">Swap fee ({NETWORK_FEE * 100}%)</Text>
-    //     </StyledDivColumnForInfo>
-    //   </StyledDivForInfo>
-    //   <Button
-    //     variant="primary"
-    //     size="large"
-    //     disabled={shouldDisableSubmissionButton}
-    //     onClick={
-    //       !isExecutingTransaction && !isPriceLoading
-    //         ? handleSwapButtonClick
-    //         : undefined
-    //     }
-    //   >
-    //     {isExecutingTransaction ? <Spinner instant /> : 'Swap'}
-    //   </Button>
-    // </StyledDivForWrapper>
+    <>
+    <StyledDivForWrapper>
+      
+      <Button
+        variant="primary"
+        disabled={disabled}
+        onClick={!isExecutingTransaction
+          ? handleInstantiateButtonClick
+          : undefined
+        }
+      >
+        {isExecutingTransaction ? <Spinner instant /> : 'Instantiate'}
+      </Button>
+    </StyledDivForWrapper>
+    </>
   )
 }
 
 const StyledDivForWrapper = styled('div', {
-  display: 'grid',
-  gridTemplateColumns: '1fr 150px',
-  columnGap: 12,
-  alignItems: 'center',
-  padding: '12px 0',
-})
-
-const StyledDivForInfo = styled('div', {
   display: 'flex',
-  alignItems: 'center',
-  textTransform: 'uppercase',
-  borderRadius: 8,
-})
-
-const StyledDivColumnForInfo = styled('div', {
-  display: 'grid',
-  variants: {
-    kind: {
-      slippage: {
-        backgroundColor: 'transparent',
-        minWidth: '140px',
-        borderRadius: '$4 0 0 $4',
-        borderRight: '1px solid $borderColors$default',
-      },
-      fees: {
-        backgroundColor: '$colors$dark10',
-        flex: 1,
-        padding: '$space$8 $space$12',
-        borderRadius: '0 $2 $2 0',
-      },
-    },
-  },
+  // gridTemplateColumns: '1fr 150px',
+  columnGap: 12,
+  alignItems: 'right',
+  padding: '12px 0px 0px',
 })

@@ -6,22 +6,22 @@ import {
 } from 'junoblocks'
 import React, { HTMLProps, Ref, useState } from 'react'
 
-type SelectorInputProps = {
+type RowInputProps = {
   isNumber: boolean
-  inputValue: string
   disabled: boolean
   onInputValueChange: (value: String) => void
   inputRef?: Ref<HTMLInputElement>
+  placeholder
 } & Omit<HTMLProps<HTMLInputElement>, 'ref'>
 
-export const SelectorInput = ({
+export const RowInput = ({
   isNumber,
-  inputValue,
   disabled,
   onInputValueChange,
   inputRef,
+  placeholder,
   ...inputProps
-}: SelectorInputProps) => {
+}: RowInputProps) => {
   
   const [value, setValue] = useState('')
   return (
@@ -31,13 +31,13 @@ export const SelectorInput = ({
         ref={inputRef}
         type={isNumber ? "number": "text"}
         lang="en-US"
-        placeholder="0.0"
+        placeholder={placeholder}
         min={0}
-        value={inputValue}
         onChange={({ target: { value } }) => onInputValueChange(value)}
 
         autoComplete="off"
         readOnly={disabled}
+        
         {...inputProps}
       />
     </Text>
@@ -45,7 +45,7 @@ export const SelectorInput = ({
 }
 
 const StyledInput = styled('input', {
-  width: 'auto',
-  textAlign: 'right',
+  minWidth:"400px",
+  textAlign: 'left',
   color: 'inherit',
 })

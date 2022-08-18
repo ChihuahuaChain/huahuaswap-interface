@@ -1,4 +1,4 @@
 // export { usePriceForOneToken } from './usePriceForOneToken'
-// export { useTokenSwap } from './useTokenSwap'
+export { useInstantiate } from './useInstantiate'
 // export { useTokenToTokenPrice } from './useTokenToTokenPrice'
 // export { useTxRates } from './useTxRates'
