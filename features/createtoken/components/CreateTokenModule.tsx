@@ -25,30 +25,15 @@ export const CreateTokenModule = () => {
   return (
     <>
       <StyledDivForWrapper>
-        {/* <ContractDetails
-          name={"A"}
-          symbol={"B"}
-          decimals={6}
-          initial_balances={[]}
-          
-        /> */}
-
         <RowItem
           label={"tokenA.tokenSymbol"}
           // inputValue={100}
           onChange={(label, inputValue) => {
             // setTokenSwapState([updateTokenA, tokenB])
-            console.log(inputValue)
+            console.log(label + ":" + inputValue)
           }}
           disabled={isUiDisabled}
-          size={uiSize}
         />
-        {/* <CategoryInput
-            // inputRef={inputRef}
-            label={"ddd"}
-            value={"false"}
-            
-          /> */}
         
         
       </StyledDivForWrapper>

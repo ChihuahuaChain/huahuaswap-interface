@@ -7,7 +7,7 @@ import {
 import React, { HTMLProps, Ref, useState } from 'react'
 
 type SelectorInputProps = {
-  inputValue: number
+  inputValue: string
   disabled: boolean
   onInputValueChange: (value: String) => void
   inputRef?: Ref<HTMLInputElement>
@@ -21,26 +21,18 @@ export const SelectorInput = ({
   ...inputProps
 }: SelectorInputProps) => {
   
-  // const { value, setValue } = useAmountChangeController({
-  //   value,
-  //   onInputValueChange,
-  // })
-
   const [value, setValue] = useState('')
-
   return (
     <Text variant="primary">
       <StyledInput
         ref={inputRef}
-        type="number"
+        type="text"
         lang="en-US"
         placeholder="0.0"
         min={0}
         value={inputValue}
-        onChange={onInputValueChange}
-        // onChange={
-        //   !disabled ? ({ target: { value } }) => setValue(value) : undefined
-        // }
+        onChange={({ target: { value } }) => onInputValueChange(value)}
+
         autoComplete="off"
         readOnly={disabled}
         {...inputProps}

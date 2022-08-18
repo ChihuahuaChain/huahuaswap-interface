@@ -19,25 +19,23 @@ import { TokenOptionsList } from './TokenOptionsList'
 type RowItemProps = {
   readOnly?: boolean
   disabled?: boolean
-  inputValue: number
+  inputValue: string
   label: string
-  onChange: (token: { label; inputValue }) => void
-  size?: 'small' | 'large'
+  onChange: (label, inputValue) => void
 }
 
 export const RowItem = ({
   readOnly,
   disabled,
-  label,
   inputValue,
-  onChange,
-  size = 'large',
+  label,
+  onChange
 }: RowItemProps) => {
   const wrapperRef = useRef<HTMLDivElement>()
   const inputRef = useRef<HTMLInputElement>()
 
   const [isInputFocused, setInputFocused] = useState(false)
-  const handleInputChange = (inputValue) => onChange({ label, inputValue })
+  const handleInputChange = (inputValue) => onChange(label, inputValue)
 
   return (
     <StyledDivForContainer
