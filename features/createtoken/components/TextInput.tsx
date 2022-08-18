@@ -10,13 +10,13 @@ type TextInputProps = {
   string: string
   disabled: boolean
   // onStringChange: (string: string) => void
-  inputRef?: Ref<HTMLInputElement>
+  // inputRef?: Ref<HTMLInputElement>
 } & Omit<HTMLProps<HTMLInputElement>, 'ref'>
 
 export const TextInput = ({
   string,
   disabled,
-  inputRef,
+  // inputRef,
   ...inputProps
 }: TextInputProps) => {
   

@@ -4,34 +4,35 @@ import {
   Text,
   useAmountChangeController,
 } from 'junoblocks'
-import React, { HTMLProps, Ref } from 'react'
+import React, { HTMLProps, Ref, useState} from 'react'
 
 type SelectorInputProps = {
-  amount: number
+  inputValue: string
   disabled: boolean
-  onAmountChange: (amount: number) => void
+  placeholder: string
+  isNumber: boolean
+  onInputValueChange: (inputValue: string) => void
   inputRef?: Ref<HTMLInputElement>
 } & Omit<HTMLProps<HTMLInputElement>, 'ref'>
 
 export const SelectorInput = ({
-  amount,
+  inputValue,
   disabled,
-  onAmountChange,
+  placeholder,
+  isNumber,
+  onInputValueChange,
   inputRef,
   ...inputProps
 }: SelectorInputProps) => {
-  const { value, setValue } = useAmountChangeController({
-    amount,
-    onAmountChange,
-  })
+  const [ value, setValue ] = useState('')
 
   return (
     <Text variant="primary">
       <StyledInput
         ref={inputRef}
-        type="number"
+        type={isNumber ? "number": "text"}
         lang="en-US"
-        placeholder="0.0"
+        placeholder={placeholder}
         min={0}
         value={value}
         onChange={

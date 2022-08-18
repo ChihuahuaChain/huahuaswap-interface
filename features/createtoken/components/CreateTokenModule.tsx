@@ -6,14 +6,14 @@ import {
   TransactionStatus,
   transactionStatusState,
 } from 'state/atoms/transactionAtoms'
+import { TextInput } from './TextInput'
 
 import { useTokenToTokenPrice } from '../hooks'
-import { tokenSwapAtom } from '../swapAtoms'
-import { TokenSelector } from './TokenSelector'
+import { RowItem } from './RowItem'
 import { ContractDetails } from './ContractDetails'
 import { TransactionAction } from './TransactionAction'
 import { TransactionTips } from './TransactionTips'
-
+import { CategoryInput } from './CategoryInput'
 
 export const CreateTokenModule = () => {
   /* connect to recoil */
@@ -25,13 +25,29 @@ export const CreateTokenModule = () => {
   return (
     <>
       <StyledDivForWrapper>
-        <ContractDetails
+        {/* <ContractDetails
           name={"A"}
           symbol={"B"}
           decimals={6}
           initial_balances={[]}
           
+        /> */}
+
+        <RowItem
+          label={"tokenA.tokenSymbol"}
+          amount={100}
+          onChange={(updateTokenA) => {
+            // setTokenSwapState([updateTokenA, tokenB])
+          }}
+          disabled={isUiDisabled}
+          size={uiSize}
         />
+        {/* <CategoryInput
+            // inputRef={inputRef}
+            label={"ddd"}
+            value={"false"}
+            
+          /> */}
         
         
       </StyledDivForWrapper>
