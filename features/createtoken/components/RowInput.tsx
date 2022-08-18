@@ -9,6 +9,7 @@ import React, { HTMLProps, Ref, useState } from 'react'
 type RowInputProps = {
   isNumber: boolean
   disabled: boolean
+  inputValue: string
   onInputValueChange: (value: String) => void
   inputRef?: Ref<HTMLInputElement>
   placeholder
@@ -17,13 +18,15 @@ type RowInputProps = {
 export const RowInput = ({
   isNumber,
   disabled,
+  inputValue,
   onInputValueChange,
   inputRef,
   placeholder,
   ...inputProps
 }: RowInputProps) => {
   
-  const [value, setValue] = useState(placeholder)
+  const [value, setValue] = useState(inputValue)
+  
   return (
     <Text variant="primary">
       <StyledInput
@@ -33,11 +36,15 @@ export const RowInput = ({
         lang="en-US"
         placeholder={placeholder}
         min={0}
+        value={value}
         onChange={({ target: { value } }) => {onInputValueChange(value); setValue(value);}}
-
+        // onChange={(e) => {
+        //   onInputValueChange(e.target.value); 
+        //   setValue(e.target.value);
+        // }}
         autoComplete="off"
         readOnly={disabled}
-        style={{ width: `${calculateCharactersLength(value)}ch` }}
+        style={{ width: value ? `${calculateCharactersLength(value)}ch` : `20ch`}}
         
         {...inputProps}
       />
@@ -47,7 +54,6 @@ export const RowInput = ({
 
 const StyledInput = styled('input', {
   minWidth: '380px',
-  maxWidth: '380px',
   textAlign: 'right',
   color: 'inherit',
 })

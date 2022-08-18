@@ -20,6 +20,7 @@ type RowItemProps = {
   readOnly?: boolean
   disabled?: boolean
   label: string
+  inputValue?: string
   placeholder: string
   isNumber: boolean
   onChange: (label, inputValue) => void
@@ -29,6 +30,7 @@ export const RowItem = ({
   readOnly,
   placeholder,
   disabled,
+  inputValue,
   label,
   isNumber,
   onChange,
@@ -51,6 +53,7 @@ export const RowItem = ({
             placeholder={placeholder}
             isNumber={isNumber}
             inputRef={inputRef}
+            inputValue={inputValue}
             disabled={!label || readOnly || disabled}
             onInputValueChange={handleInputChange}
             onFocus={() => {
