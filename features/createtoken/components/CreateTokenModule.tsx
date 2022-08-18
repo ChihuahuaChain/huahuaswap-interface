@@ -35,9 +35,10 @@ export const CreateTokenModule = () => {
 
         <RowItem
           label={"tokenA.tokenSymbol"}
-          amount={100}
-          onChange={(updateTokenA) => {
+          // inputValue={100}
+          onChange={(label, inputValue) => {
             // setTokenSwapState([updateTokenA, tokenB])
+            console.log(inputValue)
           }}
           disabled={isUiDisabled}
           size={uiSize}

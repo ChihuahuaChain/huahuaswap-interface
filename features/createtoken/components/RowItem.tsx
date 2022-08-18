@@ -55,11 +55,9 @@ export const RowItem = ({
         <StyledDivForAmountWrapper>
           <SelectorInput
             inputRef={inputRef}
-            inputValue={""}
-            placeholder={label}
-            isNumber={false}
+            inputValue={inputValue}
             disabled={!label || readOnly || disabled}
-            onAmountChange={handleInputChange}
+            onInputValueChange={handleInputChange}
             onFocus={() => {
               setInputFocused(true)
             }}
@@ -67,8 +65,13 @@ export const RowItem = ({
               setInputFocused(false)
             }}
           />
+          
+          
+        
         </StyledDivForAmountWrapper>
+        
       </StyledDivForWrapper>
+      
     </StyledDivForContainer>
   )
 }
