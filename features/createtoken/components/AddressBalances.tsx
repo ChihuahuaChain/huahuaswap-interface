@@ -3,21 +3,12 @@ import {
   IconWrapper,
   Inline,
   styled,
-  Text,
-  Union,
-  useOnClickOutside,
   Plus, Reject
 } from 'junoblocks'
 import React, { useRef, useState, useEffect, ChangeEvent } from 'react'
 
-import { ConvenienceBalanceButtons } from './ConvenienceBalanceButtons'
-import { QueryInput } from './QueryInput'
 import { RowItem } from './RowItem'
 import { uid } from '../../../util/random'
-
-import { SelectorToggle } from './SelectorToggle'
-import { TokenOptionsList } from './TokenOptionsList'
-import { JsonObject } from '@cosmjs/cosmwasm-stargate'
 
 export interface Balance {
   address: string
@@ -113,7 +104,7 @@ export const AddressBalance = ({ id, isLast, onAdd, onChange, onRemove }: Addres
 
   const [addressValue, setAddressValue] = useState('') 
   const [amountValue, setAmountValue] = useState('') 
-  
+
   useEffect(() => {
     onChange(id, {
       address: addressValue,

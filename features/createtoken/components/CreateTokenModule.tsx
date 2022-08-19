@@ -10,9 +10,8 @@ import {
   TransactionStatus,
   transactionStatusState,
 } from 'state/atoms/transactionAtoms'
-import { TextInput } from './TextInput'
 import { AddressBalances } from './AddressBalances'
-import { useAddressBalancesState } from '../hooks/useAddressBalancesState'
+import { useAddressBalancesState } from '../hooks'
 import { RowItem } from './RowItem'
 import { TransactionAction } from './TransactionAction'
 import { JsonObject } from '@cosmjs/cosmwasm'
@@ -27,17 +26,17 @@ export const CreateTokenModule = () => {
     symbol: 'HCW',
     decimals: 6,
     mint: {
-      minter: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
+      minter: 'chihuahua1234567890abcdefghijklmnopqrstuvwxyz', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
       cap: null,
     },
     initial_balances: [{
-      address: '',
-      amount: ''
+      address: 'chihuahua1234567890abcdefghijklmnopqrstuvwxyz',
+      amount: '9999'
     }],
     marketing: {
       project: 'My CW20 Contract',
       description: 'This is my cw20 contract',
-      marketing: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx',
+      marketing: 'chihuahua1234567890abcdefghijklmnopqrstuvwxyz',
       logo: {
         url: 'https://example.com/image.jpg',
       },
@@ -48,7 +47,7 @@ export const CreateTokenModule = () => {
     symbol: '',
     decimals: 6,
     mint: {
-      minter: '', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
+      minter: '',
       cap: null,
     },
     initial_balances: [{

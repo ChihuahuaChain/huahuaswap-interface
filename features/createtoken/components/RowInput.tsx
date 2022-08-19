@@ -53,7 +53,7 @@ export const RowInput = ({
 }
 
 const StyledInput = styled('input', {
-  minWidth: '300px',
+  minWidth: '380px',
   textAlign: 'right',
   color: 'inherit',
 })
