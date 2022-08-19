@@ -46,7 +46,7 @@
             {
                "id":"",
                "chain_id":"chihuahua-1",
-               "token_address":"chihuahua1gya5c9y6yehyps5kz9vt2dptgkncvvx76mf05jext4axh9x6vpxqgsajav",
+               "token_address":"chihuahua1xw6yd7k05534e3x748f3c386zr290k66x354vpc0vs3mqfyl8v2s54jwyh",
                "symbol":"HCW",
                "name":"HCW",
                "decimals":6,
@@ -58,7 +58,7 @@
                "denom":"hcw"
             }
          ],
-         "swap_address":"chihuahua10u2skqwln29qrw2ggg5xhkw8t0xct6jz4674urcdx5qj0uyl08eq6a7jk7"
+         "swap_address":"chihuahua1mygmlglvg9w45n3s6m6d4txneantmupy0sa0vy63angpvj0qp7usmykujx"
       }
       
    ],

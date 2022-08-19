@@ -43,44 +43,44 @@ export const CreateTokenModule = () => {
     },
   }
   const [data, setData] = useState({
-    // name: '',
-    // symbol: '',
-    // decimals: 6,
-    // mint: {
-    //   minter: '',
-    //   cap: null,
-    // },
-    // initial_balances: [{
-    //   address: '',
-    //   amount: ''
-    // }],
-    // marketing: {
-    //   project: '',
-    //   description: '',
-    //   marketing: '',
-    //   logo: {
-    //     url: '',
-    //   },
-    // },
-    name: 'My CW20 Contract',
-    symbol: 'HCW',
+    name: '',
+    symbol: '',
     decimals: 6,
     mint: {
-      minter: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
-      cap: '888888',
+      minter: '',
+      cap: null,
     },
     initial_balances: [{
-      address: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx',
-      amount: '9999'
+      address: '',
+      amount: ''
     }],
     marketing: {
-      project: 'My CW20 Contract',
-      description: 'This is my cw20 contract',
-      marketing: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx',
+      project: '',
+      description: '',
+      marketing: '',
       logo: {
-        url: 'https://example.com/image.jpg',
+        url: '',
       },
     },
+    // name: 'My CW20 Contract',
+    // symbol: 'HCW',
+    // decimals: 6,
+    // mint: {
+    //   minter: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
+    //   cap: '888888',
+    // },
+    // initial_balances: [{
+    //   address: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx',
+    //   amount: '9999'
+    // }],
+    // marketing: {
+    //   project: 'My CW20 Contract',
+    //   description: 'This is my cw20 contract',
+    //   marketing: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx',
+    //   logo: {
+    //     url: 'https://example.com/image.jpg',
+    //   },
+    // },
   })
 
   const balancesState = useAddressBalancesState()

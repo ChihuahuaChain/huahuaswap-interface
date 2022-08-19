@@ -30,7 +30,7 @@ export const useInstantiate = ({
   const setTransactionState = useSetRecoilState(transactionStatusState)
   
   return useMutation(
-    'swapTokens',
+    'instantiatecw20',
     async () => {
       if (status !== WalletStatusType.connected) {
         throw new Error('Please connect your wallet.')
@@ -45,11 +45,25 @@ export const useInstantiate = ({
       })
     },
     {
-      onSuccess() {
+      onSuccess(data) {
+        // console.log(data)
+        //data.contractAddress
+        //data.transactionHash
         toast.custom((t) => (
           <Toast
             icon={<IconWrapper icon={<Valid />} color="valid" />}
-            title="Instantiate successful!"
+            title={data.contractAddress}
+            buttons={
+              <Button
+                as="a"
+                variant="ghost"
+                href={process.env.NEXT_PUBLIC_BLOCK_EXPLORER + data.transactionHash}
+                target="__blank"
+                iconRight={<UpRightArrow />}
+              >
+                Transaction Hash
+              </Button>
+            }
             onClose={() => toast.dismiss(t.id)}
           />
         ))

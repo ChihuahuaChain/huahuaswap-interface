@@ -37,10 +37,6 @@ export const RowInput = ({
         min={0}
         value={value}
         onChange={({ target: { value } }) => {onInputValueChange(value); setValue(value);}}
-        // onChange={(e) => {
-        //   onInputValueChange(e.target.value); 
-        //   setValue(e.target.value);
-        // }}
         autoComplete="off"
         readOnly={disabled}
         style={{ width: value ? `${calculateCharactersLength(value)}ch` : `20ch`}}
@@ -52,7 +48,7 @@ export const RowInput = ({
 }
 
 const StyledInput = styled('input', {
-  minWidth: '380px',
+  minWidth: '300px',
   textAlign: 'right',
   color: 'inherit',
 })
