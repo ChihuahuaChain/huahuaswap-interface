@@ -11,7 +11,8 @@ import {
   transactionStatusState,
 } from 'state/atoms/transactionAtoms'
 import { TextInput } from './TextInput'
-
+import { AddressBalances } from './AddressBalances'
+import { useAddressBalancesState } from '../hooks/useAddressBalancesState'
 import { RowItem } from './RowItem'
 import { TransactionAction } from './TransactionAction'
 
@@ -19,26 +20,6 @@ export const CreateTokenModule = () => {
   /* connect to recoil */
   const transactionStatus = useRecoilValue(transactionStatusState)
   const isUiDisabled = transactionStatus === TransactionStatus.EXECUTING
-
-  // const [name, setName] = useState('My CW20 Contract')
-  // const [symbol, setSymbol] = useState('HCW')
-  // const [decimals, setDecimals] = useState(6)
-  // const [balances, setBalances] = useState([])
-  // const [minterAddress, setMinterAddress] = useState('chihuahua1234567890abcdefghijklmnopqrstuvwxyz')
-  // const [cap, setCap] = useState(9999)
-  // const [project, setProject]
-
-  const [refresh, setRefresh] = useState(false)
-  const initial_balances = useRef([{
-    index: 0,
-    address: '',
-    amount: ''
-  }]);
-  // const [initial_balances, setInitialBalances] = useState([{
-  //   index: 0,
-  //   address: '',
-  //   amount: ''
-  // }]);
 
   const [data, setData] = useState({
     name: 'My CW20 Contract',
@@ -48,6 +29,10 @@ export const CreateTokenModule = () => {
       minter: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
       cap: null,
     },
+    initial_balances: [{
+      address: '',
+      amount: ''
+    }],
     marketing: {
       project: 'My CW20 Contract',
       description: 'This is my cw20 contract',
@@ -58,14 +43,8 @@ export const CreateTokenModule = () => {
     },
   })
 
-  useEffect(() => {
-    // setData(data)
-    console.log(initial_balances);
-  }, [refresh])
+  const balancesState = useAddressBalancesState()
 
-  const values = useMemo(() => {
-
-  }, [data, refresh])
   return (
     <>
       <StyledText>
@@ -107,9 +86,18 @@ export const CreateTokenModule = () => {
       <StyledText>
         <Text variant="primary">Initial Balances</Text>
       </StyledText>
+      <StyledText>
+        <Text variant="secondary" style={{padding: '0px 0px 0px 20px'}}>Enter at least one wallet address and initial balance</Text>
+      </StyledText>
       <StyledDivForWrapper>
-        <>
-          {initial_balances.current?.map(({ address, amount }, index) => (
+        <AddressBalances
+          entries={balancesState.entries}
+          onAdd={balancesState.add}
+          onChange={balancesState.update}
+          onRemove={balancesState.remove}
+        />
+        {/* <>
+          {data.initial_balances.map(({ address, amount }, index) => (
             <div key={index}>
               <StyledDivForDivideWrapper>
                 <RowItem
@@ -118,9 +106,8 @@ export const CreateTokenModule = () => {
                   isNumber={false}
                   inputValue={address}
                   onChange={(label, inputValue) => {
-                    // initial_balances[index].address = inputValue
-                    initial_balances.current[index].index = index;
-                    initial_balances.current[index].address = inputValue;
+                    data.initial_balances[index].address = inputValue
+                    setData(data)
                   }}
 
                   disabled={isUiDisabled}
@@ -131,9 +118,8 @@ export const CreateTokenModule = () => {
                   isNumber={false}
                   inputValue={amount}
                   onChange={(label, inputValue) => {
-                    // initial_balances[index].amount = inputValue
-                    initial_balances.current[index].index = index;
-                    initial_balances.current[index].amount = inputValue;
+                    data.initial_balances[index].amount = inputValue
+                    setData(data)
                   }}
                   disabled={isUiDisabled}
                 />
@@ -141,41 +127,43 @@ export const CreateTokenModule = () => {
                   <Button
                     variant="primary"
                     disabled={false}
-                    onClick={initial_balances.current.length - 1 == index ? 
-                    () => {
-                      // initial_balances.push({
-                      //   address: '',
-                      //   amount: '',
-                      // })
-                      initial_balances.current.push({ index: index + 1, address: '', amount: '' });
-                      setRefresh(!refresh)
-                    } : 
-                    () => {
 
-                      let list = []
-                      for (let i = 0; i < initial_balances.current.length; i ++) {
-                        if (i == index)
-                          continue;
-                        list.push(initial_balances.current[i])
-                      }
-                      initial_balances.current = list;
-                      // customData.initial_balances = list
-                      // setData(customData)
-                      console.log('[Remove] = ', list)
-                      setRefresh(!refresh)
-                    }
-                    }
+                    // onClick={
+                    //   data.initial_balances.current.length - 1 == index ? 
+                    //   () => {
+                    //     // initial_balances.push({
+                    //     //   address: '',
+                    //     //   amount: '',
+                    //     // })
+                    //     initial_balances.current.push({ index: index + 1, address: '', amount: '' });
+                    //     setRefresh(!refresh)
+                    //   } : 
+                    //   () => {
+
+                    //     let list = []
+                    //     for (let i = 0; i < initial_balances.current.length; i ++) {
+                    //       if (i == index)
+                    //         continue;
+                    //       list.push(initial_balances.current[i])
+                    //     }
+                    //     initial_balances.current = list;
+                    //     // customData.initial_balances = list
+                    //     // setData(customData)
+                    //     console.log('[Remove] = ', list)
+                    //     setRefresh(!refresh)
+                    //   }
+                    // }
                   >
 
-                    {initial_balances.current.length - 1 == index ? <IconWrapper icon={<Plus />} /> : <IconWrapper icon={<Reject />} />}
+                    {data.initial_balances.length - 1 == index ? <IconWrapper icon={<Plus />} /> : <IconWrapper icon={<Reject />} />}
                   </Button>
                 </StyledButton>
               </StyledDivForDivideWrapper>
             </div>
           ))}
-        </>
+        </> */}
       </StyledDivForWrapper>
-      <TransactionAction msg={data} disabled={isUiDisabled} />
+      <TransactionAction msg={data} entries={balancesState.entries} disabled={isUiDisabled} />
     </>
   )
 }
@@ -190,14 +178,7 @@ const StyledText = styled('div', {
   padding: '$5 $5 $5 $7',
 })
 
-const StyledDivForDivideWrapper = styled('div', {
-  // padding: '$5 $5 $5 $7',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  position: 'relative',
-  zIndex: 0,
-})
+
 
 const StyledButton = styled('div', {
   position: 'absolute',

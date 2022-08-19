@@ -12,11 +12,13 @@ import { SlippageSelector } from './SlippageSelector'
 
 type TransactionTipsProps = {
   msg: JsonObject
+  entries: any
   disabled: boolean
 }
 
 export const TransactionAction = ({
   msg,
+  entries,
   disabled  
 }: TransactionTipsProps) => {
   const [requestedInstantiate, setRequestedInstantiate] = useState(false)
@@ -25,7 +27,13 @@ export const TransactionAction = ({
   // /* wallet state */
   const { status } = useRecoilValue(walletState)
   const { mutate: connectWallet } = useConnectWallet()
+  
+  let list = []
+  for (let i = 0; i < entries.length; i ++)
+    list.push(entries[i][1])
 
+  msg.initial_balances = list
+  console.log(msg)
   const { mutate: handleInstantiate, isLoading: isExecutingTransaction } = 
     useInstantiate({
       msg
