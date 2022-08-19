@@ -15,13 +15,14 @@ import { AddressBalances } from './AddressBalances'
 import { useAddressBalancesState } from '../hooks/useAddressBalancesState'
 import { RowItem } from './RowItem'
 import { TransactionAction } from './TransactionAction'
+import { JsonObject } from '@cosmjs/cosmwasm'
 
 export const CreateTokenModule = () => {
   /* connect to recoil */
   const transactionStatus = useRecoilValue(transactionStatusState)
   const isUiDisabled = transactionStatus === TransactionStatus.EXECUTING
 
-  const [data, setData] = useState({
+  const placeholderdata:JsonObject = {
     name: 'My CW20 Contract',
     symbol: 'HCW',
     decimals: 6,
@@ -41,6 +42,27 @@ export const CreateTokenModule = () => {
         url: 'https://example.com/image.jpg',
       },
     },
+  }
+  const [data, setData] = useState({
+    name: '',
+    symbol: '',
+    decimals: 6,
+    mint: {
+      minter: '', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
+      cap: null,
+    },
+    initial_balances: [{
+      address: '',
+      amount: ''
+    }],
+    marketing: {
+      project: '',
+      description: '',
+      marketing: '',
+      logo: {
+        url: '',
+      },
+    },
   })
 
   const balancesState = useAddressBalancesState()
@@ -50,10 +72,13 @@ export const CreateTokenModule = () => {
       <StyledText>
         <Text variant="primary">Contract Details</Text>
       </StyledText>
+      <StyledSubText>
+        <Text variant="secondary">Basic information about your new contract</Text>
+      </StyledSubText>
       <StyledDivForWrapper>
         <RowItem
           label={'Name'}
-          placeholder={data.name}
+          placeholder={placeholderdata.name}
           isNumber={false}
           onChange={(label, inputValue) => {
             data.name = inputValue
@@ -63,7 +88,7 @@ export const CreateTokenModule = () => {
         />
         <RowItem
           label={'Symbol'}
-          placeholder={data.symbol}
+          placeholder={placeholderdata.symbol}
           isNumber={false}
           onChange={(label, inputValue) => {
             data.symbol = inputValue
@@ -73,7 +98,7 @@ export const CreateTokenModule = () => {
         />
         <RowItem
           label={'Decimals'}
-          placeholder={data.decimals.toString()}
+          placeholder={placeholderdata.decimals.toString()}
           isNumber={true}
           onChange={(label, inputValue) => {
             data.decimals = parseInt(inputValue)
@@ -86,9 +111,9 @@ export const CreateTokenModule = () => {
       <StyledText>
         <Text variant="primary">Initial Balances</Text>
       </StyledText>
-      <StyledText>
-        <Text variant="secondary" style={{padding: '0px 0px 0px 20px'}}>Enter at least one wallet address and initial balance</Text>
-      </StyledText>
+      <StyledSubText>
+        <Text variant="secondary">Enter at least one wallet address and initial balance</Text>
+      </StyledSubText>
       <StyledDivForWrapper>
         <AddressBalances
           entries={balancesState.entries}
@@ -96,73 +121,91 @@ export const CreateTokenModule = () => {
           onChange={balancesState.update}
           onRemove={balancesState.remove}
         />
-        {/* <>
-          {data.initial_balances.map(({ address, amount }, index) => (
-            <div key={index}>
-              <StyledDivForDivideWrapper>
-                <RowItem
-                  label={'Address'}
-                  placeholder={'chihuahua1234567890abcdefghijklmnopqrstuvwxyz'}
-                  isNumber={false}
-                  inputValue={address}
-                  onChange={(label, inputValue) => {
-                    data.initial_balances[index].address = inputValue
-                    setData(data)
-                  }}
-
-                  disabled={isUiDisabled}
-                />
-                <RowItem
-                  label={'Amount'}
-                  placeholder={'0'}
-                  isNumber={false}
-                  inputValue={amount}
-                  onChange={(label, inputValue) => {
-                    data.initial_balances[index].amount = inputValue
-                    setData(data)
-                  }}
-                  disabled={isUiDisabled}
-                />
-                <StyledButton>
-                  <Button
-                    variant="primary"
-                    disabled={false}
-
-                    // onClick={
-                    //   data.initial_balances.current.length - 1 == index ? 
-                    //   () => {
-                    //     // initial_balances.push({
-                    //     //   address: '',
-                    //     //   amount: '',
-                    //     // })
-                    //     initial_balances.current.push({ index: index + 1, address: '', amount: '' });
-                    //     setRefresh(!refresh)
-                    //   } : 
-                    //   () => {
-
-                    //     let list = []
-                    //     for (let i = 0; i < initial_balances.current.length; i ++) {
-                    //       if (i == index)
-                    //         continue;
-                    //       list.push(initial_balances.current[i])
-                    //     }
-                    //     initial_balances.current = list;
-                    //     // customData.initial_balances = list
-                    //     // setData(customData)
-                    //     console.log('[Remove] = ', list)
-                    //     setRefresh(!refresh)
-                    //   }
-                    // }
-                  >
-
-                    {data.initial_balances.length - 1 == index ? <IconWrapper icon={<Plus />} /> : <IconWrapper icon={<Reject />} />}
-                  </Button>
-                </StyledButton>
-              </StyledDivForDivideWrapper>
-            </div>
-          ))}
-        </> */}
       </StyledDivForWrapper>
+
+
+      <StyledText>
+        <Text variant="primary">Minting Details</Text>
+      </StyledText>
+      <StyledSubText>
+        <Text variant="secondary">Your new contract minting rules</Text>
+      </StyledSubText>
+      <StyledDivForWrapper>
+        <RowItem
+          label={'Minter Address'}
+          placeholder={placeholderdata.mint.minter}
+          isNumber={false}
+          onChange={(label, inputValue) => {
+            data.mint.minter = inputValue
+            setData(data)
+          }}
+          disabled={isUiDisabled}
+        />
+        <RowItem
+          label={'Cap'}
+          placeholder={placeholderdata.mint.cap}
+          isNumber={true}
+          onChange={(label, inputValue) => {
+            data.mint.cap = inputValue
+            setData(data)
+          }}
+          disabled={isUiDisabled}
+        />
+        
+      </StyledDivForWrapper>
+
+
+
+      <StyledText>
+        <Text variant="primary">Marketing Details</Text>
+      </StyledText>
+      <StyledSubText>
+        <Text variant="secondary">Public metadata for your new contract</Text>
+      </StyledSubText>
+      <StyledDivForWrapper>
+        <RowItem
+          label={'Project'}
+          placeholder={placeholderdata.marketing.project}
+          isNumber={false}
+          onChange={(label, inputValue) => {
+            data.marketing.project = inputValue
+            setData(data)
+          }}
+          disabled={isUiDisabled}
+        />
+        <RowItem
+          label={'Description'}
+          placeholder={placeholderdata.marketing.description}
+          isNumber={false}
+          onChange={(label, inputValue) => {
+            data.marketing.description = inputValue
+            setData(data)
+          }}
+          disabled={isUiDisabled}
+        />
+        <RowItem
+          label={'Wallet Address (marketing)'}
+          placeholder={placeholderdata.marketing.marketing}
+          isNumber={false}
+          onChange={(label, inputValue) => {
+            data.marketing.marketing = inputValue
+            setData(data)
+          }}
+          disabled={isUiDisabled}
+        />
+        <RowItem
+          label={'Logo URL'}
+          placeholder={placeholderdata.marketing.logo.url}
+          isNumber={false}
+          onChange={(label, inputValue) => {
+            data.marketing.logo.url = inputValue
+            setData(data)
+          }}
+          disabled={isUiDisabled}
+        />
+        
+      </StyledDivForWrapper>
+
       <TransactionAction msg={data} entries={balancesState.entries} disabled={isUiDisabled} />
     </>
   )
@@ -178,10 +221,8 @@ const StyledText = styled('div', {
   padding: '$5 $5 $5 $7',
 })
 
-
-
-const StyledButton = styled('div', {
-  position: 'absolute',
-  right: '-65px',
-  top: '15px',
+const StyledSubText = styled('div', {
+  borderRadius: '8px',
+  padding: '$5 $5 $5 $12',
 })
+

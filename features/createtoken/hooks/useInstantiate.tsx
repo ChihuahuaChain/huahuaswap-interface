@@ -49,7 +49,7 @@ export const useInstantiate = ({
         toast.custom((t) => (
           <Toast
             icon={<IconWrapper icon={<Valid />} color="valid" />}
-            title="Swap successful!"
+            title="Instantiate successful!"
             onClose={() => toast.dismiss(t.id)}
           />
         ))

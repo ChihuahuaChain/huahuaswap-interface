@@ -1,14 +1,10 @@
 import { JsonObject } from '@cosmjs/cosmwasm-stargate'
 import { useConnectWallet } from 'hooks/useConnectWallet'
-import { useTokenBalance } from 'hooks/useTokenBalance'
 import { Button, Inline, Spinner, styled, Text } from 'junoblocks'
 import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'
-import { NETWORK_FEE } from 'util/constants'
-
 import { useInstantiate } from '../hooks'
-import { SlippageSelector } from './SlippageSelector'
 
 type TransactionTipsProps = {
   msg: JsonObject
@@ -33,7 +29,7 @@ export const TransactionAction = ({
     list.push(entries[i][1])
 
   msg.initial_balances = list
-  console.log(msg)
+
   const { mutate: handleInstantiate, isLoading: isExecutingTransaction } = 
     useInstantiate({
       msg
