@@ -10,7 +10,7 @@ import {
 import { toast } from 'react-hot-toast'
 import { useMutation } from 'react-query'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { instantiate20 } from 'services/instantiate20'
+import { instantiatecw20 } from '../../../services/instantiatecw20'
 import {
   TransactionStatus,
   transactionStatusState,
@@ -38,7 +38,7 @@ export const useInstantiate = ({
 
       setTransactionState(TransactionStatus.EXECUTING)
     
-      return await instantiate20({
+      return await instantiatecw20({
         msg,
         senderAddress: address,
         client,

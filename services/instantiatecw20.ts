@@ -9,7 +9,7 @@ import { coin } from '@cosmjs/stargate'
 //   validateTransactionSuccess,
 // } from '../../util/messages'
 
-type instantiate20Args = {
+type instantiatecw20Args = {
   // name: string
   // symbol: string
   // decimals: number
@@ -31,11 +31,11 @@ type instantiate20Args = {
   client: SigningCosmWasmClient
 }
 
-export const instantiate20 = async ({
+export const instantiatecw20 = async ({
   msg,
   senderAddress,
   client,
-}: instantiate20Args) => {
+}: instantiatecw20Args) => {
 
   return await client.instantiate(
     senderAddress,
