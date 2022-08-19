@@ -16,6 +16,7 @@ type RowItemProps = {
   disabled?: boolean
   label: string
   inputValue?: string
+  doubleRow?: boolean
   placeholder: string
   isNumber: boolean
   onChange: (label, inputValue) => void
@@ -26,6 +27,7 @@ export const RowItem = ({
   placeholder,
   disabled,
   inputValue,
+  doubleRow,
   label,
   isNumber,
   onChange,
@@ -66,7 +68,7 @@ export const RowItem = ({
 
 const StyledDivForWrapper = styled('div', {
   padding: '$5 $5 $5 $7',
-  display: 'flex flex-column',
+  display: `flex flex-column`,
   alignItems: 'center',
   justifyContent: 'space-between',
   position: 'relative',
@@ -86,8 +88,7 @@ const StyledDivForAmountWrapper = styled('div', {
   justifyContent: 'right',
   position: 'left',
   zIndex: 1,
-  // backgroundColor: '$colors$dark0',
-  // boxShadow: '0 0 0 $space$1 $colors$dark0'
+
 })
 
 const selectedVariantForInputWrapper = {
@@ -102,6 +103,7 @@ const selectedVariantForInputWrapper = {
 const StyledDivForContainer = styled('div', {
   borderRadius: '$2',
   transition: 'box-shadow .1s ease-out',
+  boxShadow: '0 0 0 $space$1 $colors$dark0',
   variants: {
     selected: selectedVariantForInputWrapper,
   },

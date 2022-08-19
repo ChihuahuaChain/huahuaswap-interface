@@ -43,23 +43,42 @@ export const CreateTokenModule = () => {
     },
   }
   const [data, setData] = useState({
-    name: '',
-    symbol: '',
+    // name: '',
+    // symbol: '',
+    // decimals: 6,
+    // mint: {
+    //   minter: '',
+    //   cap: null,
+    // },
+    // initial_balances: [{
+    //   address: '',
+    //   amount: ''
+    // }],
+    // marketing: {
+    //   project: '',
+    //   description: '',
+    //   marketing: '',
+    //   logo: {
+    //     url: '',
+    //   },
+    // },
+    name: 'My CW20 Contract',
+    symbol: 'HCW',
     decimals: 6,
     mint: {
-      minter: '',
-      cap: null,
+      minter: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
+      cap: '888888',
     },
     initial_balances: [{
-      address: '',
-      amount: ''
+      address: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx',
+      amount: '9999'
     }],
     marketing: {
-      project: '',
-      description: '',
-      marketing: '',
+      project: 'My CW20 Contract',
+      description: 'This is my cw20 contract',
+      marketing: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx',
       logo: {
-        url: '',
+        url: 'https://example.com/image.jpg',
       },
     },
   })

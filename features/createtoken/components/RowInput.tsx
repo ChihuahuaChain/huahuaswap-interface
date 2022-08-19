@@ -2,7 +2,6 @@ import {
   calculateCharactersLength,
   styled,
   Text,
-  useAmountChangeController,
 } from 'junoblocks'
 import React, { HTMLProps, Ref, useState } from 'react'
 

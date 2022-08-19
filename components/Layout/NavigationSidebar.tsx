@@ -255,7 +255,7 @@ export function NavigationSidebar({
           </Button>
         </Inline>
         <Divider offsetY="$6" />
-        <Column gap={4}>
+        {/* <Column gap={4}>
           <Button
             as="a"
             href={process.env.NEXT_PUBLIC_FEEDBACK_LINK}
@@ -278,7 +278,7 @@ export function NavigationSidebar({
           >
             {process.env.NEXT_PUBLIC_GOVERNANCE_LINK_LABEL}
           </Button>
-        </Column>
+        </Column> */}
         <Inline gap={2} css={{ padding: '$20 0 $13' }}>
           <Button
             as="a"

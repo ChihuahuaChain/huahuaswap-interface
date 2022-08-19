@@ -39,7 +39,7 @@ export const instantiatecw20 = async ({
 
   return await client.instantiate(
     senderAddress,
-    18,
+    parseInt(process.env.NEXT_PUBLIC_CW20_CODE_ID),
     msg,
     'label',
     'auto'

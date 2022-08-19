@@ -110,9 +110,6 @@ export const AddressBalance = ({ id, isLast, onAdd, onChange, onRemove }: Addres
       address: addressValue,
       amount: amountValue,
     })
-    console.log("OnChange call")
-    console.log(addressValue)
-    console.log(amountValue)
   }, [addressValue, amountValue, id])
 
   
