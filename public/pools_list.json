@@ -34,7 +34,7 @@
                "chain_id":"chihuahua-1",
                "token_address":"",
                "symbol":"HUAHUA",
-               "name":"Chihuahua",
+               "name":"Huahua",
                "decimals":6,
                "logoURI":"https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/huahua.png",
                "tags":[
@@ -50,12 +50,12 @@
                "symbol":"HCW",
                "name":"HCW",
                "decimals":6,
-               "logoURI":"https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/Raw.png",
+               "logoURI":"https://gateway.pinata.cloud/ipfs/QmY7sYhz1C5ePaG5LqgA8STidwLofD9WpGTTvxBjbHHdhv",
                "tags":[
                   "cw20"
                ],
                "native":false,
-               "denom":"hcw"
+               "denom":"HCW"
             }
          ],
          "swap_address":"chihuahua1mygmlglvg9w45n3s6m6d4txneantmupy0sa0vy63angpvj0qp7usmykujx"

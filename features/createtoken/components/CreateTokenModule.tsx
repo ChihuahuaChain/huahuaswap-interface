@@ -27,7 +27,7 @@ export const CreateTokenModule = () => {
     decimals: 6,
     mint: {
       minter: 'chihuahua1234567890abcdefghijklmnopqrstuvwxyz', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
-      cap: null,
+      cap: 9999,
     },
     initial_balances: [{
       address: 'chihuahua1234567890abcdefghijklmnopqrstuvwxyz',
@@ -48,7 +48,7 @@ export const CreateTokenModule = () => {
     decimals: 6,
     mint: {
       minter: '',
-      cap: null,
+      cap: 9999,
     },
     initial_balances: [{
       address: '',

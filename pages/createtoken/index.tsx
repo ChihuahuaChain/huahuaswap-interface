@@ -11,7 +11,7 @@ export default function Home() {
       <StyledContainer>
         <PageHeader
           title="Create Token"
-          subtitle={`Create CW20 token to use in huahuaswap.`}
+          subtitle={`Create CW20 token to use in HUAHUAswap.`}
         />
         <CreateTokenModule
         />

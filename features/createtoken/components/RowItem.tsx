@@ -85,10 +85,9 @@ const StyledDivForSelector = styled('div', {
 const StyledDivForAmountWrapper = styled('div', {
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'right',
+  justifyContent: 'left',
   position: 'left',
   zIndex: 1,
-
 })
 
 const selectedVariantForInputWrapper = {
