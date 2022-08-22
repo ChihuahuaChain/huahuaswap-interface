@@ -92,10 +92,10 @@ export const useTransferAssetMutation = ({
             tokenAmount,
             tokenInfo.decimals
           ).toString(),
-          denom: tokenInfo.juno_denom,
+          denom: tokenInfo.chihuahua_denom,
         },
         'transfer',
-        tokenInfo.juno_channel,
+        tokenInfo.chihuahua_channel,
         undefined,
         timeout,
         '',

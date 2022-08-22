@@ -25,7 +25,6 @@ export const useIBCTokenBalance = (tokenSymbol) => {
 
       const [{ address }] = await offlineSigner.getAccounts()
       const coin = await wasmChainClient.getBalance(address, denom)
-
       const amount = coin ? Number(coin.amount) : 0
       return convertMicroDenomToDenom(amount, decimals)
     },

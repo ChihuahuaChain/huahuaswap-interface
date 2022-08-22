@@ -33,7 +33,7 @@ async function fetchTokenBalance({
   }
 
   /*
-   * if this is a native asset or an ibc asset that has juno_denom
+   * if this is a native asset or an ibc asset that has chihuahua_denom
    *  */
   if (native) {
     const coin = await client.getBalance(address, denom)
@@ -53,11 +53,11 @@ async function fetchTokenBalance({
 }
 
 const mapIbcTokenToNative = (ibcToken?: IBCAssetInfo) => {
-  if (ibcToken?.juno_denom) {
+  if (ibcToken?.chihuahua_denom) {
     return {
       ...ibcToken,
       native: true,
-      denom: ibcToken.juno_denom,
+      denom: ibcToken.chihuahua_denom,
     }
   }
   return undefined

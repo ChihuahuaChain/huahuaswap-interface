@@ -181,16 +181,16 @@ export function NavigationSidebar({
           <Link href="/" passHref>
             <StyledDivForLogo as="a">
               <Logo data-logo="" width="37px" height="47px" />
-              {/* <div data-logo-label="">
-                <Text
+              <div data-logo-label="">
+                {/* <Text
                   variant="caption"
                   color="error"
                   css={{ padding: '0 0 $1 0' }}
                 >
                   {__TEST_MODE__ ? 'Testnet' : 'Beta'}
-                </Text>
+                </Text> */}
                 <LogoText />
-              </div> */}
+              </div>
             </StyledDivForLogo>
           </Link>
           {triggerMenuButton}
@@ -211,16 +211,16 @@ export function NavigationSidebar({
         <Link href="/" passHref>
           <StyledDivForLogo as="a">
             <Logo data-logo="" width="37px" height="47px" />
-            {/* <div data-logo-label="">
-              <Text
+            <div data-logo-label="">
+              {/* <Text
                 variant="caption"
                 color="error"
                 css={{ padding: '0 0 $1 0' }}
               >
                 {__TEST_MODE__ ? 'Testnet' : 'Beta'}
-              </Text>
+              </Text> */}
               <LogoText />
-            </div> */}
+            </div>
           </StyledDivForLogo>
         </Link>
 
