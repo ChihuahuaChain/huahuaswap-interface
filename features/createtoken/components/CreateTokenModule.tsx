@@ -2,13 +2,14 @@ import { useTokenList } from 'hooks/useTokenList'
 import { 
   styled, useMedia, usePersistance, Text, Button,
   IconWrapper,
-  Plus, Reject
+  Plus, Reject, UpRightArrow
 } from 'junoblocks'
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import {
   TransactionStatus,
   transactionStatusState,
+  instantiateStatusState
 } from 'state/atoms/transactionAtoms'
 import { AddressBalances } from './AddressBalances'
 import { useAddressBalancesState } from '../hooks'
@@ -19,6 +20,8 @@ import { JsonObject } from '@cosmjs/cosmwasm'
 export const CreateTokenModule = () => {
   /* connect to recoil */
   const transactionStatus = useRecoilValue(transactionStatusState)
+  const instantiateStatus = useRecoilValue(instantiateStatusState)
+
   const isUiDisabled = transactionStatus === TransactionStatus.EXECUTING
 
   const placeholderdata:JsonObject = {
@@ -87,6 +90,26 @@ export const CreateTokenModule = () => {
 
   return (
     <>
+
+      {
+        !instantiateStatus?<></>:
+        <StyledDivForWrapper>
+          <StyledText>
+            <Text variant="primary">Contract Address : {instantiateStatus?.contractAddress}</Text>
+            <Button
+              as="a"
+              variant="ghost"
+              href={process.env.NEXT_PUBLIC_BLOCK_EXPLORER + instantiateStatus?.transactionHash}
+              target="__blank"
+              iconRight={<UpRightArrow />}
+            >
+              <Text variant="primary">Transaction Hash: {instantiateStatus?.transactionHash}</Text>
+          </Button>
+          </StyledText>
+        </StyledDivForWrapper>
+      }
+      
+
       <StyledText>
         <Text variant="primary">Contract Details</Text>
       </StyledText>

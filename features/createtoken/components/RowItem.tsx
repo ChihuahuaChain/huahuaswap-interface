@@ -16,7 +16,7 @@ type RowItemProps = {
   disabled?: boolean
   label: string
   inputValue?: string
-  doubleRow?: boolean
+  rowType?: number
   placeholder: string
   isNumber: boolean
   onChange: (label, inputValue) => void
@@ -27,7 +27,7 @@ export const RowItem = ({
   placeholder,
   disabled,
   inputValue,
-  doubleRow,
+  rowType,
   label,
   isNumber,
   onChange,
@@ -51,6 +51,7 @@ export const RowItem = ({
             isNumber={isNumber}
             inputRef={inputRef}
             inputValue={inputValue}
+            rowType={rowType}
             disabled={!label || readOnly || disabled}
             onInputValueChange={handleInputChange}
             onFocus={() => {

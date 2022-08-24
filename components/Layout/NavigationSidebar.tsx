@@ -88,7 +88,7 @@ export function NavigationSidebar({
           Swap
         </Button>
       </Link>
-      <Link href="/transfer" passHref>
+      {/* <Link href="/transfer" passHref>
         <Button
           as="a"
           variant="menu"
@@ -98,7 +98,7 @@ export function NavigationSidebar({
         >
           Transfer
         </Button>
-      </Link>
+      </Link> */}
       <Link href="/pools" passHref>
         <Button
           as="a"

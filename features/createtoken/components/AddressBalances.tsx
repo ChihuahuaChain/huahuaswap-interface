@@ -122,6 +122,7 @@ export const AddressBalance = ({ id, isLast, onAdd, onChange, onRemove }: Addres
         label={'Address'}
         placeholder={'chihuahua1234567890abcdefghijklmnopqrstuvwxyz'}
         isNumber={false}
+        rowType={1}
         {...addressState}
         onChange={(label, inputValue) => {
           setAddressValue(inputValue)
@@ -133,6 +134,7 @@ export const AddressBalance = ({ id, isLast, onAdd, onChange, onRemove }: Addres
         label={'Amount'}
         placeholder={'0'}
         isNumber={false}
+        rowType={2}
         {...amountState}
         onChange={(label, inputValue) => {
           setAmountValue(inputValue)

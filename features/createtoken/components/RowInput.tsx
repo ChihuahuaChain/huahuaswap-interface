@@ -12,6 +12,7 @@ type RowInputProps = {
   onInputValueChange: (value: String) => void
   inputRef?: Ref<HTMLInputElement>
   placeholder
+  rowType: number
 } & Omit<HTMLProps<HTMLInputElement>, 'ref'>
 
 export const RowInput = ({
@@ -21,11 +22,21 @@ export const RowInput = ({
   onInputValueChange,
   inputRef,
   placeholder,
+  rowType,
   ...inputProps
 }: RowInputProps) => {
   
   const [value, setValue] = useState(inputValue)
-  
+
+  let min = 850
+  let max = 850
+  if (rowType == 1) {
+    min = 400
+    max = 400  
+  } else if (rowType == 2) {
+    min = 300
+    max = 300  
+  }
   return (
     <Text variant="primary">
       <StyledInput
@@ -39,7 +50,7 @@ export const RowInput = ({
         onChange={({ target: { value } }) => {onInputValueChange(value); setValue(value);}}
         autoComplete="off"
         readOnly={disabled}
-        style={{ width: value ? `${calculateCharactersLength(value)}ch` : `20ch`}}
+        style={{ minWidth: `${min}px`, maxWidth: `${max}px`, width: value ? `${calculateCharactersLength(value)}ch` : `20ch`}}
         
         {...inputProps}
       />
@@ -48,7 +59,7 @@ export const RowInput = ({
 }
 
 const StyledInput = styled('input', {
-  minWidth: '380px',
+  
   padding: '$5 $5 $2 $1',
   textAlign: 'left',
   color: 'inherit',

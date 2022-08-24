@@ -14,6 +14,7 @@ import { instantiatecw20 } from '../../../services/instantiatecw20'
 import {
   TransactionStatus,
   transactionStatusState,
+  instantiateStatusState
 } from 'state/atoms/transactionAtoms'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'
 import { convertDenomToMicroDenom } from 'util/conversion'
@@ -28,7 +29,8 @@ export const useInstantiate = ({
 }: UseInstantiateArgs) => {
   const { client, address, status } = useRecoilValue(walletState)
   const setTransactionState = useSetRecoilState(transactionStatusState)
-  
+  const setInstantiateState = useSetRecoilState(instantiateStatusState)
+
   return useMutation(
     'instantiatecw20',
     async () => {
@@ -49,6 +51,7 @@ export const useInstantiate = ({
         // console.log(data)
         //data.contractAddress
         //data.transactionHash
+        setInstantiateState(data)
         toast.custom((t) => (
           <Toast
             icon={<IconWrapper icon={<Valid />} color="valid" />}
