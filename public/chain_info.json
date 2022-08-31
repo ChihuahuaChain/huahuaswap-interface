@@ -37,9 +37,9 @@
   ],
   "coinType": 118,
   "gasPriceStep": {
-    "low": 0.0025,
-    "average": 0.01,
-    "high": 0.025
+    "low": 1,
+    "average": 5,
+    "high": 10
   },
   "features": ["cosmwasm", "stargate", "ibc-transfer"]
 }

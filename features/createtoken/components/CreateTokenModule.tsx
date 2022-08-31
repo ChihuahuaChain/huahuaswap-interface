@@ -1,5 +1,5 @@
 import { useTokenList } from 'hooks/useTokenList'
-import { 
+import {
   styled, useMedia, usePersistance, Text, Button,
   IconWrapper,
   Plus, Reject, UpRightArrow
@@ -21,15 +21,15 @@ export const CreateTokenModule = () => {
   /* connect to recoil */
   const transactionStatus = useRecoilValue(transactionStatusState)
   const instantiateStatus = useRecoilValue(instantiateStatusState)
+  const isUiDisabled = transactionStatus === TransactionStatus.EXECUTING;
 
-  const isUiDisabled = transactionStatus === TransactionStatus.EXECUTING
 
-  const placeholderdata:JsonObject = {
+  const placeholderdata: JsonObject = {
     name: 'My CW20 Contract',
     symbol: 'HCW',
     decimals: 6,
     mint: {
-      minter: 'chihuahua1234567890abcdefghijklmnopqrstuvwxyz', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
+      minter: 'chihuahua1234567890abcdefghijklmnopqrstuvwxyz',
       cap: 9999,
     },
     initial_balances: [{
@@ -65,57 +65,38 @@ export const CreateTokenModule = () => {
         url: '',
       },
     },
-    // name: 'My CW20 Contract',
-    // symbol: 'HCW',
-    // decimals: 6,
-    // mint: {
-    //   minter: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx', //chihuahua1234567890abcdefghijklmnopqrstuvwxyz
-    //   cap: '888888',
-    // },
-    // initial_balances: [{
-    //   address: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx',
-    //   amount: '9999'
-    // }],
-    // marketing: {
-    //   project: 'My CW20 Contract',
-    //   description: 'This is my cw20 contract',
-    //   marketing: 'chihuahua17ey9ta0wlattku2petypuyuux3qtu27r9mvwvx',
-    //   logo: {
-    //     url: 'https://example.com/image.jpg',
-    //   },
-    // },
   })
 
   const balancesState = useAddressBalancesState()
 
   return (
     <>
-
       {
-        !instantiateStatus?<></>:
-        <StyledDivForWrapper>
-          <StyledText>
-            <Text variant="primary">Contract Address : {instantiateStatus?.contractAddress}</Text>
-            <Button
-              as="a"
-              variant="ghost"
-              href={process.env.NEXT_PUBLIC_BLOCK_EXPLORER + instantiateStatus?.transactionHash}
-              target="__blank"
-              iconRight={<UpRightArrow />}
-            >
-              <Text variant="primary">Transaction Hash: {instantiateStatus?.transactionHash}</Text>
-          </Button>
-          </StyledText>
-        </StyledDivForWrapper>
+        !instantiateStatus ? <></> :
+          <StyledDivForWrapper>
+            <StyledText>
+              <Text variant="primary">Contract Address : {instantiateStatus?.contractAddress}</Text>
+              <Button
+                as="a"
+                variant="ghost"
+                href={process.env.NEXT_PUBLIC_BLOCK_EXPLORER + instantiateStatus?.transactionHash}
+                target="__blank"
+                iconRight={<UpRightArrow />}
+              >
+                <Text variant="primary">Transaction Hash: {instantiateStatus?.transactionHash}</Text>
+              </Button>
+            </StyledText>
+          </StyledDivForWrapper>
       }
-      
 
       <StyledText>
         <Text variant="primary">Contract Details</Text>
       </StyledText>
+
       <StyledSubText>
         <Text variant="secondary">Basic information about your new contract</Text>
       </StyledSubText>
+
       <StyledDivForWrapper>
         <RowItem
           label={'Name'}
@@ -164,7 +145,6 @@ export const CreateTokenModule = () => {
         />
       </StyledDivForWrapper>
 
-
       <StyledText>
         <Text variant="primary">Minting Details</Text>
       </StyledText>
@@ -192,10 +172,8 @@ export const CreateTokenModule = () => {
           }}
           disabled={isUiDisabled}
         />
-        
+
       </StyledDivForWrapper>
-
-
 
       <StyledText>
         <Text variant="primary">Marketing Details</Text>
@@ -244,10 +222,13 @@ export const CreateTokenModule = () => {
           }}
           disabled={isUiDisabled}
         />
-        
       </StyledDivForWrapper>
 
-      <TransactionAction msg={data} entries={balancesState.entries} disabled={isUiDisabled} />
+      <TransactionAction
+        msg={data}
+        entries={balancesState.entries}
+        disabled={isUiDisabled}
+      />
     </>
   )
 }
@@ -255,15 +236,16 @@ export const CreateTokenModule = () => {
 const StyledDivForWrapper = styled('div', {
   borderRadius: '8px',
   backgroundColor: '$colors$dark10',
+  marginBottom: '$32',
 })
 
 const StyledText = styled('div', {
   borderRadius: '8px',
-  padding: '$5 $5 $5 $7',
+  padding: '0 0 $2 0',
 })
 
 const StyledSubText = styled('div', {
   borderRadius: '8px',
-  padding: '$5 $5 $5 $12',
+  padding: '0 0 $8 0',
 })
 
