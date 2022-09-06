@@ -116,6 +116,7 @@ export const TokenSwapModule = ({ initialTokenPair }: TokenSwapModuleProps) => {
           size={uiSize}
         />
       </StyledDivForWrapper>
+      
       <TransactionAction
         isPriceLoading={isPriceLoading}
         tokenToTokenPrice={tokenPrice}

@@ -4,7 +4,7 @@ import { Button, Spinner, styled } from 'junoblocks'
 import React, { useEffect, useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'
-import { useInstantiate } from '../hooks'
+import { useCreateToken } from '../hooks'
 
 type TransactionTipsProps = {
   msg: JsonObject
@@ -17,8 +17,7 @@ export const TransactionAction = ({
   entries,
   disabled,
 }: TransactionTipsProps) => {
-  const [requestedInstantiate, setRequestedInstantiate] = useState(false)
-  // const { balance: tokenABalance } = useTokenBalance(tokenA?.tokenSymbol)
+  const [requestedCreateToken, setRequestedCreateToken] = useState(false)
 
   // /* wallet state */
   const { status } = useRecoilValue(walletState)
@@ -30,26 +29,26 @@ export const TransactionAction = ({
 
   msg.initial_balances = list
 
-  const { mutate: handleInstantiate, isLoading: isExecutingTransaction } =
-    useInstantiate({
-      msg
+  const { mutate: handleCreateToken, isLoading: isExecutingTransaction } =
+    useCreateToken({
+      info: msg
     });
 
-  // /* proceed with the swap only if the price is loaded */
+  /* Here we proceed with creating a new token */
   useEffect(() => {
-    const shouldTriggerTransaction = !isExecutingTransaction && requestedInstantiate;
+    const shouldTriggerTransaction = !isExecutingTransaction && requestedCreateToken;
 
     if (shouldTriggerTransaction) {
-      handleInstantiate();
-      setRequestedInstantiate(false);
+      handleCreateToken();
+      setRequestedCreateToken(false);
     }
   },
-    [isExecutingTransaction, requestedInstantiate, handleInstantiate]
+    [isExecutingTransaction, requestedCreateToken, handleCreateToken]
   );
 
   const handleInstantiateButtonClick = () => {
     if (status === WalletStatusType.connected) {
-      return setRequestedInstantiate(true)
+      return setRequestedCreateToken(true)
     }
 
     connectWallet(null)

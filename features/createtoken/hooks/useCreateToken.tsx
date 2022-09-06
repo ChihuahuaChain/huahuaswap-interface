@@ -10,52 +10,54 @@ import {
 import { toast } from 'react-hot-toast'
 import { useMutation } from 'react-query'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { instantiatecw20 } from '../../../services/instantiatecw20'
+import { createCW20Token } from '../../../services/createCW20Token'
 import {
   TransactionStatus,
   transactionStatusState,
-  instantiateStatusState
+  createTokenStatusState,
 } from 'state/atoms/transactionAtoms'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'
-import { convertDenomToMicroDenom } from 'util/conversion'
 
-type UseInstantiateArgs = {
-  msg: JsonObject
-  
+type useCreateTokenArgs = {
+  info: JsonObject
 }
 
-export const useInstantiate = ({
-  msg
-}: UseInstantiateArgs) => {
+export const useCreateToken = ({
+  info
+}: useCreateTokenArgs) => {
   const { client, address, status } = useRecoilValue(walletState)
   const setTransactionState = useSetRecoilState(transactionStatusState)
-  const setInstantiateState = useSetRecoilState(instantiateStatusState)
+  const createTokenState = useSetRecoilState(createTokenStatusState)
 
   return useMutation(
-    'instantiatecw20',
+    'createCW20Token ',
     async () => {
       if (status !== WalletStatusType.connected) {
         throw new Error('Please connect your wallet.')
       }
 
       setTransactionState(TransactionStatus.EXECUTING)
-    
-      return await instantiatecw20({
-        msg,
+      return await createCW20Token({
+        msg: {
+          create_token: {
+            token_info: info
+          }
+        },
         senderAddress: address,
         client,
       })
     },
     {
       onSuccess(data) {
-        // console.log(data)
-        //data.contractAddress
-        //data.transactionHash
-        setInstantiateState(data)
+        // ? filter to extract the contract address from the data
+        createTokenState({
+          transactionHash: data.transactionHash,
+        })
+
         toast.custom((t) => (
           <Toast
             icon={<IconWrapper icon={<Valid />} color="valid" />}
-            title={data.contractAddress}
+            title={'Add title here'}
             buttons={
               <Button
                 as="a"
@@ -72,11 +74,13 @@ export const useInstantiate = ({
         ))
       },
       onError(e) {
+        console.log(e);
+
         const errorMessage =
           String(e).length > 300
             ? `${String(e).substring(0, 150)} ... ${String(e).substring(
-                String(e).length - 150
-              )}`
+              String(e).length - 150
+            )}`
             : String(e)
 
         toast.custom((t) => (

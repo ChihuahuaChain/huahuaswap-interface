@@ -1,2 +1,2 @@
-export { useInstantiate } from './useInstantiate'
+export { useCreateToken } from './useCreateToken'
 export { useAddressBalancesState } from './useAddressBalancesState'

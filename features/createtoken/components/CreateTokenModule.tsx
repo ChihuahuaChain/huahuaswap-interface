@@ -1,15 +1,13 @@
-import { useTokenList } from 'hooks/useTokenList'
 import {
-  styled, useMedia, usePersistance, Text, Button,
-  IconWrapper,
-  Plus, Reject, UpRightArrow
+  styled, Text, Button,
+  UpRightArrow
 } from 'junoblocks'
-import { useEffect, useRef, useState, useMemo } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useState } from 'react'
+import { useRecoilValue } from 'recoil'
 import {
   TransactionStatus,
   transactionStatusState,
-  instantiateStatusState
+  createTokenStatusState
 } from 'state/atoms/transactionAtoms'
 import { AddressBalances } from './AddressBalances'
 import { useAddressBalancesState } from '../hooks'
@@ -20,7 +18,7 @@ import { JsonObject } from '@cosmjs/cosmwasm'
 export const CreateTokenModule = () => {
   /* connect to recoil */
   const transactionStatus = useRecoilValue(transactionStatusState)
-  const instantiateStatus = useRecoilValue(instantiateStatusState)
+  const createTokenStatus = useRecoilValue(createTokenStatusState)
   const isUiDisabled = transactionStatus === TransactionStatus.EXECUTING;
 
 
@@ -29,17 +27,17 @@ export const CreateTokenModule = () => {
     symbol: 'HCW',
     decimals: 6,
     mint: {
-      minter: 'chihuahua1234567890abcdefghijklmnopqrstuvwxyz',
+      minter: 'chihuahua1ehkt6apyy5sxeccw3dfgq8epntn6trfgxgjxtw',
       cap: 9999,
     },
     initial_balances: [{
-      address: 'chihuahua1234567890abcdefghijklmnopqrstuvwxyz',
+      address: 'chihuahua1ehkt6apyy5sxeccw3dfgq8epntn6trfgxgjxtw',
       amount: '9999'
     }],
     marketing: {
       project: 'My CW20 Contract',
       description: 'This is my cw20 contract',
-      marketing: 'chihuahua1234567890abcdefghijklmnopqrstuvwxyz',
+      marketing: 'chihuahua1ehkt6apyy5sxeccw3dfgq8epntn6trfgxgjxtw',
       logo: {
         url: 'https://example.com/image.jpg',
       },
@@ -72,18 +70,17 @@ export const CreateTokenModule = () => {
   return (
     <>
       {
-        !instantiateStatus ? <></> :
+        !createTokenStatus ? <></> :
           <StyledDivForWrapper>
             <StyledText>
-              <Text variant="primary">Contract Address : {instantiateStatus?.contractAddress}</Text>
               <Button
                 as="a"
                 variant="ghost"
-                href={process.env.NEXT_PUBLIC_BLOCK_EXPLORER + instantiateStatus?.transactionHash}
+                href={process.env.NEXT_PUBLIC_BLOCK_EXPLORER + createTokenStatus?.transactionHash}
                 target="__blank"
                 iconRight={<UpRightArrow />}
               >
-                <Text variant="primary">Transaction Hash: {instantiateStatus?.transactionHash}</Text>
+                <Text variant="primary">Transaction Hash: {createTokenStatus?.transactionHash}</Text>
               </Button>
             </StyledText>
           </StyledDivForWrapper>
@@ -102,6 +99,7 @@ export const CreateTokenModule = () => {
           label={'Name'}
           placeholder={placeholderdata.name}
           isNumber={false}
+          inputValue={""}
           onChange={(label, inputValue) => {
             data.name = inputValue
             setData(data)
@@ -112,6 +110,7 @@ export const CreateTokenModule = () => {
           label={'Symbol'}
           placeholder={placeholderdata.symbol}
           isNumber={false}
+          inputValue={""}
           onChange={(label, inputValue) => {
             data.symbol = inputValue
             setData(data)
@@ -225,6 +224,7 @@ export const CreateTokenModule = () => {
       </StyledDivForWrapper>
 
       <TransactionAction
+        key={12345}
         msg={data}
         entries={balancesState.entries}
         disabled={isUiDisabled}
