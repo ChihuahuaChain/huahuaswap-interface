@@ -72,17 +72,15 @@ export const CreateTokenModule = () => {
       {
         !createTokenStatus ? <></> :
           <StyledDivForWrapper>
-            <StyledText>
-              <Button
+           <Button
                 as="a"
                 variant="ghost"
                 href={process.env.NEXT_PUBLIC_BLOCK_EXPLORER + createTokenStatus?.transactionHash}
                 target="__blank"
                 iconRight={<UpRightArrow />}
               >
-                <Text variant="primary">Transaction Hash: {createTokenStatus?.transactionHash}</Text>
+                <Text variant="primary">TransactionHash: {createTokenStatus?.transactionHash}</Text>
               </Button>
-            </StyledText>
           </StyledDivForWrapper>
       }
 

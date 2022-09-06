@@ -57,7 +57,7 @@ export const useCreateToken = ({
         toast.custom((t) => (
           <Toast
             icon={<IconWrapper icon={<Valid />} color="valid" />}
-            title={'Add title here'}
+            title={'Token created successfully'}
             buttons={
               <Button
                 as="a"
@@ -86,7 +86,7 @@ export const useCreateToken = ({
         toast.custom((t) => (
           <Toast
             icon={<ErrorIcon color="error" />}
-            title="Oops instantiate error!"
+            title="Oops token creation error!"
             body={errorMessage}
             buttons={
               <Button
