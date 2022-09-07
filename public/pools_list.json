@@ -24,77 +24,8 @@
          "description":"Tokens that are listed on Chihuahua"
       }
    },
-   "timestamp":"Fri Aug 12 2022",
+   "timestamp":"Sept 07 2022",
    "pools":[
-      {
-         "pool_id":"HUAHUA-BONE",
-         "pool_assets":[
-            {
-               "id":"chihuahua",
-               "chain_id":"chihuahua-1",
-               "token_address":"",
-               "symbol":"HUAHUA",
-               "name":"Huahua",
-               "decimals":6,
-               "logoURI":"https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/huahua.png",
-               "tags":[
-                  "native"
-               ],
-               "native":true,
-               "denom":"uhuahua"
-            },
-            {
-               "id":"",
-               "chain_id":"chihuahua-1",
-               "token_address":"chihuahua172hrsurlhluatnhcksql48g7kzgq7zuvjlkz75sg3k5kmn8xgrjquku4h2",
-               "symbol":"BONE",
-               "name":"Bone",
-               "decimals":6,
-               "logoURI":"https://gateway.pinata.cloud/ipfs/QmY7sYhz1C5ePaG5LqgA8STidwLofD9WpGTTvxBjbHHdhv",
-               "tags":[
-                  "cw20"
-               ],
-               "native":false,
-               "denom":"BONE"
-            }
-         ],
-         "swap_address":"chihuahua13wxll57yp7l6ansarjtgqg79gnv83wacl5pfsypj82femvrcszrq39s38g"
-      },
-      {
-         "pool_id":"HUAHUA-HCW",
-         "pool_assets":[
-            {
-               "id":"chihuahua",
-               "chain_id":"chihuahua-1",
-               "token_address":"",
-               "symbol":"HUAHUA",
-               "name":"Huahua",
-               "decimals":6,
-               "logoURI":"https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/huahua.png",
-               "tags":[
-                  "native"
-               ],
-               "native":true,
-               "denom":"uhuahua"
-            },
-            {
-               "id":"",
-               "chain_id":"chihuahua-1",
-               "token_address":"chihuahua1xw6yd7k05534e3x748f3c386zr290k66x354vpc0vs3mqfyl8v2s54jwyh",
-               "symbol":"HCW",
-               "name":"HCW",
-               "decimals":6,
-               "logoURI":"https://cryptologos.cc/logos/polygon-matic-logo.svg?v=022",
-               "tags":[
-                  "cw20"
-               ],
-               "native":false,
-               "denom":"HCW"
-            }
-         ],
-         "swap_address":"chihuahua1mygmlglvg9w45n3s6m6d4txneantmupy0sa0vy63angpvj0qp7usmykujx"
-      }
-      
    ],
    "version":{
       "major":1,
