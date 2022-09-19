@@ -42,7 +42,7 @@ export const ConnectedWalletButton = ({
     return (
       <Column css={{ paddingBottom: '$6' }}>
         <Button onClick={onConnect} size="large" variant="primary" {...props}>
-          Connect Keplr
+          Connect Wallet
         </Button>
       </Column>
     )

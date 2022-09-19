@@ -82,11 +82,11 @@ function createWalletState<TClient = any, TState = {}>({
 
 export const walletState = createWalletState<
   SigningCosmWasmClient,
-  { key?: Key }
+  { name?: string }
 >({
   key: 'internal-wallet',
   default: {
-    key: null,
+    name: null,
   },
 })
 

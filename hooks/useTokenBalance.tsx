@@ -65,7 +65,6 @@ const mapIbcTokenToNative = (ibcToken?: IBCAssetInfo) => {
 
 export const useTokenBalance = (tokenSymbol: string) => {
   const { address, status, client } = useRecoilValue(walletState)
-
   const tokenInfo = useTokenInfo(tokenSymbol)
   const ibcAssetInfo = useIBCAssetInfo(tokenSymbol)
 
@@ -127,8 +126,8 @@ export const useMultipleTokenBalance = (tokenSymbols?: Array<string>) => {
     {
       enabled: Boolean(
         status === WalletStatusType.connected &&
-          tokenSymbols?.length &&
-          tokenList?.tokens
+        tokenSymbols?.length &&
+        tokenList?.tokens
       ),
 
       refetchOnMount: 'always',
