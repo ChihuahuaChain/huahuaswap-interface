@@ -8,7 +8,7 @@ import { GAS_PRICE } from '../util/constants'
 import { useChainInfo } from './useChainInfo'
 
 // todo debug this: SyntaxError: Cannot use import statement outside a module
-import { getOfflineSigner } from "@cosmostation/cosmos-client";
+// import { getOfflineSigner } from '@cosmostation/cosmos-client'
 
 export const useConnectWallet = (
   mutationOptions?: Parameters<typeof useMutation>[2]
@@ -77,9 +77,9 @@ export const useConnectWallet = (
       }
     } else {
       try {
-        /*// todo suggest chihuahua to cosmostation
-        
-        const offlineSigner = await getOfflineSigner(chainInfo.chainId);
+        // todo suggest chihuahua to cosmostation
+
+        /*const offlineSigner = await getOfflineSigner(chainInfo.chainId);
         const wasmChainClient = await SigningCosmWasmClient.connectWithSigner(
           chainInfo.rpc,
           offlineSigner,
@@ -93,7 +93,7 @@ export const useConnectWallet = (
           params: { chainName: "chihuahua-1" },
         });
 
-        /* successfully update the wallet state 
+        // successfully update the wallet state 
         setWalletState({
           name: account.name,
           address: account.address,
