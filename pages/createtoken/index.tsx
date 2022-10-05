@@ -1,13 +1,23 @@
 import { AppLayout, PageHeader } from 'components'
-import { CreateTokenModule } from 'features/createtoken'
-import { styled } from 'junoblocks'
+import { CreateTokenModule, CreateTokenSummary } from 'features/createtoken'
+import { Button, styled, Text, UpRightArrow } from 'junoblocks'
 import React from 'react'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 
+import {
+  createTokenStatusState
+} from 'state/atoms/transactionAtoms'
 
 
 export default function Home() {
-  return (
-    <AppLayout>
+  const createTokenStatus = useRecoilValue(createTokenStatusState)
+  const setCreateTokenState = useSetRecoilState(createTokenStatusState)
+
+  // Here we build the view content
+  let viewContent = <></>
+
+  if (!createTokenStatus) {
+    viewContent =
       <StyledContainer>
         <PageHeader
           title="Create Token"
@@ -16,6 +26,24 @@ export default function Home() {
         <CreateTokenModule
         />
       </StyledContainer>
+  } else {
+    viewContent =
+      <StyledContainer>
+        <PageHeader
+          title="Token Created!"
+          subtitle={`Summary of newly created token`}
+        />
+
+        <CreateTokenSummary
+          data={createTokenStatus}
+          onBack={() => setCreateTokenState(null)}
+        ></CreateTokenSummary>
+      </StyledContainer>
+  }
+
+  return (
+    <AppLayout>
+      {viewContent}
     </AppLayout>
   )
 }

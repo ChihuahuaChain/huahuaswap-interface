@@ -1,5 +1,4 @@
 import {
-  calculateCharactersLength,
   styled,
   Text,
 } from 'junoblocks'
@@ -25,33 +24,20 @@ export const RowInput = ({
   rowType,
   ...inputProps
 }: RowInputProps) => {
-  
   const [value, setValue] = useState(inputValue)
 
-  let min = 850
-  let max = 850
-  if (rowType == 1) {
-    min = 400
-    max = 400  
-  } else if (rowType == 2) {
-    min = 300
-    max = 300  
-  }
   return (
-    <Text variant="primary">
+    <Text variant="primary" style={{width: '100%'}}>
       <StyledInput
-
         ref={inputRef}
-        type={isNumber ? "number": "text"}
+        type={isNumber ? "number" : "text"}
         lang="en-US"
         placeholder={placeholder}
         min={0}
         value={value}
-        onChange={({ target: { value } }) => {onInputValueChange(value); setValue(value);}}
+        onChange={({ target: { value } }) => { onInputValueChange(value); setValue(value); }}
         autoComplete="off"
         readOnly={disabled}
-        style={{ minWidth: `${min}px`, maxWidth: `${max}px`, width: value ? `${calculateCharactersLength(value)}ch` : `20ch`}}
-        
         {...inputProps}
       />
     </Text>
@@ -59,7 +45,6 @@ export const RowInput = ({
 }
 
 const StyledInput = styled('input', {
-  
   padding: '$5 $5 $2 $1',
   textAlign: 'left',
   color: 'inherit',

@@ -27,7 +27,7 @@ export const useCreateToken = ({
 }: useCreateTokenArgs) => {
   const { client, address, status } = useRecoilValue(walletState)
   const setTransactionState = useSetRecoilState(transactionStatusState)
-  const createTokenState = useSetRecoilState(createTokenStatusState)
+  const setCreateTokenState = useSetRecoilState(createTokenStatusState)
 
   return useMutation(
     'createCW20Token ',
@@ -48,10 +48,19 @@ export const useCreateToken = ({
       })
     },
     {
-      onSuccess(data) {
-        // ? filter to extract the contract address from the data
-        createTokenState({
-          transactionHash: data.transactionHash,
+      onSuccess(res) {
+        // filter to extract the contract address from the data
+        let events = res.logs[0].events;
+        let instatiateEvent = events.find((e: any) => e.type == 'instantiate');
+        let attrs = instatiateEvent.attributes;
+
+        const contractAddress: String = attrs.find((e: any) => e.key == '_contract_address').value
+        const transactionHash = res.transactionHash;
+
+        setCreateTokenState({
+          transactionHash,
+          contractAddress,
+          info
         })
 
         toast.custom((t) => (
@@ -62,7 +71,7 @@ export const useCreateToken = ({
               <Button
                 as="a"
                 variant="ghost"
-                href={process.env.NEXT_PUBLIC_BLOCK_EXPLORER + data.transactionHash}
+                href={process.env.NEXT_PUBLIC_BLOCK_EXPLORER + transactionHash}
                 target="__blank"
                 iconRight={<UpRightArrow />}
               >
