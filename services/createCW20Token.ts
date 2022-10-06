@@ -15,8 +15,11 @@ export const createCW20Token = async ({
 }: createCW20TokenArgs) => {
   // Here we pass the token creation fee
   const funds = [
-    coin(process.env.NEXT_PUBLIC_TOKEN_CREATION_FEE, process.env.NEXT_PUBLIC_NATIVE_DENOM)
-  ];
+    coin(
+      process.env.NEXT_PUBLIC_TOKEN_CREATION_FEE,
+      process.env.NEXT_PUBLIC_NATIVE_DENOM
+    ),
+  ]
 
   return await client.execute(
     senderAddress,

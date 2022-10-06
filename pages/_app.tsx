@@ -11,7 +11,7 @@ import {
   useThemeClassName,
 } from 'junoblocks'
 import type { AppProps } from 'next/app'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { QueryClientProvider } from 'react-query'
 import { RecoilRoot } from 'recoil'

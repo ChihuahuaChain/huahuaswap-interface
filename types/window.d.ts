@@ -4,5 +4,6 @@ declare global {
   // eslint-disable-next-line
   interface Window extends KeplrWindow {
     cosmostation: any
+    getOfflineSignerAuto: any
   }
 }

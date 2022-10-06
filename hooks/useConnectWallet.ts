@@ -8,13 +8,13 @@ import { GAS_PRICE } from '../util/constants'
 import { useChainInfo } from './useChainInfo'
 
 // todo debug this: SyntaxError: Cannot use import statement outside a module
-// import { getOfflineSigner } from '@cosmostation/cosmos-client'
+import { getOfflineSigner } from '@cosmostation/cosmos-client'
 
 export const useConnectWallet = (
   mutationOptions?: Parameters<typeof useMutation>[2]
 ) => {
   const [{ status }, setWalletState] = useRecoilState(walletState)
-  const isKeplr = localStorage.getItem('selectedWalletType') === 'keplr';
+  const isKeplr = localStorage.getItem('selectedWalletType') === 'keplr'
 
   // todo: based on the selectedWalletType get the right chain info
   const [chainInfo] = useChainInfo()
@@ -44,7 +44,9 @@ export const useConnectWallet = (
         await window.keplr.experimentalSuggestChain(chainInfo)
         await window.keplr.enable(chainInfo.chainId)
 
-        const offlineSigner = await window.getOfflineSignerAuto(chainInfo.chainId)
+        const offlineSigner = await window.getOfflineSignerAuto(
+          chainInfo.chainId
+        )
         const wasmChainClient = await SigningCosmWasmClient.connectWithSigner(
           chainInfo.rpc,
           offlineSigner,
@@ -77,9 +79,7 @@ export const useConnectWallet = (
       }
     } else {
       try {
-        // todo suggest chihuahua to cosmostation
-
-        /*const offlineSigner = await getOfflineSigner(chainInfo.chainId);
+        const offlineSigner = await getOfflineSigner(chainInfo.chainId)
         const wasmChainClient = await SigningCosmWasmClient.connectWithSigner(
           chainInfo.rpc,
           offlineSigner,
@@ -88,19 +88,18 @@ export const useConnectWallet = (
           }
         )
 
-        const account = await window.cosmostation.cosmos.request({
-          method: "cos_account",
-          params: { chainName: "chihuahua-1" },
-        });
+        const accout = await window.cosmostation.cosmos.request({
+          method: 'cos_requestAccount',
+          params: { chainName: chainInfo.chainName },
+        })
 
-        // successfully update the wallet state 
+        // successfully update the wallet state
         setWalletState({
-          name: account.name,
-          address: account.address,
+          name: accout.name,
+          address: accout.address,
           client: wasmChainClient,
           status: WalletStatusType.connected,
-        })*/
-
+        })
       } catch (e) {
         /* set the error state */
         setWalletState({
@@ -152,7 +151,7 @@ export const useConnectWallet = (
           }
         }
 
-        window.cosmostation.cosmos.on("accountChanged", () => reconnectWallet);
+        window.cosmostation.cosmos.on('accountChanged', () => reconnectWallet)
       },
       // eslint-disable-next-line
       [status]

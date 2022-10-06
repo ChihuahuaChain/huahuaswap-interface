@@ -66,12 +66,12 @@ const mapIbcTokenToNative = (ibcToken?: IBCAssetInfo) => {
 export const useNativeBalance = (tokenSymbol: string) => {
   const { address, status, client } = useRecoilValue(walletState)
   const [tokenList] = useTokenList()
-  const tokenInfo = tokenList?.base_token;
+  const tokenInfo = tokenList?.base_token
 
   const { data: balance = 0, isLoading } = useQuery(
     ['tokenBalance', tokenSymbol, address],
     async ({ queryKey: [, symbol] }) => {
-      if (symbol && client && (tokenInfo)) {
+      if (symbol && client && tokenInfo) {
         return await fetchTokenBalance({
           client,
           address,
@@ -153,8 +153,8 @@ export const useMultipleTokenBalance = (tokenSymbols?: Array<string>) => {
     {
       enabled: Boolean(
         status === WalletStatusType.connected &&
-        tokenSymbols?.length &&
-        tokenList?.tokens
+          tokenSymbols?.length &&
+          tokenList?.tokens
       ),
 
       refetchOnMount: 'always',

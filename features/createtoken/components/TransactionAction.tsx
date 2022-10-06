@@ -24,27 +24,25 @@ export const TransactionAction = ({
   const { mutate: connectWallet } = useConnectWallet()
 
   let list = []
-  for (let i = 0; i < entries.length; i++)
-    list.push(entries[i][1])
+  for (let i = 0; i < entries.length; i++) list.push(entries[i][1])
 
   msg.initial_balances = list
 
   const { mutate: handleCreateToken, isLoading: isExecutingTransaction } =
     useCreateToken({
-      info: msg
-    });
+      info: msg,
+    })
 
   /* Here we proceed with creating a new token */
   useEffect(() => {
-    const shouldTriggerTransaction = !isExecutingTransaction && requestedCreateToken;
+    const shouldTriggerTransaction =
+      !isExecutingTransaction && requestedCreateToken
 
     if (shouldTriggerTransaction) {
-      handleCreateToken();
-      setRequestedCreateToken(false);
+      handleCreateToken()
+      setRequestedCreateToken(false)
     }
-  },
-    [isExecutingTransaction, requestedCreateToken, handleCreateToken]
-  );
+  }, [isExecutingTransaction, requestedCreateToken, handleCreateToken])
 
   const handleInstantiateButtonClick = () => {
     if (status === WalletStatusType.connected) {
@@ -61,9 +59,8 @@ export const TransactionAction = ({
           variant="primary"
           size="large"
           disabled={disabled}
-          onClick={!isExecutingTransaction
-            ? handleInstantiateButtonClick
-            : undefined
+          onClick={
+            !isExecutingTransaction ? handleInstantiateButtonClick : undefined
           }
         >
           {isExecutingTransaction ? <Spinner instant /> : 'Create Token'}

@@ -22,9 +22,7 @@ type useCreateTokenArgs = {
   info: JsonObject
 }
 
-export const useCreateToken = ({
-  info
-}: useCreateTokenArgs) => {
+export const useCreateToken = ({ info }: useCreateTokenArgs) => {
   const { client, address, status } = useRecoilValue(walletState)
   const setTransactionState = useSetRecoilState(transactionStatusState)
   const setCreateTokenState = useSetRecoilState(createTokenStatusState)
@@ -40,8 +38,8 @@ export const useCreateToken = ({
       return await createCW20Token({
         msg: {
           create_token: {
-            token_info: info
-          }
+            token_info: info,
+          },
         },
         senderAddress: address,
         client,
@@ -50,17 +48,19 @@ export const useCreateToken = ({
     {
       onSuccess(res) {
         // filter to extract the contract address from the data
-        let events = res.logs[0].events;
-        let instatiateEvent = events.find((e: any) => e.type == 'instantiate');
-        let attrs = instatiateEvent.attributes;
+        let events = res.logs[0].events
+        let instatiateEvent = events.find((e: any) => e.type == 'instantiate')
+        let attrs = instatiateEvent.attributes
 
-        const contractAddress: String = attrs.find((e: any) => e.key == '_contract_address').value
-        const transactionHash = res.transactionHash;
+        const contractAddress: String = attrs.find(
+          (e: any) => e.key == '_contract_address'
+        ).value
+        const transactionHash = res.transactionHash
 
         setCreateTokenState({
           transactionHash,
           contractAddress,
-          info
+          info,
         })
 
         toast.custom((t) => (
@@ -83,13 +83,13 @@ export const useCreateToken = ({
         ))
       },
       onError(e) {
-        console.log(e);
+        console.log(e)
 
         const errorMessage =
           String(e).length > 300
             ? `${String(e).substring(0, 150)} ... ${String(e).substring(
-              String(e).length - 150
-            )}`
+                String(e).length - 150
+              )}`
             : String(e)
 
         toast.custom((t) => (

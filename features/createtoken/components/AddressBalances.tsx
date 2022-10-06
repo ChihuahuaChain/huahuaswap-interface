@@ -1,10 +1,4 @@
-import {
-  Button,
-  IconWrapper,
-  Inline,
-  styled,
-  Plus, Reject
-} from 'junoblocks'
+import { Button, IconWrapper, Inline, styled, Plus, Reject } from 'junoblocks'
 import React, { useRef, useState, useEffect, ChangeEvent } from 'react'
 
 import { RowItem } from './RowItem'
@@ -25,7 +19,7 @@ export const AddressBalances = ({
   entries,
   onAdd,
   onChange,
-  onRemove
+  onRemove,
 }: AddressBalancesProps) => {
   const wrapperRef = useRef<HTMLDivElement>()
   const inputRef = useRef<HTMLInputElement>()
@@ -62,15 +56,19 @@ export interface UseInputStateProps {
   placeholder?: string
 }
 
-
-export const useInputState = ({ defaultValue, ...args }: UseInputStateProps) => {
+export const useInputState = ({
+  defaultValue,
+  ...args
+}: UseInputStateProps) => {
   const [value, setValue] = useState<string>(() => defaultValue ?? '')
   useEffect(() => {
     if (defaultValue) setValue(defaultValue)
   }, [defaultValue])
   return {
     value,
-    onChange: (obj: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    onChange: (
+      obj: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
       setValue(typeof obj === 'string' ? obj : obj.target.value)
     },
     ...args,
@@ -85,8 +83,13 @@ export interface AddressBalanceProps {
   onRemove: AddressBalancesProps['onRemove']
 }
 
-export const AddressBalance = ({ id, isLast, onAdd, onChange, onRemove }: AddressBalanceProps) => {
-  
+export const AddressBalance = ({
+  id,
+  isLast,
+  onAdd,
+  onChange,
+  onRemove,
+}: AddressBalanceProps) => {
   const htmlId = uid()
 
   const addressState = useInputState({
@@ -102,8 +105,8 @@ export const AddressBalance = ({ id, isLast, onAdd, onChange, onRemove }: Addres
     // placeholder: '0',
   })
 
-  const [addressValue, setAddressValue] = useState('') 
-  const [amountValue, setAmountValue] = useState('') 
+  const [addressValue, setAddressValue] = useState('')
+  const [amountValue, setAmountValue] = useState('')
 
   useEffect(() => {
     onChange(id, {
@@ -112,10 +115,9 @@ export const AddressBalance = ({ id, isLast, onAdd, onChange, onRemove }: Addres
     })
   }, [addressValue, amountValue, id])
 
-  
   return (
     <StyledDivForDivideWrapper>
-    {/* <div className="grid relative grid-cols-[1fr_1fr_auto] space-x-2"> */}
+      {/* <div className="grid relative grid-cols-[1fr_1fr_auto] space-x-2"> */}
       {/* <AddressInput {...addressState} />
       <NumberInput {...amountState} /> */}
       <RowItem
@@ -146,10 +148,14 @@ export const AddressBalance = ({ id, isLast, onAdd, onChange, onRemove }: Addres
           onClick={() => (isLast ? onAdd() : onRemove(id))}
           type="button"
         >
-          {isLast ? <IconWrapper icon={<Plus />} style={{color:'white'}} /> : <IconWrapper icon={<Reject />} style={{color:'white'}}/> }
+          {isLast ? (
+            <IconWrapper icon={<Plus />} style={{ color: 'white' }} />
+          ) : (
+            <IconWrapper icon={<Reject />} style={{ color: 'white' }} />
+          )}
         </button>
       </div>
-    {/* </div> */}
+      {/* </div> */}
     </StyledDivForDivideWrapper>
   )
 }
@@ -187,4 +193,3 @@ const StyledDivForDivideWrapper = styled('div', {
   position: 'relative',
   zIndex: 0,
 })
-

@@ -1,35 +1,30 @@
 {
-   "name":"Pool list",
-   "base_token":{
-      "id":"chihuahua",
-      "chain_id":"chihuahua-1",
-      "token_address":"",
-      "symbol":"HUAHUA",
-      "name":"Chihuahua",
-      "decimals":6,
-      "logoURI":"https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/huahua.png",
-      "tags":[
-         "native"
-      ],
-      "native":true,
-      "denom":"uhuahua"
-   },
-   "logoURI":"",
-   "keywords":[
-      "special tokens"
-   ],
-   "tags":{
-      "Chihuahua":{
-         "name":"Chihuahua",
-         "description":"Tokens that are listed on Chihuahua"
-      }
-   },
-   "timestamp":"Sept 07 2022",
-   "pools":[
-   ],
-   "version":{
-      "major":1,
-      "minor":0,
-      "patch":0
-   }
+  "name": "Pool list",
+  "base_token": {
+    "id": "chihuahua",
+    "chain_id": "chihuahua-1",
+    "token_address": "",
+    "symbol": "HUAHUA",
+    "name": "Chihuahua",
+    "decimals": 6,
+    "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/huahua.png",
+    "tags": ["native"],
+    "native": true,
+    "denom": "uhuahua"
+  },
+  "logoURI": "",
+  "keywords": ["special tokens"],
+  "tags": {
+    "Chihuahua": {
+      "name": "Chihuahua",
+      "description": "Tokens that are listed on Chihuahua"
+    }
+  },
+  "timestamp": "Sept 07 2022",
+  "pools": [],
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  }
 }

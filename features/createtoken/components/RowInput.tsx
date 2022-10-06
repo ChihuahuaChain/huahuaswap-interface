@@ -1,7 +1,4 @@
-import {
-  styled,
-  Text,
-} from 'junoblocks'
+import { styled, Text } from 'junoblocks'
 import React, { HTMLProps, Ref, useState } from 'react'
 
 type RowInputProps = {
@@ -27,15 +24,18 @@ export const RowInput = ({
   const [value, setValue] = useState(inputValue)
 
   return (
-    <Text variant="primary" style={{width: '100%'}}>
+    <Text variant="primary" style={{ width: '100%' }}>
       <StyledInput
         ref={inputRef}
-        type={isNumber ? "number" : "text"}
+        type={isNumber ? 'number' : 'text'}
         lang="en-US"
         placeholder={placeholder}
         min={0}
         value={value}
-        onChange={({ target: { value } }) => { onInputValueChange(value); setValue(value); }}
+        onChange={({ target: { value } }) => {
+          onInputValueChange(value)
+          setValue(value)
+        }}
         autoComplete="off"
         readOnly={disabled}
         {...inputProps}

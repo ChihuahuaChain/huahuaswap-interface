@@ -1,13 +1,9 @@
 import { AppLayout, PageHeader } from 'components'
 import { CreateTokenModule, CreateTokenSummary } from 'features/createtoken'
-import { Button, styled, Text, UpRightArrow } from 'junoblocks'
+import { styled } from 'junoblocks'
 import React from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-
-import {
-  createTokenStatusState
-} from 'state/atoms/transactionAtoms'
-
+import { createTokenStatusState } from 'state/atoms/transactionAtoms'
 
 export default function Home() {
   const createTokenStatus = useRecoilValue(createTokenStatusState)
@@ -17,17 +13,17 @@ export default function Home() {
   let viewContent = <></>
 
   if (!createTokenStatus) {
-    viewContent =
+    viewContent = (
       <StyledContainer>
         <PageHeader
           title="Create Token"
           subtitle={`Create CW20 token to use in HUAHUAswap.`}
         />
-        <CreateTokenModule
-        />
+        <CreateTokenModule />
       </StyledContainer>
+    )
   } else {
-    viewContent =
+    viewContent = (
       <StyledContainer>
         <PageHeader
           title="Token Created!"
@@ -39,13 +35,10 @@ export default function Home() {
           onBack={() => setCreateTokenState(null)}
         ></CreateTokenSummary>
       </StyledContainer>
+    )
   }
 
-  return (
-    <AppLayout>
-      {viewContent}
-    </AppLayout>
-  )
+  return <AppLayout>{viewContent}</AppLayout>
 }
 
 const StyledContainer = styled('div', {

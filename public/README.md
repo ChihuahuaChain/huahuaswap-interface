@@ -4,7 +4,7 @@ These files are used by the JunoSwap interface to determine which assets are ava
 
 ## Important Security Info
 
-Before adding any assets, query the contract and ensure it is instantiated from the proper byte code. The metadata should also be checked with `wasmd q wasm contract <contract-address>` to ensure an admin is not set as this could put users liquidity at risk. 
+Before adding any assets, query the contract and ensure it is instantiated from the proper byte code. The metadata should also be checked with `wasmd q wasm contract <contract-address>` to ensure an admin is not set as this could put users liquidity at risk.
 
 ## Token List
 

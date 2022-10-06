@@ -2,6 +2,7 @@ import { useConnectWallet } from 'hooks/useConnectWallet'
 import { Logo, LogoText } from 'icons'
 import {
   AddressIcon,
+  ArrowUpIcon,
   Button,
   ChevronIcon,
   Column,
@@ -32,6 +33,7 @@ import React, { ReactNode, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'
 import { __TEST_MODE__, APP_NAME } from 'util/constants'
+
 import { ConnectedWalletButton } from '../ConnectedWalletButton'
 import { WalletSelectDialog } from '../walletSelectDialog'
 
@@ -63,12 +65,12 @@ export function NavigationSidebar({
 
   function beginWalletConnection(selectedWalletType: string) {
     // store selectedWalletType in local storage then connect wallet
-    localStorage.setItem('selectedWalletType', selectedWalletType);
-    
-    connectWallet(null);
+    localStorage.setItem('selectedWalletType', selectedWalletType)
 
-    // close the dialog 
-    setDialogOpen(false);
+    connectWallet(null)
+
+    // close the dialog
+    setDialogOpen(false)
   }
 
   const walletButton = (
@@ -108,7 +110,17 @@ export function NavigationSidebar({
           Liquidity
         </Button>
       </Link>
-
+      <Link href="/transfer" passHref>
+        <Button
+          as="a"
+          variant="menu"
+          size="large"
+          iconLeft={<ArrowUpIcon />}
+          selected={getIsLinkActive('/transfer')}
+        >
+          Transfer
+        </Button>
+      </Link>
       <Link href="/createtoken" passHref>
         <Button
           as="a"
@@ -121,10 +133,10 @@ export function NavigationSidebar({
         </Button>
       </Link>
     </StyledListForLinks>
-  );
+  )
 
   // Here we build the view content
-  let viewContent = <></>;
+  let viewContent = <></>
 
   if (isMobile) {
     const triggerMenuButton = isOpen ? (
@@ -143,25 +155,48 @@ export function NavigationSidebar({
     )
 
     // get viewContent for mobile
-    viewContent = shouldRenderBackButton ? <>
+    viewContent = shouldRenderBackButton ? (
+      <>
+        <StyledWrapperForMobile>
+          <Inline align="center" justifyContent="space-between">
+            <Column align="flex-start" css={{ flex: 0.3 }}>
+              {backButton}
+            </Column>
+
+            <Link href="/" passHref>
+              <Column
+                css={{ flex: 0.4, color: '$colors$black' }}
+                align="center"
+                as="a"
+              >
+                <Logo data-logo="" width="37px" height="47px" />
+              </Column>
+            </Link>
+            <Column align="flex-end" css={{ flex: 0.3 }}>
+              {triggerMenuButton}
+            </Column>
+          </Inline>
+          {isOpen && (
+            <Column css={{ paddingTop: '$12' }}>
+              {walletButton}
+              {menuLinks}
+            </Column>
+          )}
+        </StyledWrapperForMobile>
+        <Divider />
+      </>
+    ) : (
       <StyledWrapperForMobile>
         <Inline align="center" justifyContent="space-between">
-          <Column align="flex-start" css={{ flex: 0.3 }}>
-            {backButton}
-          </Column>
-
           <Link href="/" passHref>
-            <Column
-              css={{ flex: 0.4, color: '$colors$black' }}
-              align="center"
-              as="a"
-            >
+            <StyledDivForLogo as="a">
               <Logo data-logo="" width="37px" height="47px" />
-            </Column>
+              <div data-logo-label="">
+                <LogoText />
+              </div>
+            </StyledDivForLogo>
           </Link>
-          <Column align="flex-end" css={{ flex: 0.3 }}>
-            {triggerMenuButton}
-          </Column>
+          {triggerMenuButton}
         </Inline>
         {isOpen && (
           <Column css={{ paddingTop: '$12' }}>
@@ -170,26 +205,7 @@ export function NavigationSidebar({
           </Column>
         )}
       </StyledWrapperForMobile>
-      <Divider />
-    </> : <StyledWrapperForMobile>
-      <Inline align="center" justifyContent="space-between">
-        <Link href="/" passHref>
-          <StyledDivForLogo as="a">
-            <Logo data-logo="" width="37px" height="47px" />
-            <div data-logo-label="">
-              <LogoText />
-            </div>
-          </StyledDivForLogo>
-        </Link>
-        {triggerMenuButton}
-      </Inline>
-      {isOpen && (
-        <Column css={{ paddingTop: '$12' }}>
-          {walletButton}
-          {menuLinks}
-        </Column>
-      )}
-    </StyledWrapperForMobile>;
+    )
   } else {
     // view content for non mobile
     viewContent = (
@@ -302,19 +318,21 @@ export function NavigationSidebar({
           </Inline>
         </div>
       </StyledWrapper>
-    );
+    )
   }
 
   // Here we return the view to be rendered
-  return <>
-    <WalletSelectDialog
-      isShowing={isDialogOpen}
-      onWalletSelect={beginWalletConnection}
-      onRequestClose={() => setDialogOpen(false)}
-    />
+  return (
+    <>
+      <WalletSelectDialog
+        isShowing={isDialogOpen}
+        onWalletSelect={beginWalletConnection}
+        onRequestClose={() => setDialogOpen(false)}
+      />
 
-    {viewContent}
-  </>;
+      {viewContent}
+    </>
+  )
 }
 
 const StyledWrapper = styled('div', {

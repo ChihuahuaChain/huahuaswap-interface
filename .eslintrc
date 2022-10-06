@@ -4,6 +4,7 @@
   "rules": {
     "import/no-duplicates": ["error"],
     "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/exports": "error",
+    "react/prop-types": "off"
   }
 }
