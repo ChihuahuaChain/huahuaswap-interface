@@ -6,32 +6,17 @@ import { useRecoilState } from 'recoil'
 import { walletState, WalletStatusType } from '../state/atoms/walletAtoms'
 import { GAS_PRICE } from '../util/constants'
 import { useChainInfo } from './useChainInfo'
-
-// todo debug this: SyntaxError: Cannot use import statement outside a module
 import { getOfflineSigner } from '@cosmostation/cosmos-client'
+import { useLocalStorage } from '@rehooks/local-storage'
 
 export const useConnectWallet = (
   mutationOptions?: Parameters<typeof useMutation>[2]
 ) => {
   const [{ status }, setWalletState] = useRecoilState(walletState)
-  const isKeplr = localStorage.getItem('selectedWalletType') === 'keplr'
-
-  // todo: based on the selectedWalletType get the right chain info
   const [chainInfo] = useChainInfo()
+  const [selectedWalletType] = useLocalStorage('selectedWalletType')
 
   const mutation = useMutation(async () => {
-    if (isKeplr) {
-      if (window && !window?.keplr) {
-        alert('Please install Keplr extension and refresh the page.')
-        return
-      }
-    } else {
-      if (window && !window?.cosmostation) {
-        alert('Please install cosmostation extension')
-        return
-      }
-    }
-
     /* set the fetching state */
     setWalletState((value) => ({
       ...value,
@@ -39,7 +24,12 @@ export const useConnectWallet = (
       state: WalletStatusType.connecting,
     }))
 
-    if (isKeplr) {
+    const useKeplr = async () => {
+      if (window && !window?.keplr) {
+        alert('Please install Keplr extension and refresh the page.')
+        return
+      }
+
       try {
         await window.keplr.experimentalSuggestChain(chainInfo)
         await window.keplr.enable(chainInfo.chainId)
@@ -77,7 +67,14 @@ export const useConnectWallet = (
         /* throw the error for the UI */
         throw e
       }
-    } else {
+    }
+
+    const useCosmostation = async () => {
+      if (window && !window?.cosmostation) {
+        alert('Please install cosmostation extension')
+        return
+      }
+
       try {
         const offlineSigner = await getOfflineSigner(chainInfo.chainId)
         const wasmChainClient = await SigningCosmWasmClient.connectWithSigner(
@@ -113,6 +110,26 @@ export const useConnectWallet = (
         throw e
       }
     }
+
+    switch (selectedWalletType) {
+      case 'keplr': {
+        if (chainInfo) {
+          await useKeplr()
+        }
+
+        break
+      }
+      case 'ibc_wallet': {
+        if (chainInfo) {
+          await useCosmostation()
+        }
+
+        break
+      }
+      default: {
+        break
+      }
+    }
   }, mutationOptions)
 
   useEffect(
@@ -125,38 +142,37 @@ export const useConnectWallet = (
     [status, chainInfo?.rpc]
   )
 
-  if (isKeplr) {
-    useEffect(
-      function listenToWalletAddressChangeInKeplr() {
-        function reconnectWallet() {
-          if (status === WalletStatusType.connected) {
-            mutation.mutate(null)
-          }
+  useEffect(
+    function listenToWalletAddressChangeInKeplr() {
+      function reconnectWallet() {
+        if (status === WalletStatusType.connected) {
+          mutation.mutate(null)
         }
+      }
 
-        window.addEventListener('keplr_keystorechange', reconnectWallet)
-        return () => {
-          window.removeEventListener('keplr_keystorechange', reconnectWallet)
-        }
-      },
-      // eslint-disable-next-line
-      [status]
-    )
-  } else {
-    useEffect(
-      function listenToWalletAddressChangeInKeplr() {
-        function reconnectWallet() {
-          if (status === WalletStatusType.connected) {
-            mutation.mutate(null)
-          }
-        }
+      window.addEventListener('keplr_keystorechange', reconnectWallet)
+      return () => {
+        window.removeEventListener('keplr_keystorechange', reconnectWallet)
+      }
+    },
+    // eslint-disable-next-line
+    [status]
+  )
 
-        window.cosmostation.cosmos.on('accountChanged', () => reconnectWallet)
-      },
-      // eslint-disable-next-line
-      [status]
-    )
-  }
+  useEffect(
+    function listenToWalletAddressChangeInKeplr() {
+      function reconnectWallet() {
+        if (status === WalletStatusType.connected) {
+          mutation.mutate(null)
+        }
+      }
+
+      window?.cosmostation?.cosmos.on('accountChanged', () => reconnectWallet)
+      return () => {}
+    },
+    // eslint-disable-next-line
+    [status]
+  )
 
   return mutation
 }

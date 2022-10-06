@@ -1,3 +1,8 @@
+import {
+  deleteFromStorage,
+  useLocalStorage,
+  writeStorage,
+} from '@rehooks/local-storage'
 import { useConnectWallet } from 'hooks/useConnectWallet'
 import { Logo, LogoText } from 'icons'
 import {
@@ -29,7 +34,7 @@ import {
 } from 'junoblocks'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'
 import { __TEST_MODE__, APP_NAME } from 'util/constants'
@@ -53,8 +58,11 @@ export function NavigationSidebar({
   const isMobile = useMedia('sm')
   const [isOpen, setOpen] = useState(false)
   const [isDialogOpen, setDialogOpen] = useState(false)
+  const [selectedWalletType] = useLocalStorage('selectedWalletType')
 
   function resetWalletConnection() {
+    deleteFromStorage('selectedWalletType')
+
     setWalletState({
       status: WalletStatusType.idle,
       address: '',
@@ -64,14 +72,16 @@ export function NavigationSidebar({
   }
 
   function beginWalletConnection(selectedWalletType: string) {
-    // store selectedWalletType in local storage then connect wallet
-    localStorage.setItem('selectedWalletType', selectedWalletType)
-
-    connectWallet(null)
-
-    // close the dialog
+    writeStorage('selectedWalletType', selectedWalletType)
     setDialogOpen(false)
   }
+
+  // Here we proceed with connecting wallet based on selectedWalletType
+  useEffect(() => {
+    if (selectedWalletType) {
+      connectWallet(null)
+    }
+  }, [selectedWalletType, connectWallet])
 
   const walletButton = (
     <ConnectedWalletButton
