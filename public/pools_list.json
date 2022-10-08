@@ -1,30 +1,69 @@
 {
-  "name": "Pool list",
-  "base_token": {
-    "id": "chihuahua",
-    "chain_id": "chihuahua-1",
-    "token_address": "",
-    "symbol": "HUAHUA",
-    "name": "Chihuahua",
-    "decimals": 6,
-    "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/huahua.png",
-    "tags": ["native"],
-    "native": true,
-    "denom": "uhuahua"
-  },
-  "logoURI": "",
-  "keywords": ["special tokens"],
-  "tags": {
-    "Chihuahua": {
-      "name": "Chihuahua",
-      "description": "Tokens that are listed on Chihuahua"
-    }
-  },
-  "timestamp": "Sept 07 2022",
-  "pools": [],
-  "version": {
-    "major": 1,
-    "minor": 0,
-    "patch": 0
-  }
+   "name":"Pool list",
+   "base_token":{
+      "id":"chihuahua-token",
+      "chain_id":"chihuahua-1",
+      "token_address":"",
+      "symbol":"HUAHUA",
+      "name":"Chihuahua",
+      "decimals":6,
+      "logoURI":"https://raw.githubusercontent.com/ChihuahuaChain/resources/main/logo/logo_transparent_notext.png",
+      "tags":[
+         "native"
+      ],
+      "native":true,
+      "denom":"uhuahua"
+   },
+   "logoURI":"",
+   "keywords":[
+      "special tokens"
+   ],
+   "tags":{
+      "Chihuahua":{
+         "name":"Chihuahua",
+         "description":"Tokens that are listed on Chihuahua"
+      }
+   },
+   "timestamp":"Sept 08 2022",
+   "pools":[
+      {
+         "pool_id":"HUAHUA-PUPPY",
+         "pool_assets":[
+            {
+               "id":"chihuahua-token",
+               "chain_id":"chihuahua-1",
+               "token_address":"",
+               "symbol":"HUAHUA",
+               "name":"HUAHUA",
+               "decimals":6,
+               "logoURI":"https://raw.githubusercontent.com/ChihuahuaChain/resources/main/logo/logo_transparent_notext.png",
+               "tags":[
+                  "native"
+               ],
+               "native":true,
+               "denom":"uhuahua"
+            },
+            {
+               "id":"PUPPYHUAHUA",
+               "chain_id":"chihuahua-1",
+               "token_address":"chihuahua1yl8z39ugle8s02fpwkhh293509q5xcpalmdzc4amvchz8nkexrmsy95gef",
+               "symbol":"PUPPY",
+               "name":"PUPPY",
+               "decimals":6,
+               "logoURI":"https://raw.githubusercontent.com/ChihuahuaChain/resources/main/puppyhuahua/puppyhuahua_logo.png",
+               "tags":[
+                  "cw20"
+               ],
+               "native":false,
+               "denom":"PUPPYHUAHUA"
+            }
+         ],
+         "swap_address":"chihuahua14v5vk5dgqp0xq8zrhhsf833h2d6tnm0pt0a3gsrkz8gwpwf203eqk58afh"
+      }
+   ],
+   "version":{
+      "major":1,
+      "minor":0,
+      "patch":0
+   }
 }
