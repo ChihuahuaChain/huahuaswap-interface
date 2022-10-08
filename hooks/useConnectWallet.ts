@@ -87,7 +87,7 @@ export const useConnectWallet = (
 
         const accout = await window.cosmostation.cosmos.request({
           method: 'cos_requestAccount',
-          params: { chainName: chainInfo.chainName },
+          params: { chainName: 'Chihuahua' },
         })
 
         // successfully update the wallet state
