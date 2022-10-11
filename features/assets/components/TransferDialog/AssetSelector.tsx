@@ -33,6 +33,7 @@ export const AssetSelector = ({
     balance: ibcTokenMaxAvailableBalance,
     isLoading: externalBalanceIsLoading,
   } = useIBCTokenBalance(activeTokenSymbol)
+  
   const {
     balance: nativeMaxAvailableBalance,
     isLoading: nativeBalanceIsLoading,

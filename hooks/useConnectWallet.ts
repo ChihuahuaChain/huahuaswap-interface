@@ -116,14 +116,12 @@ export const useConnectWallet = (
         if (chainInfo) {
           await useKeplr()
         }
-
         break
       }
       case 'ibc_wallet': {
         if (chainInfo) {
           await useCosmostation()
         }
-
         break
       }
       default: {

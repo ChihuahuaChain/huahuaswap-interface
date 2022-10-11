@@ -4,6 +4,7 @@ import { ConnectIcon, IconWrapper, styled, Text } from 'junoblocks'
 import { useRecoilValue } from 'recoil'
 import { ibcWalletState, walletState } from 'state/atoms/walletAtoms'
 import { APP_NAME } from 'util/constants'
+import { useLocalStorage } from '@rehooks/local-storage'
 
 export const WalletInfo = ({ label, icon, address, css }) => {
   return (
@@ -27,14 +28,30 @@ type WalletInfoProps = {
   depositing?: boolean
 }
 
-export const KeplrWalletInfo = ({ css, depositing }: WalletInfoProps) => {
+export const externalWalletInfo = ({ css, depositing }: WalletInfoProps) => {
   const { address: ibcWalletAddress } = useRecoilValue(ibcWalletState)
+  const [selectedWalletType] = useLocalStorage('selectedWalletType')
+  let iconImg = <></>;
+
+  switch (selectedWalletType) {
+    case 'keplr': {
+      iconImg = <StyledImgForIcon src="/img/keplr-icon.png" alt="Keplr wallet" />;
+      break
+    }
+    case 'ibc_wallet': {
+      iconImg = <StyledImgForIcon src="/img/ibc_wallet.png" alt="Cosmostation wallet" />;
+      break
+    }
+    default: {
+      break
+    }
+  }
 
   return (
     <WalletInfo
       css={css}
-      label={`${depositing ? 'To ' : ''}Keplr wallet`}
-      icon={<StyledImgForIcon src="/img/keplr-icon.png" alt="Keplr wallet" />}
+      label={`From address`}
+      icon={iconImg}
       address={ibcWalletAddress}
     />
   )
