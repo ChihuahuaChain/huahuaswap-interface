@@ -29,19 +29,6 @@ export const WalletSelectDialog = ({
         <Column gap={4}>
           <Button
             iconLeft={
-              <StyledImgForIcon src="/img/keplr-icon.png" alt="Keplr wallet" />
-            }
-            onClick={() => onWalletSelect('keplr')}
-            size="large"
-            variant="ghost"
-          >
-            <StyledDiv>Keplr</StyledDiv>
-          </Button>
-
-          <Divider />
-
-          <Button
-            iconLeft={
               <StyledImgForIcon
                 src="/img/ibc_wallet.png"
                 alt="Cosmostation wallet"
@@ -52,6 +39,19 @@ export const WalletSelectDialog = ({
             variant="ghost"
           >
             <StyledDiv>Cosmostation</StyledDiv>
+          </Button>
+
+          <Divider />
+
+          <Button
+            iconLeft={
+              <StyledImgForIcon src="/img/keplr-icon.png" alt="Keplr wallet" />
+            }
+            onClick={() => onWalletSelect('keplr')}
+            size="large"
+            variant="ghost"
+          >
+            <StyledDiv>Keplr</StyledDiv>
           </Button>
         </Column>
       </DialogContent>
