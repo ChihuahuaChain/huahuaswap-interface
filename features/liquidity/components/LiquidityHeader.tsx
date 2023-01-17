@@ -1,8 +1,19 @@
 import { ArrowUp, Button, IconWrapper, Inline, styled, Text } from 'junoblocks'
 import Link from 'next/link'
 import React from 'react'
+import { TokenInfo } from 'queries/usePoolsListQuery'
 
-export const LiquidityHeader = ({ tokenA, tokenB, size = 'large' }) => {
+type LiquidityHeaderProps = {
+  base_token: TokenInfo,
+  quote_token: TokenInfo,
+  size: string
+}
+
+export const LiquidityHeader = ({
+  base_token,
+  quote_token,
+  size
+}: LiquidityHeaderProps) => {
   if (size === 'small') {
     return (
       <>
@@ -11,7 +22,7 @@ export const LiquidityHeader = ({ tokenA, tokenB, size = 'large' }) => {
           transform="capitalize"
           css={{ padding: '$10 0' }}
         >
-          Pool {tokenA.name} + {tokenB.name}
+          {base_token.name} + {quote_token.name}
         </Text>
       </>
     )
@@ -32,7 +43,7 @@ export const LiquidityHeader = ({ tokenA, tokenB, size = 'large' }) => {
       </StyledNavElement>
       <StyledNavElement position="center">
         <Text variant="header" transform="capitalize">
-          Pool {tokenA.name} + {tokenB.name}
+          {base_token.name} + {quote_token.name}
         </Text>
       </StyledNavElement>
     </Inline>

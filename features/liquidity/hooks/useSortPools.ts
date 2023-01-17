@@ -29,7 +29,7 @@ export const useSortPools = ({ pools, filter, sortBy }: UseSortPoolsArgs) => {
 
     /* split up liquidity in my liquidity pools and other pools buckets */
     pools.forEach((pool) => {
-      const providedLiquidityAmount = pool.liquidity.providedTotal.tokenAmount
+      const providedLiquidityAmount = pool.liquidity.provided_lp_amount
       const poolsBucket = providedLiquidityAmount > 0 ? myPools : otherPools
 
       poolsBucket.push(pool)
@@ -51,8 +51,8 @@ function sortPools(
   const result = pools.sort((poolA, poolB) => {
     /* sort by total liquidity */
     if (sortBy.parameter === 'liquidity') {
-      const poolATotalLiquidity = poolA.liquidity.available.total.dollarValue
-      const poolBTotalLiquidity = poolB.liquidity.available.total.dollarValue
+      const poolATotalLiquidity = poolA.liquidity.total_lp_amount
+      const poolBTotalLiquidity = poolB.liquidity.total_lp_amount
 
       if (poolATotalLiquidity > poolBTotalLiquidity) {
         return 1
@@ -63,8 +63,8 @@ function sortPools(
 
     /* sort by tokenB names */
     if (sortBy.parameter === 'alphabetical') {
-      const poolATokenName = poolA.pool_assets[0].symbol
-      const poolBTokenName = poolB.pool_assets[0].symbol
+      const poolATokenName = poolA.pool_assets.quote.symbol
+      const poolBTokenName = poolB.pool_assets.quote.symbol
 
       if (poolATokenName > poolBTokenName) {
         return 1
@@ -89,8 +89,8 @@ function filterPools(
 ) {
   if (!filter || !filter.tokenSymbol) return pools
   return pools.filter(
-    ({ pool_assets: [tokenA, tokenB] }) =>
-      tokenA.symbol === filter.tokenSymbol ||
-      tokenB.symbol === filter.tokenSymbol
+    ({ pool_assets }) =>
+      pool_assets.base.symbol === filter.tokenSymbol ||
+      pool_assets.quote.symbol === filter.tokenSymbol
   )
 }

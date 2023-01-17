@@ -1,47 +1,35 @@
 import {
   Button,
   Column,
-  dollarValueFormatterWithDecimals,
-  Exchange,
   formatTokenBalance,
+  Exchange,
   IconWrapper,
   Inline,
   styled,
   Text,
+  protectAgainstNaN,
 } from 'junoblocks'
 import React, { useState } from 'react'
 import { useRecoilValue } from 'recoil'
-
-import { useTxRates } from '../hooks'
 import { tokenSwapAtom } from '../swapAtoms'
 
 type TransactionTipsProps = {
-  isPriceLoading: boolean
-  tokenToTokenPrice: number
   onTokenSwaps: () => void
   disabled?: boolean
   size?: 'large' | 'small'
 }
 
 export const TransactionTips = ({
-  isPriceLoading,
-  tokenToTokenPrice,
   onTokenSwaps,
   disabled,
   size = 'large',
 }: TransactionTipsProps) => {
   const [swappedPosition, setSwappedPositions] = useState(false)
-  const [tokenA, tokenB] = useRecoilValue(tokenSwapAtom)
-
-  const { isShowing, conversionRate, conversionRateInDollar, dollarValue } =
-    useTxRates({
-      tokenASymbol: tokenA?.tokenSymbol,
-      tokenBSymbol: tokenB?.tokenSymbol,
-      tokenAAmount: tokenA?.amount,
-      tokenToTokenPrice,
-      isLoading: isPriceLoading,
-    })
-
+  const { input_token, output_token } = useRecoilValue(tokenSwapAtom)
+  const pool_price = formatTokenBalance(
+    protectAgainstNaN(output_token.amount / input_token.amount)
+  )
+  const isShowing = Boolean(input_token.symbol) && Boolean(output_token.symbol);
   const switchTokensButton = (
     <Button
       icon={<StyledIconWrapper icon={<Exchange />} flipped={swappedPosition} />}
@@ -49,9 +37,9 @@ export const TransactionTips = ({
       onClick={
         !disabled
           ? () => {
-              setSwappedPositions(!swappedPosition)
-              onTokenSwaps()
-            }
+            setSwappedPositions(!swappedPosition)
+            onTokenSwaps()
+          }
           : undefined
       }
       iconColor="tertiary"
@@ -60,18 +48,10 @@ export const TransactionTips = ({
 
   const transactionRates = (
     <>
-      1 {tokenA.tokenSymbol} ≈ {formatTokenBalance(conversionRate)}{' '}
-      {tokenB.tokenSymbol}
-      {' ≈ '}$
-      {dollarValueFormatterWithDecimals(conversionRateInDollar, {
-        includeCommaSeparation: true,
-      })}
+      1 {input_token.symbol} ≈ {pool_price}{' '}
+      {output_token.symbol}
     </>
   )
-
-  const formattedDollarValue = dollarValueFormatterWithDecimals(dollarValue, {
-    includeCommaSeparation: true,
-  })
 
   if (size === 'small') {
     return (
@@ -88,9 +68,6 @@ export const TransactionTips = ({
           <Column align="flex-end" gap={2}>
             <Text variant="caption" color="disabled" wrap={false}>
               {transactionRates}
-            </Text>
-            <Text variant="caption" color="disabled" wrap={false}>
-              Swap estimate: ${formattedDollarValue}
             </Text>
           </Column>
         )}
@@ -109,8 +86,6 @@ export const TransactionTips = ({
           </Text>
         )}
       </StyledDivForRateWrapper>
-
-      <Text variant="legend">${formattedDollarValue}</Text>
     </StyledDivForWrapper>
   )
 }

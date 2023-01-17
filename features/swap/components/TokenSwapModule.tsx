@@ -1,17 +1,19 @@
 import { useTokenList } from 'hooks/useTokenList'
-import { styled, useMedia, usePersistance } from 'junoblocks'
+import { styled, useMedia } from 'junoblocks'
 import { useEffect, useRef } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
+import { NETWORK_FEE } from 'util/constants'
+import { usePoolsListQuery } from 'queries/usePoolsListQuery'
+import { TokenItemState, tokenSwapAtom, slippageAtom } from '../swapAtoms'
+import { TokenSelector } from './TokenSelector'
+import { TransactionAction } from './TransactionAction'
+import { TransactionTips } from './TransactionTips'
+import { PoolEntityTypeWithLiquidity, useQueryMultiplePoolsLiquidity } from 'queries/useQueryPools'
+import { useQueriesDataSelector } from 'hooks/useQueriesDataSelector'
 import {
   TransactionStatus,
   transactionStatusState,
 } from 'state/atoms/transactionAtoms'
-
-import { useTokenToTokenPrice } from '../hooks'
-import { tokenSwapAtom } from '../swapAtoms'
-import { TokenSelector } from './TokenSelector'
-import { TransactionAction } from './TransactionAction'
-import { TransactionTips } from './TransactionTips'
 
 type TokenSwapModuleProps = {
   /* will be used if provided on first render instead of internal state */
@@ -19,107 +21,242 @@ type TokenSwapModuleProps = {
 }
 
 export const TokenSwapModule = ({ initialTokenPair }: TokenSwapModuleProps) => {
-  /* connect to recoil */
-  const [[tokenA, tokenB], setTokenSwapState] = useRecoilState(tokenSwapAtom)
-  const transactionStatus = useRecoilValue(transactionStatusState)
-
-  /* fetch token list and set initial state */
+  const [{ input_token, output_token }, setTokenSwapState] = useRecoilState(tokenSwapAtom)
+  const slippage = useRecoilValue(slippageAtom)
   const [tokenList, isTokenListLoading] = useTokenList()
+  const transactionStatus = useRecoilValue(transactionStatusState)
+  const initialTokenPairValue = useRef(initialTokenPair).current
+  const { data: poolsListResponse } = usePoolsListQuery()
+
+  // Query PoolEntityTypeWithLiquidity[] for matching_pools_for_swap
+  const [pools, is_loading_pools_with_liquidity] = useQueriesDataSelector(
+    useQueryMultiplePoolsLiquidity({
+      refetchInBackground: false,
+      pools: poolsListResponse?.pools,
+    })
+  )
+
+  useEffect(() => {
+    // compute output amount
+    if (!is_loading_pools_with_liquidity && Boolean(pools?.length)) {
+      const { output_amount, input_amm_address, output_amm_address } = compute_output_amount(input_token, output_token.symbol);
+
+      setTokenSwapState({
+        input_token: { ...input_token, swap_address: input_amm_address },
+        output_token: { ...output_token, amount: output_amount, swap_address: output_amm_address }
+      })
+    }
+
+  }, [slippage])
+
   useEffect(() => {
     const shouldSetDefaultTokenAState =
-      !tokenA.tokenSymbol && !tokenB.tokenSymbol && tokenList
-    if (shouldSetDefaultTokenAState) {
-      setTokenSwapState([
-        {
-          tokenSymbol: tokenList.base_token.symbol,
-          amount: tokenA.amount || 0,
-        },
-        tokenB,
-      ])
-    }
-  }, [tokenList, tokenA, tokenB, setTokenSwapState])
+      !input_token.symbol && !output_token.symbol && Boolean(tokenList)
 
-  const initialTokenPairValue = useRef(initialTokenPair).current
-  useEffect(
-    function setInitialTokenPairIfProvided() {
-      if (initialTokenPairValue) {
-        const [tokenASymbol, tokenBSymbol] = initialTokenPairValue
-        setTokenSwapState([
-          {
-            tokenSymbol: tokenASymbol,
+    if (shouldSetDefaultTokenAState) {
+      setTokenSwapState({
+        input_token: {
+          ...input_token,
+          symbol: tokenList.base_token.symbol,
+          amount: input_token.amount,
+        },
+        output_token,
+      })
+    }
+  }, [tokenList, isTokenListLoading, input_token, output_token])
+
+  useEffect(() => {
+    if (Boolean(initialTokenPairValue) && Boolean(tokenList)) {
+      const [input_symbol, output_symbol] = initialTokenPairValue
+      // Check to make sure that input_symbol and output_symbol
+      // are valid tokens in the tokenList
+      let all_token_symbols = tokenList.tokens.map(t => t.symbol);
+      let valid_tokens = initialTokenPairValue.filter(x => all_token_symbols.includes(x))
+
+      if (valid_tokens.length === 2) {
+        setTokenSwapState({
+          input_token: {
+            ...input_token,
+            symbol: input_symbol,
             amount: 0,
           },
-          {
-            tokenSymbol: tokenBSymbol,
+          output_token: {
+            ...output_token,
+            symbol: output_symbol,
             amount: 0,
-          },
-        ])
+          }
+        });
       }
-    },
-    [initialTokenPairValue, setTokenSwapState]
+    }
+  },
+    [tokenList, isTokenListLoading, initialTokenPairValue]
   )
 
+  // Check if the UI should be enabled
   const isUiDisabled =
-    transactionStatus === TransactionStatus.EXECUTING || isTokenListLoading
+    transactionStatus === TransactionStatus.EXECUTING
+    || isTokenListLoading
+    || is_loading_pools_with_liquidity
+
   const uiSize = useMedia('sm') ? 'small' : 'large'
 
-  /* fetch token to token price */
-  const [currentTokenPrice, isPriceLoading] = useTokenToTokenPrice({
-    tokenASymbol: tokenA?.tokenSymbol,
-    tokenBSymbol: tokenB?.tokenSymbol,
-    tokenAmount: tokenA?.amount,
-  })
+  function handleSwapTokenPosition() {
+    setTokenSwapState({
+      output_token: { ...input_token, amount: 0 },
+      input_token: { ...output_token, amount: 0 },
+    })
+  }
 
-  /* persist token price when querying a new one */
-  const persistTokenPrice = usePersistance(
-    isPriceLoading ? undefined : currentTokenPrice
-  )
+  function handle_input_change(updated_input: TokenItemState) {
+    let current_input = input_token;
+    let current_output = output_token;
+    let did_change = true
 
-  /* select token price */
-  const tokenPrice =
-    (isPriceLoading ? persistTokenPrice : currentTokenPrice) || 0
+    if (updated_input.symbol !== current_input.symbol && updated_input.symbol !== current_output.symbol) {
+      current_input = { ...updated_input, amount: 0 }
+    } else if (updated_input.amount !== current_input.amount) {
+      current_input = updated_input;
 
-  const handleSwapTokenPositions = () => {
-    setTokenSwapState([
-      tokenB ? { ...tokenB, amount: tokenPrice } : tokenB,
-      tokenA ? { ...tokenA, amount: tokenB.amount } : tokenA,
-    ])
+      // compute output_amount
+      const { output_amount, input_amm_address, output_amm_address } = compute_output_amount(current_input, current_output.symbol);
+      current_output = { ...current_output, amount: output_amount, swap_address: output_amm_address }
+      current_input = { ...current_input, swap_address: input_amm_address }
+    } else {
+      did_change = false
+    }
+
+    if (did_change) {
+      setTokenSwapState({
+        input_token: current_input,
+        output_token: current_output
+      })
+    }
+  }
+
+  // using q = Qb / (B + b), where 
+  // q = output_amount, 
+  // Q = output_reserve
+  // b = input_amount
+  // B = input_reserve
+  function calculate_output_amount_for_swap(
+    input_amount: number,
+    input_reserve: number,
+    output_reserve: number
+  ): number {
+    let output_amount = (output_reserve * input_amount) / (input_reserve + input_amount)
+
+    // deduct NETWORK_FEE from output
+    output_amount = output_amount - (output_amount * NETWORK_FEE)
+
+    // deduct slippage from output
+    output_amount = output_amount - (output_amount * slippage)
+
+    return output_amount
+  }
+
+  function get_reserves_for_swap(
+    pool: PoolEntityTypeWithLiquidity,
+    output_token_symbol: string
+  ): { input_reserve: number, output_reserve: number } {
+    const { pool_assets, liquidity } = pool
+    let input_reserve = 0
+    let output_reserve = 0
+
+    if (pool_assets.base.symbol === output_token_symbol) {
+      input_reserve = liquidity.quote_reserve
+      output_reserve = liquidity.base_reserve
+    } else {
+      input_reserve = liquidity.base_reserve
+      output_reserve = liquidity.quote_reserve
+    }
+
+    return {
+      input_reserve,
+      output_reserve
+    }
+  }
+
+  // TODO we update this function to also return info about matching pools for swap
+  // input_amm_address
+  // output_amm_address
+  function compute_output_amount(
+    input_token: TokenItemState,
+    output_token_symbol: string
+  ): { output_amount: number, input_amm_address: string, output_amm_address: string } {
+    // filter matching pools for swap
+    const matching_pools = pools.filter(
+      p => p.pool_assets.quote.symbol === input_token.symbol
+        || p.pool_assets.quote.symbol === output_token_symbol
+    )
+
+    const is_direct_swap = matching_pools.length === 1;
+    let output_amount = 0;
+    let input_amm_address = '';
+    let output_amm_address = '';
+
+    if (is_direct_swap) {
+      const swap_pool = matching_pools[0]
+      const { input_reserve, output_reserve } = get_reserves_for_swap(
+        swap_pool,
+        output_token_symbol
+      )
+
+      output_amount = calculate_output_amount_for_swap(
+        input_token.amount,
+        input_reserve,
+        output_reserve
+      )
+
+      input_amm_address = swap_pool.swap_address
+    } else {
+      // TODO implement logic to get the output_amount for pass through swap
+    }
+
+    return {
+      output_amount,
+      input_amm_address,
+      output_amm_address
+    };
+  }
+
+  function handle_output_token_change(updated_output: TokenItemState) {
+    if (updated_output.symbol !== output_token.symbol && updated_output.symbol !== input_token.symbol) {
+      // compute output amount
+      const { output_amount, input_amm_address, output_amm_address } = compute_output_amount(input_token, updated_output.symbol);
+
+      setTokenSwapState({
+        input_token: { ...input_token, swap_address: input_amm_address },
+        output_token: { ...updated_output, amount: output_amount, swap_address: output_amm_address }
+      })
+    }
   }
 
   return (
     <>
       <StyledDivForWrapper>
         <TokenSelector
-          tokenSymbol={tokenA.tokenSymbol}
-          amount={tokenA.amount}
-          onChange={(updateTokenA) => {
-            setTokenSwapState([updateTokenA, tokenB])
-          }}
+          token_symbol={input_token.symbol}
+          amount={input_token.amount}
+          onChange={handle_input_change}
           disabled={isUiDisabled}
           size={uiSize}
         />
         <TransactionTips
           disabled={isUiDisabled}
-          isPriceLoading={isPriceLoading}
-          tokenToTokenPrice={tokenPrice}
-          onTokenSwaps={handleSwapTokenPositions}
+          onTokenSwaps={handleSwapTokenPosition}
           size={uiSize}
         />
         <TokenSelector
           readOnly
-          tokenSymbol={tokenB.tokenSymbol}
-          amount={tokenPrice}
-          onChange={(updatedTokenB) => {
-            setTokenSwapState([tokenA, updatedTokenB])
-          }}
+          token_symbol={output_token.symbol}
+          amount={output_token.amount}
+          onChange={handle_output_token_change}
           disabled={isUiDisabled}
           size={uiSize}
         />
       </StyledDivForWrapper>
 
       <TransactionAction
-        isPriceLoading={isPriceLoading}
-        tokenToTokenPrice={tokenPrice}
         size={uiSize}
       />
     </>

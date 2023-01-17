@@ -1,5 +1,5 @@
 import { useIBCAssetInfo } from 'hooks/useIBCAssetInfo'
-import { useTokenDollarValue } from 'hooks/useTokenDollarValue'
+import { useBaseTokenDollarValue } from '../../../hooks/useBaseTokenDollarValue'
 import {
   ArrowUpIcon,
   Button,
@@ -40,7 +40,7 @@ export const AssetCard = ({
   const [showingRedirectDepositDialog, setShowingRedirectDepositDialog] =
     useState(false)
 
-  const [dollarValue] = useTokenDollarValue(tokenSymbol)
+  const [dollarValue] = useBaseTokenDollarValue()
 
   const shouldPerformDepositOutsideApp = Boolean(external_deposit_uri)
 

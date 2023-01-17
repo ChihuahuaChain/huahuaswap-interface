@@ -6,42 +6,46 @@ import {
 } from 'util/messages'
 
 type ExecuteRemoveLiquidityArgs = {
-  tokenAmount: number
-  senderAddress: string
-  swapAddress: string
-  lpTokenAddress: string
+  lp_amount_to_remove: number,
+  min_base_token_output: number,
+  min_quote_token_output: number,
+  swap_address: string,
+  sender_address: string,
+  lp_token_address: string,
   client: SigningCosmWasmClient
 }
 
 export const executeRemoveLiquidity = async ({
-  tokenAmount,
-  swapAddress,
-  senderAddress,
-  lpTokenAddress,
+  lp_amount_to_remove,
+  min_base_token_output,
+  min_quote_token_output,
+  swap_address,
+  sender_address,
+  lp_token_address,
   client,
 }: ExecuteRemoveLiquidityArgs) => {
   const increaseAllowanceMessage = createIncreaseAllowanceMessage({
-    tokenAmount,
-    senderAddress,
-    tokenAddress: lpTokenAddress,
-    swapAddress,
+    tokenAmount: lp_amount_to_remove,
+    senderAddress: sender_address,
+    tokenAddress: lp_token_address,
+    swapAddress: swap_address,
   })
 
   const executeMessage = createExecuteMessage({
-    senderAddress,
-    contractAddress: swapAddress,
+    senderAddress: sender_address,
+    contractAddress: swap_address,
     message: {
       remove_liquidity: {
-        amount: `${tokenAmount}`,
-        min_token1: `${0}`,
-        min_token2: `${0}`,
+        amount: `${lp_amount_to_remove}`,
+        min_base_token_output: `${min_base_token_output}`,
+        min_quote_token_output: `${min_quote_token_output}`,
       },
     },
   })
 
   return validateTransactionSuccess(
     await client.signAndBroadcast(
-      senderAddress,
+      sender_address,
       [increaseAllowanceMessage, executeMessage],
       'auto'
     )

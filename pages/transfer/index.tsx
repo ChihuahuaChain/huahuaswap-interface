@@ -116,7 +116,7 @@ export default function Transfer() {
         <StyledWrapper>
           <PageHeader
             title="IBC Transfer"
-            subtitle="Easily and quickly initiate payments across IBC."
+            subtitle="Deposit or withdraw IBC assets."
           />
           <AssetsList onActionClick={handleAssetCardActionClick} />
         </StyledWrapper>

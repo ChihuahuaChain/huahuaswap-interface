@@ -1,19 +1,14 @@
 import { TokenInfo } from 'queries/usePoolsListQuery'
 
-import { fetchDollarPriceByTokenIds } from './fetchDollarPriceByTokenIds'
+import { fetchDollarPriceByTokenId } from './fetchDollarPriceByTokenId'
 import { pricingServiceIsDownAlert } from './pricingServiceIsDownAlert'
 
-export async function tokenDollarValueQuery(tokenIds: Array<TokenInfo['id']>) {
-  if (!tokenIds?.length) {
-    throw new Error('Provide token ids in order to query their price')
-  }
-
+export async function tokenDollarValueQuery(token_id: TokenInfo['id']) {
   try {
-    const prices = await fetchDollarPriceByTokenIds(tokenIds)
-    return tokenIds.map((id): number => prices[id]?.usd || 0)
+    const prices = await fetchDollarPriceByTokenId(token_id)
+    return prices[token_id]?.usd || 0
   } catch (e) {
     pricingServiceIsDownAlert()
-
     throw e
   }
 }

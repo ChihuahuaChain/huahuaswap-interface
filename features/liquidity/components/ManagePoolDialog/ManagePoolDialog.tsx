@@ -1,6 +1,5 @@
 import { usePrevious } from '@reach/utils'
 import { LiquidityInput } from 'components'
-import { useTokenDollarValue } from 'hooks/useTokenDollarValue'
 import {
   Button,
   Dialog,
@@ -8,7 +7,6 @@ import {
   DialogContent,
   DialogDivider,
   DialogHeader,
-  dollarValueFormatter,
   dollarValueFormatterWithDecimals,
   formatTokenBalance,
   IconWrapper,
@@ -21,12 +19,12 @@ import {
 } from 'junoblocks'
 import { useQueryPoolLiquidity } from 'queries/useQueryPools'
 import { useEffect, useRef, useState } from 'react'
-
 import { LiquidityInputSelector } from '../LiquidityInputSelector'
 import { PercentageSelection } from '../PercentageSelection'
 import { StateSwitchButtons } from '../StateSwitchButtons'
 import { TokenToTokenRates } from './TokenToTokenRates'
 import { usePoolDialogController } from './usePoolDialogController'
+import { TokenInfo } from '../../../../queries/usePoolsListQuery'
 
 type ManagePoolDialogProps = {
   isShowing: boolean
@@ -42,10 +40,7 @@ export const ManagePoolDialog = ({
   poolId,
 }: ManagePoolDialogProps) => {
   const [pool] = useQueryPoolLiquidity({ poolId })
-  const {
-    pool_assets: [tokenA, tokenB],
-  } = pool || { pool_assets: [] }
-
+  const { liquidity, pool_assets } = pool
   const [isAddingLiquidity, setAddingLiquidity] = useState(
     initialActionType !== 'remove'
   )
@@ -55,15 +50,14 @@ export const ManagePoolDialog = ({
 
   const {
     state: {
-      tokenAReserve,
-      tokenBReserve,
-      tokenABalance,
-      tokenBBalance,
-      maxApplicableBalanceForTokenA,
-      maxApplicableBalanceForTokenB,
+      base_token_balance,
+      quote_token_balance,
+      max_applicable_balance_for_base,
+      max_applicable_balance_for_quote,
+      pool_price,
       isLoading,
     },
-    actions: { mutateAddLiquidity },
+    actions: { mutate_liquidity },
   } = usePoolDialogController({
     pool,
     actionState: isAddingLiquidity ? 'add' : 'remove',
@@ -72,10 +66,8 @@ export const ManagePoolDialog = ({
       : removeLiquidityPercent,
   })
 
-  const canManageLiquidity = tokenAReserve > 0
-
   const handleSubmit = () =>
-    mutateAddLiquidity(null, {
+    mutate_liquidity(null, {
       onSuccess() {
         requestAnimationFrame(onRequestClose)
         setRemoveLiquidityPercent(0)
@@ -83,6 +75,7 @@ export const ManagePoolDialog = ({
       },
     })
 
+  const canManageLiquidity = liquidity.base_reserve > 0
   useEffect(() => {
     if (!canManageLiquidity) {
       setAddingLiquidity((isAdding) => {
@@ -130,26 +123,27 @@ export const ManagePoolDialog = ({
 
       {isAddingLiquidity && (
         <AddLiquidityContent
-          isLoading={isLoading}
-          tokenASymbol={tokenA.symbol}
-          tokenBSymbol={tokenB?.symbol}
-          tokenABalance={tokenABalance}
-          tokenBBalance={tokenBBalance}
-          maxApplicableBalanceForTokenA={maxApplicableBalanceForTokenA}
-          maxApplicableBalanceForTokenB={maxApplicableBalanceForTokenB}
-          liquidityPercentage={addLiquidityPercent}
-          onChangeLiquidity={setAddLiquidityPercent}
+          pool_price={pool_price}
+          base_token_symbol={pool_assets.base.symbol}
+          quote_token_symbol={pool_assets.quote.symbol}
+          base_token_balance={base_token_balance}
+          quote_token_balance={quote_token_balance}
+          max_applicable_balance_for_base={max_applicable_balance_for_base}
+          max_applicable_balance_for_quote={max_applicable_balance_for_quote}
+          liquidity_percentage={addLiquidityPercent}
+          on_change_liquidity={setAddLiquidityPercent}
         />
       )}
 
       {!isAddingLiquidity && (
         <RemoveLiquidityContent
-          tokenA={tokenA}
-          tokenB={tokenB}
-          tokenAReserve={tokenAReserve}
-          tokenBReserve={tokenBReserve}
-          liquidityPercentage={removeLiquidityPercent}
-          onChangeLiquidity={setRemoveLiquidityPercent}
+          base_token_info={pool_assets.base}
+          quote_token_info={pool_assets.quote}
+          base_reserve={liquidity.base_reserve}
+          quote_reserve={liquidity.quote_reserve}
+          provided_liquidity_in_usd={liquidity.provided_liquidity_in_usd}
+          liquidity_percentage={removeLiquidityPercent}
+          on_change_liquidity={setRemoveLiquidityPercent}
         />
       )}
 
@@ -175,64 +169,61 @@ export const ManagePoolDialog = ({
 }
 
 function AddLiquidityContent({
-  liquidityPercentage,
-  tokenASymbol,
-  tokenBSymbol,
-  tokenABalance,
-  tokenBBalance,
-  maxApplicableBalanceForTokenA,
-  maxApplicableBalanceForTokenB,
-  isLoading,
-  onChangeLiquidity,
+  pool_price,
+  liquidity_percentage,
+  base_token_symbol,
+  quote_token_symbol,
+  base_token_balance,
+  quote_token_balance,
+  max_applicable_balance_for_base,
+  max_applicable_balance_for_quote,
+  on_change_liquidity,
 }) {
-  const handleTokenAAmountChange = (input: number) => {
-    const value = Math.min(input, maxApplicableBalanceForTokenA)
-
-    onChangeLiquidity(protectAgainstNaN(value / maxApplicableBalanceForTokenA))
+  const handle_base_token_amount_change = (input: number) => {
+    const value = Math.min(input, max_applicable_balance_for_base)
+    on_change_liquidity(protectAgainstNaN(value / max_applicable_balance_for_base))
   }
 
-  const handleTokenBAmountChange = (input: number) => {
-    const value = Math.min(input, maxApplicableBalanceForTokenB)
-
-    onChangeLiquidity(protectAgainstNaN(value / maxApplicableBalanceForTokenB))
+  const handle_quote_token_amount_change = (input: number) => {
+    const value = Math.min(input, max_applicable_balance_for_quote)
+    on_change_liquidity(protectAgainstNaN(value / max_applicable_balance_for_quote))
   }
 
-  const handleApplyMaximumAmount = () => {
-    handleTokenAAmountChange(maxApplicableBalanceForTokenA)
+  const handle_apply_max = () => {
+    handle_base_token_amount_change(max_applicable_balance_for_base)
   }
 
-  const tokenAAmount = maxApplicableBalanceForTokenA * liquidityPercentage
-  const tokenBAmount = maxApplicableBalanceForTokenB * liquidityPercentage
+  const base_amount_to_use = max_applicable_balance_for_base * liquidity_percentage
+  const quote_amount_to_use = max_applicable_balance_for_quote * liquidity_percentage
 
   return (
     <DialogContent>
       <StyledDivForLiquidityInputs>
         <LiquidityInput
-          tokenSymbol={tokenASymbol}
-          availableAmount={tokenABalance ? tokenABalance : 0}
-          maxApplicableAmount={maxApplicableBalanceForTokenA}
-          amount={tokenAAmount}
-          onAmountChange={handleTokenAAmountChange}
+          tokenSymbol={base_token_symbol}
+          availableAmount={base_token_balance}
+          maxApplicableAmount={max_applicable_balance_for_base}
+          amount={base_amount_to_use}
+          onAmountChange={handle_base_token_amount_change}
         />
         <LiquidityInput
-          tokenSymbol={tokenBSymbol}
-          availableAmount={tokenBBalance ? tokenBBalance : 0}
-          maxApplicableAmount={maxApplicableBalanceForTokenB}
-          amount={tokenBAmount}
-          onAmountChange={handleTokenBAmountChange}
+          tokenSymbol={quote_token_symbol}
+          availableAmount={quote_token_balance}
+          maxApplicableAmount={max_applicable_balance_for_quote}
+          amount={quote_amount_to_use}
+          onAmountChange={handle_quote_token_amount_change}
         />
       </StyledDivForLiquidityInputs>
       <StyledDivForTxRates>
         <TokenToTokenRates
-          tokenASymbol={tokenASymbol}
-          tokenBSymbol={tokenBSymbol}
-          tokenAAmount={tokenAAmount}
-          isLoading={isLoading}
+          base_token_symbol={base_token_symbol}
+          quote_token_symbol={quote_token_symbol}
+          pool_price={pool_price}
         />
       </StyledDivForTxRates>
       <Button
         variant="secondary"
-        onClick={handleApplyMaximumAmount}
+        onClick={handle_apply_max}
         iconLeft={<IconWrapper icon={<PlusIcon />} />}
       >
         Provide max liquidity
@@ -241,30 +232,34 @@ function AddLiquidityContent({
   )
 }
 
-function RemoveLiquidityContent({
-  tokenA,
-  tokenB,
-  tokenAReserve,
-  tokenBReserve,
-  liquidityPercentage,
-  onChangeLiquidity,
-}) {
-  const [tokenAPrice] = useTokenDollarValue(tokenA.symbol)
-  const percentageInputRef = useRef<HTMLInputElement>()
+type RemoveLiquidityContentProps = {
+  base_token_info: TokenInfo,
+  quote_token_info: TokenInfo,
+  base_reserve: number,
+  quote_reserve: number,
+  provided_liquidity_in_usd: number,
+  liquidity_percentage: number,
+  on_change_liquidity: (liquidity: number) => void
+}
 
+function RemoveLiquidityContent({
+  base_token_info,
+  quote_token_info,
+  base_reserve,
+  quote_reserve,
+  provided_liquidity_in_usd,
+  liquidity_percentage,
+  on_change_liquidity,
+}: RemoveLiquidityContentProps) {
+  const percentageInputRef = useRef<HTMLInputElement>()
   useEffect(() => {
     percentageInputRef.current?.focus()
   }, [])
 
-  // const availableLiquidityDollarValue = dollarValueFormatter(
-  //   tokenAReserve * 2 * tokenAPrice
-  // ) as number
-
-  const availableLiquidityDollarValue = tokenAReserve * 2 * tokenAPrice
-  const liquidityToRemove = availableLiquidityDollarValue * liquidityPercentage
+  const liquidity_to_remove_in_usd = provided_liquidity_in_usd * liquidity_percentage
 
   const handleChangeLiquidity = (value) => {
-    onChangeLiquidity(value / availableLiquidityDollarValue)
+    on_change_liquidity(value / provided_liquidity_in_usd)
   }
 
   return (
@@ -272,27 +267,27 @@ function RemoveLiquidityContent({
       <DialogContent>
         <LiquidityInputSelector
           inputRef={percentageInputRef}
-          maxLiquidity={availableLiquidityDollarValue}
-          liquidity={liquidityToRemove}
+          maxLiquidity={provided_liquidity_in_usd}
+          liquidity={liquidity_to_remove_in_usd}
           onChangeLiquidity={handleChangeLiquidity}
         />
         <StyledGridForDollarValueTxInfo>
           <Text variant="caption" color="tertiary" css={{ padding: '$6 0 $9' }}>
             Available liquidity: $
-            {dollarValueFormatterWithDecimals(availableLiquidityDollarValue, {
+            {dollarValueFormatterWithDecimals(provided_liquidity_in_usd, {
               includeCommaSeparation: true,
             })}
           </Text>
           <Text variant="caption" color="tertiary" css={{ padding: '$6 0 $9' }}>
             ≈ ${' '}
-            {dollarValueFormatterWithDecimals(liquidityToRemove, {
+            {dollarValueFormatterWithDecimals(liquidity_to_remove_in_usd, {
               includeCommaSeparation: true,
             })}
           </Text>
         </StyledGridForDollarValueTxInfo>
         <PercentageSelection
-          maxLiquidity={availableLiquidityDollarValue}
-          liquidity={liquidityToRemove}
+          maxLiquidity={provided_liquidity_in_usd}
+          liquidity={liquidity_to_remove_in_usd}
           onChangeLiquidity={handleChangeLiquidity}
         />
       </DialogContent>
@@ -305,23 +300,23 @@ function RemoveLiquidityContent({
           <StyledDivForToken>
             <ImageForTokenLogo
               size="large"
-              logoURI={tokenA.logoURI}
-              alt={tokenA.name}
+              logoURI={base_token_info.logoURI}
+              alt={base_token_info.name}
             />
             <Text variant="caption">
-              {formatTokenBalance(tokenAReserve * liquidityPercentage)}{' '}
-              {tokenA.symbol}
+              {formatTokenBalance(base_reserve * liquidity_percentage)}{' '}
+              {base_token_info.symbol}
             </Text>
           </StyledDivForToken>
           <StyledDivForToken>
             <ImageForTokenLogo
               size="large"
-              logoURI={tokenB.logoURI}
-              alt={tokenB.name}
+              logoURI={quote_token_info.logoURI}
+              alt={quote_token_info.name}
             />
             <Text variant="caption">
-              {formatTokenBalance(tokenBReserve * liquidityPercentage)}{' '}
-              {tokenB.symbol}
+              {formatTokenBalance(quote_reserve * liquidity_percentage)}{' '}
+              {quote_token_info.symbol}
             </Text>
           </StyledDivForToken>
         </StyledDivForLiquiditySummary>

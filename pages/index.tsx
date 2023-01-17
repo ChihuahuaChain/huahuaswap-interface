@@ -9,7 +9,7 @@ function getInitialTokenPairFromSearchParams() {
   const params = new URLSearchParams(location.search)
   const from = params.get('from')
   const to = params.get('to')
-  return from || to ? ([from, to] as const) : undefined
+  return from && to ? ([from.toUpperCase(), to.toUpperCase()] as const) : undefined
 }
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
       <StyledContainer>
         <PageHeader
           title="Swap"
-          subtitle={`Swap between your favorite assets on ${APP_NAME}.`}
+          subtitle={`Swap between your favorite assets.`}
         />
         <TokenSwapModule
           initialTokenPair={getInitialTokenPairFromSearchParams()}

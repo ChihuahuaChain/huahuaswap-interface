@@ -8,12 +8,16 @@
     "name": "Chihuahua",
     "decimals": 6,
     "logoURI": "https://raw.githubusercontent.com/ChihuahuaChain/resources/main/logo/logo_transparent_notext.png",
-    "tags": ["native"],
+    "tags": [
+      "native"
+    ],
     "native": true,
     "denom": "uhuahua"
   },
   "logoURI": "",
-  "keywords": ["special tokens"],
+  "keywords": [
+    "special tokens"
+  ],
   "tags": {
     "Chihuahua": {
       "name": "Chihuahua",
@@ -24,8 +28,8 @@
   "pools": [
     {
       "pool_id": "HUAHUA-PUPPY",
-      "pool_assets": [
-        {
+      "pool_assets": {
+        "base": {
           "id": "chihuahua-token",
           "chain_id": "chihuahua-1",
           "token_address": "",
@@ -33,11 +37,13 @@
           "name": "HUAHUA",
           "decimals": 6,
           "logoURI": "https://raw.githubusercontent.com/ChihuahuaChain/resources/main/logo/logo_transparent_notext.png",
-          "tags": ["native"],
+          "tags": [
+            "native"
+          ],
           "native": true,
           "denom": "uhuahua"
         },
-        {
+        "quote": {
           "id": "PUPPYHUAHUA",
           "chain_id": "chihuahua-1",
           "token_address": "chihuahua1yl8z39ugle8s02fpwkhh293509q5xcpalmdzc4amvchz8nkexrmsy95gef",
@@ -45,12 +51,14 @@
           "name": "PUPPY",
           "decimals": 6,
           "logoURI": "https://raw.githubusercontent.com/ChihuahuaChain/resources/main/puppyhuahua/puppyhuahua_logo.png",
-          "tags": ["cw20"],
+          "tags": [
+            "cw20"
+          ],
           "native": false,
           "denom": "PUPPYHUAHUA"
         }
-      ],
-      "swap_address": "chihuahua14v5vk5dgqp0xq8zrhhsf833h2d6tnm0pt0a3gsrkz8gwpwf203eqk58afh"
+      },
+      "swap_address": "chihuahua15yxcxjmppj2qjt3kfltkakc539vzf5encnr0ld3hcwdwqjtstxpqcvt0le"
     }
   ],
   "version": {

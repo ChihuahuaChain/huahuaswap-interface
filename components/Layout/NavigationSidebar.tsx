@@ -200,7 +200,7 @@ export function NavigationSidebar({
         <Inline align="center" justifyContent="space-between">
           <Link href="/" passHref>
             <StyledDivForLogo as="a">
-              <Logo data-logo="" width="37px" height="47px" />
+              <Logo />
               <div data-logo-label="">
                 <LogoText />
               </div>
@@ -223,7 +223,7 @@ export function NavigationSidebar({
         <StyledMenuContainer>
           <Link href="/" passHref>
             <StyledDivForLogo as="a">
-              <Logo data-logo="" width="37px" height="47px" />
+              <Logo />
               <div data-logo-label="">
                 <LogoText />
               </div>
@@ -389,7 +389,6 @@ const StyledListForLinks = styled('div', {
 const StyledDivForLogo = styled('div', {
   display: 'grid',
   gridTemplateColumns: '37px 1fr',
-  columnGap: '$space$4',
   alignItems: 'center',
   paddingBottom: '$8',
 

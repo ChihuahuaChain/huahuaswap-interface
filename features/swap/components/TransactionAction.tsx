@@ -1,69 +1,44 @@
 import { useConnectWallet } from 'hooks/useConnectWallet'
-import { useTokenBalance } from 'hooks/useTokenBalance'
 import { Button, Inline, Spinner, styled, Text } from 'junoblocks'
 import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'
 import { NETWORK_FEE } from 'util/constants'
-
 import { useTokenSwap } from '../hooks'
 import { slippageAtom, tokenSwapAtom } from '../swapAtoms'
 import { SlippageSelector } from './SlippageSelector'
 
 type TransactionTipsProps = {
-  isPriceLoading?: boolean
-  tokenToTokenPrice?: number
   size?: 'small' | 'large'
 }
 
 export const TransactionAction = ({
-  isPriceLoading,
-  tokenToTokenPrice,
   size = 'large',
 }: TransactionTipsProps) => {
-  const [requestedSwap, setRequestedSwap] = useState(false)
-  const [tokenA, tokenB] = useRecoilValue(tokenSwapAtom)
-  const { balance: tokenABalance } = useTokenBalance(tokenA?.tokenSymbol)
+  const { mutate: handleSwap, isLoading: isExecutingTransaction } =
+    useTokenSwap()
+  const { mutate: connectWallet } = useConnectWallet()
+  const [{ input_token, output_token }, setTokenSwapState] = useRecoilState(tokenSwapAtom)
 
   /* wallet state */
   const { status } = useRecoilValue(walletState)
-  const { mutate: connectWallet } = useConnectWallet()
   const [slippage, setSlippage] = useRecoilState(slippageAtom)
-
-  const { mutate: handleSwap, isLoading: isExecutingTransaction } =
-    useTokenSwap({
-      tokenASymbol: tokenA?.tokenSymbol,
-      tokenBSymbol: tokenB?.tokenSymbol,
-      tokenAmount: tokenA?.amount,
-      tokenToTokenPrice: tokenToTokenPrice || 0,
-    })
-
-  /* proceed with the swap only if the price is loaded */
-
-  useEffect(() => {
-    const shouldTriggerTransaction =
-      !isPriceLoading && !isExecutingTransaction && requestedSwap
-    if (shouldTriggerTransaction) {
-      handleSwap()
-      setRequestedSwap(false)
-    }
-  }, [isPriceLoading, isExecutingTransaction, requestedSwap, handleSwap])
 
   const handleSwapButtonClick = () => {
     if (status === WalletStatusType.connected) {
-      return setRequestedSwap(true)
+      handleSwap()
     }
 
     connectWallet(null)
   }
 
   const shouldDisableSubmissionButton =
-    isExecutingTransaction ||
-    !tokenB.tokenSymbol ||
-    !tokenA.tokenSymbol ||
     status !== WalletStatusType.connected ||
-    tokenA.amount <= 0 ||
-    tokenA?.amount > tokenABalance
+    isExecutingTransaction ||
+    !input_token.symbol ||
+    !output_token.symbol ||
+    input_token.amount == 0 ||
+    output_token.amount == 0;
 
   if (size === 'small') {
     return (
@@ -94,7 +69,7 @@ export const TransactionAction = ({
             size="large"
             disabled={shouldDisableSubmissionButton}
             onClick={
-              !isExecutingTransaction && !isPriceLoading
+              !isExecutingTransaction
                 ? handleSwapButtonClick
                 : undefined
             }
@@ -125,7 +100,7 @@ export const TransactionAction = ({
         size="large"
         disabled={shouldDisableSubmissionButton}
         onClick={
-          !isExecutingTransaction && !isPriceLoading
+          !isExecutingTransaction
             ? handleSwapButtonClick
             : undefined
         }

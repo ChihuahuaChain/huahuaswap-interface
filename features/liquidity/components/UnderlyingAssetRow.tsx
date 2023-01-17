@@ -1,4 +1,4 @@
-import { useTokenDollarValue } from 'hooks/useTokenDollarValue'
+import { useBaseTokenDollarValue } from 'hooks/useBaseTokenDollarValue'
 import { useTokenInfo } from 'hooks/useTokenInfo'
 import {
   Button,
@@ -7,61 +7,52 @@ import {
   ImageForTokenLogo,
   InfoIcon,
   Inline,
-  protectAgainstNaN,
   Text,
   Tooltip,
 } from 'junoblocks'
 
 type UnderlyingAssetRowProps = {
-  tokenSymbol?: string
-  tokenAmount?: number
-  visible?: boolean
+  provided_liquidity_in_usd: number,
+  token_amount: number,
+  logoURI: string,
+  symbol: string
 }
 
 export const UnderlyingAssetRow = ({
-  tokenSymbol,
-  tokenAmount,
-  visible = true,
+  provided_liquidity_in_usd,
+  token_amount,
+  logoURI,
+  symbol
 }: UnderlyingAssetRowProps) => {
-  const token = useTokenInfo(visible ? tokenSymbol : undefined)
-  const [tokenDollarValue] = useTokenDollarValue(
-    visible ? tokenSymbol : undefined
-  )
-
-  const tokenAmountDollarValue = dollarValueFormatterWithDecimals(
-    protectAgainstNaN(tokenAmount * tokenDollarValue),
+  const formatted_usd_val = dollarValueFormatterWithDecimals(
+    provided_liquidity_in_usd,
     { includeCommaSeparation: true }
   )
-
-  const infoTooltipLabel = `≈ $${tokenAmountDollarValue} USD`
+  const infoTooltipLabel = `≈ $${formatted_usd_val} USD`
 
   return (
-    <Inline
-      justifyContent="space-between"
-      css={{ visibility: visible ? 'visible' : 'hidden' }}
-    >
+    <Inline justifyContent="space-between">
       <Inline gap={3}>
         <ImageForTokenLogo
           size="large"
-          logoURI={token?.logoURI}
-          alt={token?.symbol}
+          logoURI={logoURI}
+          alt={symbol}
         />
-        <Text variant="link">{tokenSymbol}</Text>
+        <Text variant="link">{symbol}</Text>
       </Inline>
       <Inline align="center" gap={4}>
         <Inline gap={6}>
           <Text variant="body">
-            {formatTokenBalance(tokenAmount, { includeCommaSeparation: true })}
+            {formatTokenBalance(token_amount, { includeCommaSeparation: true })}
           </Text>
-          <Text variant="secondary">{tokenSymbol}</Text>
         </Inline>
         <Tooltip label={infoTooltipLabel} aria-label={infoTooltipLabel}>
           <Button
             variant="ghost"
             size="small"
             icon={<InfoIcon />}
-            iconColor={tokenAmount ? 'secondary' : 'disabled'}
-            disabled={!tokenAmount}
+            iconColor={token_amount ? 'secondary' : 'disabled'}
+            disabled={!token_amount}
           />
         </Tooltip>
       </Inline>

@@ -1,4 +1,3 @@
-import { usePriceForOneToken, useTxRates } from 'features/swap'
 import {
   dollarValueFormatterWithDecimals,
   formatTokenBalance,
@@ -7,37 +6,22 @@ import {
 } from 'junoblocks'
 
 export const TokenToTokenRates = ({
-  tokenASymbol,
-  tokenBSymbol,
-  tokenAAmount,
-  isLoading,
+  base_token_symbol,
+  quote_token_symbol,
+  pool_price,
 }) => {
-  const [oneTokenToTokenPrice] = usePriceForOneToken({
-    tokenASymbol,
-    tokenBSymbol,
-  })
-
-  const { isShowing, conversionRate, conversionRateInDollar, dollarValue } =
-    useTxRates({
-      tokenASymbol,
-      tokenBSymbol,
-      tokenAAmount,
-      tokenToTokenPrice: oneTokenToTokenPrice * tokenAAmount,
-      isLoading,
-    })
-
   return (
-    <StyledDivForGrid active={isShowing}>
+    <StyledDivForGrid active={false}>
       <Text variant="caption" color="disabled" wrap={false}>
-        1 {tokenASymbol} ≈ {formatTokenBalance(conversionRate)} {tokenBSymbol}
+        1 {base_token_symbol} ≈ {formatTokenBalance(pool_price)} {quote_token_symbol}
         {' ≈ '}$
-        {dollarValueFormatterWithDecimals(conversionRateInDollar, {
+        {dollarValueFormatterWithDecimals(0, {
           includeCommaSeparation: true,
         })}
       </Text>
       <Text variant="caption" color="disabled">
         $
-        {dollarValueFormatterWithDecimals(dollarValue * 2, {
+        {dollarValueFormatterWithDecimals(0 * 2, {
           includeCommaSeparation: true,
         })}
       </Text>

@@ -7,12 +7,12 @@ import { useCosmWasmClient } from './useCosmWasmClient'
 
 export type SwapInfo = Pick<
   InfoResponse,
-  'token1_denom' | 'token2_denom' | 'lp_token_address'
+  'base_denom' | 'quote_denom' | 'lp_token_address'
 > & {
   swap_address: string
   lp_token_supply: number
-  token1_reserve: number
-  token2_reserve: number
+  base_reserve: number
+  quote_reserve: number
 }
 
 type UseMultipleSwapInfoArgs = {
@@ -36,8 +36,8 @@ export const useSwapInfo = ({
       return {
         ...swap,
         swap_address: pool.swap_address,
-        token1_reserve: Number(swap.token1_reserve),
-        token2_reserve: Number(swap.token2_reserve),
+        base_reserve: Number(swap.base_reserve),
+        quote_reserve: Number(swap.quote_reserve),
         lp_token_supply: Number(swap.lp_token_supply),
       }
     },

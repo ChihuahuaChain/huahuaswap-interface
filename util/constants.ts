@@ -14,17 +14,9 @@ export const __TEST_MODE__ = !JSON.parse(
   process.env.NEXT_PUBLIC_TEST_MODE_DISABLED
 )
 
-/* feature flags */
-export const __POOL_STAKING_ENABLED__ = JSON.parse(
-  process.env.NEXT_PUBLIC_ENABLE_FEATURE_STAKING
-)
-export const __POOL_REWARDS_ENABLED__ = JSON.parse(
-  process.env.NEXT_PUBLIC_ENABLE_FEATURE_REWARDS
-)
 export const __TRANSFERS_ENABLED__ = JSON.parse(
   process.env.NEXT_PUBLIC_ENABLE_FEATURE_TRANSFERS
 )
 export const __DARK_MODE_ENABLED_BY_DEFAULT__ = JSON.parse(
   process.env.NEXT_PUBLIC_DARK_MODE_ENABLED_BY_DEFAULT
 )
-/* /feature flags */

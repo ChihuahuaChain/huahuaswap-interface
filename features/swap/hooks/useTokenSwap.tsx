@@ -1,4 +1,3 @@
-import { useTokenInfo } from 'hooks/useTokenInfo'
 import {
   Button,
   ErrorIcon,
@@ -9,42 +8,27 @@ import {
 } from 'junoblocks'
 import { toast } from 'react-hot-toast'
 import { useMutation } from 'react-query'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { directTokenSwap, passThroughTokenSwap } from 'services/swap'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import {
   TransactionStatus,
   transactionStatusState,
 } from 'state/atoms/transactionAtoms'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'
+import { directTokenSwap, passThroughTokenSwap } from 'services/swap'
 import { convertDenomToMicroDenom } from 'util/conversion'
 
 import { useRefetchQueries } from '../../../hooks/useRefetchQueries'
-import { useQueryMatchingPoolForSwap } from '../../../queries/useQueryMatchingPoolForSwap'
-import { slippageAtom, tokenSwapAtom } from '../swapAtoms'
+import { tokenSwapAtom } from '../swapAtoms'
+import { POOL_TOKENS_DECIMALS } from '../../../util/constants'
+import { useBaseTokenInfo, useTokenInfo } from '../../../hooks/useTokenInfo'
 
-type UseTokenSwapArgs = {
-  tokenASymbol: string
-  tokenBSymbol: string
-  /* token amount in denom */
-  tokenAmount: number
-  tokenToTokenPrice: number
-}
-
-export const useTokenSwap = ({
-  tokenASymbol,
-  tokenBSymbol,
-  tokenAmount: providedTokenAmount,
-  tokenToTokenPrice,
-}: UseTokenSwapArgs) => {
+export const useTokenSwap = () => {
   const { client, address, status } = useRecoilValue(walletState)
   const setTransactionState = useSetRecoilState(transactionStatusState)
-  const slippage = useRecoilValue(slippageAtom)
-  const setTokenSwap = useSetRecoilState(tokenSwapAtom)
-
-  const tokenA = useTokenInfo(tokenASymbol)
-  const tokenB = useTokenInfo(tokenBSymbol)
-  const [matchingPools] = useQueryMatchingPoolForSwap({ tokenA, tokenB })
+  const [{ input_token, output_token }, setTokenSwapState] = useRecoilState(tokenSwapAtom)
   const refetchQueries = useRefetchQueries(['tokenBalance'])
+  const base_token_info = useBaseTokenInfo()
+  const input_token_info = useTokenInfo(input_token.symbol)
 
   return useMutation(
     'swapTokens',
@@ -55,49 +39,33 @@ export const useTokenSwap = ({
 
       setTransactionState(TransactionStatus.EXECUTING)
 
-      const tokenAmount = convertDenomToMicroDenom(
-        providedTokenAmount,
-        tokenA.decimals
-      )
-
-      const price = convertDenomToMicroDenom(tokenToTokenPrice, tokenB.decimals)
-
-      const {
-        streamlinePoolAB,
-        streamlinePoolBA,
-        baseTokenAPool,
-        baseTokenBPool,
-      } = matchingPools
-
-      if (streamlinePoolAB || streamlinePoolBA) {
-        const swapDirection = streamlinePoolAB?.swap_address
-          ? 'tokenAtoTokenB'
-          : 'tokenBtoTokenA'
-        const swapAddress =
-          streamlinePoolAB?.swap_address ?? streamlinePoolBA?.swap_address
-
+      if (Boolean(input_token.swap_address) && !Boolean(output_token.swap_address)) {
         return await directTokenSwap({
+          input_token: {
+            ...input_token,
+            amount: convertDenomToMicroDenom(input_token.amount, POOL_TOKENS_DECIMALS)
+          },
+          output_token: {
+            ...output_token,
+            amount: convertDenomToMicroDenom(output_token.amount, POOL_TOKENS_DECIMALS)
+          },
+          sender_address: address,
+          client,
+          base_token_info,
+          input_token_info
+        })
+      } else {
+        /*return await passThroughTokenSwap({
           tokenAmount,
           price,
           slippage,
           senderAddress: address,
-          swapAddress,
-          swapDirection,
           tokenA,
+          swapAddress: baseTokenAPool.swap_address,
+          outputSwapAddress: baseTokenBPool.swap_address,
           client,
-        })
+        })*/
       }
-
-      return await passThroughTokenSwap({
-        tokenAmount,
-        price,
-        slippage,
-        senderAddress: address,
-        tokenA,
-        swapAddress: baseTokenAPool.swap_address,
-        outputSwapAddress: baseTokenBPool.swap_address,
-        client,
-      })
     },
     {
       onSuccess() {
@@ -109,13 +77,16 @@ export const useTokenSwap = ({
           />
         ))
 
-        setTokenSwap(([tokenA, tokenB]) => [
-          {
-            ...tokenA,
+        setTokenSwapState({
+          input_token: {
+            ...input_token,
             amount: 0,
           },
-          tokenB,
-        ])
+          output_token: {
+            ...output_token,
+            amount: 0,
+          },
+        })
 
         refetchQueries()
       },
@@ -123,8 +94,8 @@ export const useTokenSwap = ({
         const errorMessage =
           String(e).length > 300
             ? `${String(e).substring(0, 150)} ... ${String(e).substring(
-                String(e).length - 150
-              )}`
+              String(e).length - 150
+            )}`
             : String(e)
 
         toast.custom((t) => (
