@@ -58,7 +58,6 @@ export const TokenSwapModule = ({ initialTokenPair }: TokenSwapModuleProps) => {
         input_token: {
           ...input_token,
           symbol: tokenList.base_token.symbol,
-          amount: input_token.amount,
         },
         output_token,
       })
@@ -159,26 +158,14 @@ export const TokenSwapModule = ({ initialTokenPair }: TokenSwapModuleProps) => {
     output_token_symbol: string
   ): { input_reserve: number, output_reserve: number } {
     const { pool_assets, liquidity } = pool
-    let input_reserve = 0
-    let output_reserve = 0
-
-    if (pool_assets.base.symbol === output_token_symbol) {
-      input_reserve = liquidity.quote_reserve
-      output_reserve = liquidity.base_reserve
-    } else {
-      input_reserve = liquidity.base_reserve
-      output_reserve = liquidity.quote_reserve
-    }
+    const is_output_base = pool_assets.base.symbol === output_token_symbol
 
     return {
-      input_reserve,
-      output_reserve
+      input_reserve: is_output_base ? liquidity.quote_reserve : liquidity.base_reserve,
+      output_reserve: is_output_base ? liquidity.base_reserve : liquidity.quote_reserve
     }
   }
 
-  // TODO we update this function to also return info about matching pools for swap
-  // input_amm_address
-  // output_amm_address
   function compute_output_amount(
     input_token: TokenItemState,
     output_token_symbol: string
@@ -189,27 +176,27 @@ export const TokenSwapModule = ({ initialTokenPair }: TokenSwapModuleProps) => {
         || p.pool_assets.quote.symbol === output_token_symbol
     )
 
-    const is_direct_swap = matching_pools.length === 1;
     let output_amount = 0;
     let input_amm_address = '';
     let output_amm_address = '';
 
-    if (is_direct_swap) {
+    if (matching_pools.length === 1) {
       const swap_pool = matching_pools[0]
       const { input_reserve, output_reserve } = get_reserves_for_swap(
         swap_pool,
         output_token_symbol
       )
 
+      input_amm_address = swap_pool.swap_address
       output_amount = calculate_output_amount_for_swap(
         input_token.amount,
         input_reserve,
         output_reserve
       )
-
-      input_amm_address = swap_pool.swap_address
     } else {
       // TODO implement logic to get the output_amount for pass through swap
+      // get q_in => intermediate_b from input_amm, 
+      // then use intermediate_b to get q_out from output_amm
     }
 
     return {

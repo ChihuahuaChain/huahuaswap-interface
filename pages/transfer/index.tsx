@@ -97,7 +97,6 @@ export default function Transfer() {
   useEffect(() => {
     async function connectInternalAndExternalWallets() {
       if (status !== WalletStatusType.connected) {
-        console.log('going to connect internal wallet first')
         await connectInternalWallet(null)
       }
 

@@ -39,12 +39,7 @@ async function fetchTokenBalance({
     const coin = await client.getBalance(address, denom)
     const amount = coin ? Number(coin.amount) : 0
     return convertMicroDenomToDenom(amount, decimals)
-  }
-
-  /*
-   * everything else
-   *  */
-  if (token_address) {
+  } else if (token_address) {
     const balance = await CW20(client).use(token_address).balance(address)
     return convertMicroDenomToDenom(Number(balance), decimals)
   }
@@ -102,7 +97,7 @@ export const useTokenBalance = (tokenSymbol: string) => {
         return await fetchTokenBalance({
           client,
           address,
-          token: tokenInfo || ibcAssetInfo,
+          token: tokenInfo || mapIbcTokenToNative(ibcAssetInfo),
         })
       }
     },
@@ -131,7 +126,7 @@ export const useMultipleTokenBalance = (tokenSymbols?: Array<string>) => {
     [queryKey, address],
     async () => {
       const balances = await Promise.all(
-        tokenSymbols.map((tokenSymbol) =>
+        tokenSymbols?.map((tokenSymbol) =>
           fetchTokenBalance({
             client,
             address,
@@ -153,8 +148,8 @@ export const useMultipleTokenBalance = (tokenSymbols?: Array<string>) => {
     {
       enabled: Boolean(
         status === WalletStatusType.connected &&
-          tokenSymbols?.length &&
-          tokenList?.tokens
+        tokenSymbols?.length &&
+        tokenList?.tokens
       ),
 
       refetchOnMount: 'always',

@@ -6,7 +6,29 @@ import { ibcWalletState, walletState } from 'state/atoms/walletAtoms'
 import { APP_NAME } from 'util/constants'
 import { useLocalStorage } from '@rehooks/local-storage'
 
-export const WalletInfo = ({ label, icon, address, css }) => {
+type WalletInfoProps = {
+  label: any
+  icon: any
+  address: string
+  css: any
+}
+
+export const WalletInfo = ({ label, icon, address, css }: WalletInfoProps) => {
+  function truncate(fullStr, strLen, separator) {
+    if (fullStr.length <= strLen) return fullStr;
+
+    separator = separator || '...';
+
+    var sepLen = separator.length,
+      charsToShow = strLen - sepLen,
+      frontChars = Math.ceil(charsToShow / 2),
+      backChars = Math.floor(charsToShow / 2);
+
+    return fullStr.substr(0, frontChars) +
+      separator +
+      fullStr.substr(fullStr.length - backChars);
+  }
+
   return (
     <StyledDivForWrapper css={css}>
       {icon}
@@ -15,7 +37,7 @@ export const WalletInfo = ({ label, icon, address, css }) => {
         <StyledDivForAddressRow>
           <ConnectIcon color="secondary" size="medium" />
           <Text truncate={true} variant="legend">
-            {address || "address wasn't identified yet"}
+            {truncate(address, 40, '...') || "address wasn't identified yet"}
           </Text>
         </StyledDivForAddressRow>
       </div>
@@ -23,12 +45,12 @@ export const WalletInfo = ({ label, icon, address, css }) => {
   )
 }
 
-type WalletInfoProps = {
+type WalletTypeProps = {
   css?: CSS
   depositing?: boolean
 }
 
-export const externalWalletInfo = ({ css, depositing }: WalletInfoProps) => {
+export const externalWalletInfo = ({ css, depositing }: WalletTypeProps) => {
   const { address: ibcWalletAddress } = useRecoilValue(ibcWalletState)
   const [selectedWalletType] = useLocalStorage('selectedWalletType')
   let iconImg = <></>;
@@ -50,20 +72,20 @@ export const externalWalletInfo = ({ css, depositing }: WalletInfoProps) => {
   return (
     <WalletInfo
       css={css}
-      label={`From address`}
+      label={`${depositing ? 'From ' : 'To'} Address`}
       icon={iconImg}
       address={ibcWalletAddress}
     />
   )
 }
 
-export const AppWalletInfo = ({ css, depositing }: WalletInfoProps) => {
+export const AppWalletInfo = ({ css, depositing }: WalletTypeProps) => {
   const { address: walletAddress } = useRecoilValue(walletState)
 
   return (
     <WalletInfo
       css={css}
-      label={`${depositing ? 'To ' : ''}${APP_NAME}`}
+      label={`${depositing ? 'To ' : 'From '}${APP_NAME}`}
       icon={<IconWrapper color="secondary" size="big" icon={<Logo />} />}
       address={walletAddress}
     />

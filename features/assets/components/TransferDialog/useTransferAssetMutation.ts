@@ -48,7 +48,21 @@ const sendIbcTokens = (
       timeoutTimestamp: timeoutTimestampNanoseconds,
     }),
   }
-  return client.signAndBroadcast(senderAddress, [transferMsg], 'auto', memo)
+  return client.signAndBroadcast(
+    senderAddress,
+    [transferMsg],
+    // TODO get gas amount for ibc transfers from config
+    {
+      amount: [
+        {
+          denom: 'uhuahua',
+          amount: "1106650"
+        }
+      ],
+      gas: "1106650"
+    },
+    memo
+  )
 }
 
 export const useTransferAssetMutation = ({
@@ -79,7 +93,16 @@ export const useTransferAssetMutation = ({
         tokenInfo.channel,
         undefined,
         timeout,
-        'auto'
+        // TODO get gas amount for ibc transfers from config
+        {
+          amount: [
+            {
+              denom: tokenInfo.denom,
+              amount: "1106650"
+            }
+          ],
+          gas: "1106650"
+        }
       )
     }
 
