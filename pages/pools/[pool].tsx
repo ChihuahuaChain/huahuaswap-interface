@@ -37,7 +37,7 @@ export default function Pool() {
 
   const isMobile = useMedia('sm')
   const [pool, isLoading, isError] = useQueryPoolLiquidity({ poolId })
-  const { base: base_token, quote: quote_token } = pool.pool_assets
+  const { base: base_token, quote: quote_token } = pool?.pool_assets
   const isLoadingInitial = isLoading && !pool
 
   if (!pool || !poolId) {

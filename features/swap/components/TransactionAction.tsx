@@ -18,7 +18,7 @@ export const TransactionAction = ({
   const { mutate: handleSwap, isLoading: isExecutingTransaction } =
     useTokenSwap()
   const { mutate: connectWallet } = useConnectWallet()
-  const [{ input_token, output_token }, setTokenSwapState] = useRecoilState(tokenSwapAtom)
+  const { input_token, output_token } = useRecoilValue(tokenSwapAtom)
 
   /* wallet state */
   const { status } = useRecoilValue(walletState)

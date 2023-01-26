@@ -113,6 +113,7 @@ export const TokenSwapModule = ({ initialTokenPair }: TokenSwapModuleProps) => {
 
     if (updated_input.symbol !== current_input.symbol && updated_input.symbol !== current_output.symbol) {
       current_input = { ...updated_input, amount: 0 }
+      current_output = { ...current_output, amount: 0 }
     } else if (updated_input.amount !== current_input.amount) {
       current_input = updated_input;
 
@@ -172,8 +173,8 @@ export const TokenSwapModule = ({ initialTokenPair }: TokenSwapModuleProps) => {
   ): { output_amount: number, input_amm_address: string, output_amm_address: string } {
     // filter matching pools for swap
     const matching_pools = pools.filter(
-      p => p.pool_assets.quote.symbol === input_token.symbol
-        || p.pool_assets.quote.symbol === output_token_symbol
+      p => p.pool_assets.quote.symbol === output_token_symbol
+        || p.pool_assets.quote.symbol === input_token.symbol
     )
 
     let output_amount = 0;
@@ -182,21 +183,56 @@ export const TokenSwapModule = ({ initialTokenPair }: TokenSwapModuleProps) => {
 
     if (matching_pools.length === 1) {
       const swap_pool = matching_pools[0]
+
       const { input_reserve, output_reserve } = get_reserves_for_swap(
         swap_pool,
         output_token_symbol
       )
-
-      input_amm_address = swap_pool.swap_address
       output_amount = calculate_output_amount_for_swap(
         input_token.amount,
         input_reserve,
         output_reserve
       )
-    } else {
-      // TODO implement logic to get the output_amount for pass through swap
-      // get q_in => intermediate_b from input_amm, 
-      // then use intermediate_b to get q_out from output_amm
+
+      // update input_amm_address
+      input_amm_address = swap_pool.swap_address
+    } else if (matching_pools.length === 2) {
+      // matching_pools_by_quote_token_symbol
+      const matching_pools_by_quote_token_symbol = {}
+      matching_pools.forEach(p => {
+        const symbol = p.pool_assets.quote.symbol;
+        matching_pools_by_quote_token_symbol[symbol] = p
+      })
+
+      const input_swap_pool = matching_pools_by_quote_token_symbol[input_token.symbol] as PoolEntityTypeWithLiquidity
+      const output_swap_pool = matching_pools_by_quote_token_symbol[output_token_symbol] as PoolEntityTypeWithLiquidity
+      const intermediate_token_symbol = input_swap_pool.pool_assets.base.symbol
+
+      // get intermediate_base_output from input_swap_pool
+      const { input_reserve, output_reserve } = get_reserves_for_swap(
+        input_swap_pool,
+        intermediate_token_symbol
+      )
+      const intermediate_base_output = calculate_output_amount_for_swap(
+        input_token.amount,
+        input_reserve,
+        output_reserve
+      )
+
+      // then use intermediate_base_output from input_swap_pool to get output_amount from output_swap_pool
+      const { input_reserve: A, output_reserve: B } = get_reserves_for_swap(
+        output_swap_pool,
+        output_token_symbol
+      )
+      output_amount = calculate_output_amount_for_swap(
+        intermediate_base_output,
+        A,
+        B
+      )
+
+      // update input_amm_address and output_amm_address
+      input_amm_address = input_swap_pool.swap_address
+      output_amm_address = output_swap_pool.swap_address
     }
 
     return {

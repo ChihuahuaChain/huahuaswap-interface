@@ -9,54 +9,49 @@ import {
 } from '../../util/messages'
 
 type PassThroughTokenSwapArgs = {
-  tokenAmount: number
-  price: number
-  slippage: number
-  senderAddress: string
-  swapAddress: string
-  outputSwapAddress: string
-  tokenA: TokenInfo
-  client: SigningCosmWasmClient
+  input_token_info: TokenInfo
+  quote_input_amount: number
+  input_amm_address: string
+  output_amm_address: string
+  min_quote_output_amount: number
+  client: SigningCosmWasmClient,
+  sender_address: string
 }
 
 export const passThroughTokenSwap = async ({
-  tokenAmount,
-  tokenA,
-  outputSwapAddress,
-  swapAddress,
-  senderAddress,
-  slippage,
-  price,
+  input_token_info,
+  quote_input_amount,
+  input_amm_address,
+  output_amm_address,
+  min_quote_output_amount,
   client,
+  sender_address
 }: PassThroughTokenSwapArgs): Promise<any> => {
-  const minOutputToken = Math.floor(price * (1 - slippage))
-
   const swapMessage = {
     pass_through_swap: {
-      output_min_token: `${minOutputToken}`,
-      input_token: 'Token2',
-      input_token_amount: `${tokenAmount}`,
-      output_amm_address: outputSwapAddress,
+      quote_input_amount: `${quote_input_amount}`,
+      min_quote_output_amount: `${min_quote_output_amount}`,
+      output_amm_address
     },
   }
 
-  if (!tokenA.native) {
+  if (!input_token_info.native) {
     const increaseAllowanceMessage = createIncreaseAllowanceMessage({
-      senderAddress,
-      tokenAmount,
-      tokenAddress: tokenA.token_address,
-      swapAddress,
+      senderAddress: sender_address,
+      tokenAmount: quote_input_amount,
+      tokenAddress: input_token_info.token_address,
+      swapAddress: input_amm_address,
     })
 
     const executeMessage = createExecuteMessage({
-      senderAddress,
-      contractAddress: swapAddress,
+      senderAddress: sender_address,
+      contractAddress: input_amm_address,
       message: swapMessage,
     })
 
     return validateTransactionSuccess(
       await client.signAndBroadcast(
-        senderAddress,
+        sender_address,
         [increaseAllowanceMessage, executeMessage],
         'auto'
       )
@@ -64,11 +59,11 @@ export const passThroughTokenSwap = async ({
   }
 
   return await client.execute(
-    senderAddress,
-    swapAddress,
+    sender_address,
+    input_amm_address,
     swapMessage,
     'auto',
     undefined,
-    [coin(tokenAmount, tokenA.denom)]
+    [coin(quote_input_amount, input_token_info.denom)]
   )
 }

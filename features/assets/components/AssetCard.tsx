@@ -40,8 +40,6 @@ export const AssetCard = ({
   const [showingRedirectDepositDialog, setShowingRedirectDepositDialog] =
     useState(false)
 
-  const [dollarValue] = useBaseTokenDollarValue()
-
   const shouldPerformDepositOutsideApp = Boolean(external_deposit_uri)
 
   const handleDepositClick = () => {
@@ -91,14 +89,6 @@ export const AssetCard = ({
               <Text variant="primary">
                 {rendersActiveAppearance ? balance : null} {name}
               </Text>
-              {rendersActiveAppearance && (
-                <Text variant="caption" css={{ paddingTop: '$1' }}>
-                  $
-                  {dollarValueFormatterWithDecimals(dollarValue * balance, {
-                    includeCommaSeparation: true,
-                  })}
-                </Text>
-              )}
             </div>
           </StyledElementForToken>
         </StyledElementForCard>

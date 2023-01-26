@@ -21,7 +21,7 @@ export const useTokenDollarValueQuery = (symbol: string) => {
   const { data, isLoading } = useQuery(
     `tokenDollarValue/${symbol}`,
     async (): Promise<number> => {
-      return tokenDollarValueQuery(tokenInfo.id)
+      return tokenDollarValueQuery(tokenInfo?.id)
     },
     {
       enabled: Boolean(tokenInfo?.id),

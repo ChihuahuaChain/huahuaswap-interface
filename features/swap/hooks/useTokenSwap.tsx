@@ -55,16 +55,15 @@ export const useTokenSwap = () => {
           input_token_info
         })
       } else {
-        /*return await passThroughTokenSwap({
-          tokenAmount,
-          price,
-          slippage,
-          senderAddress: address,
-          tokenA,
-          swapAddress: baseTokenAPool.swap_address,
-          outputSwapAddress: baseTokenBPool.swap_address,
+        return await passThroughTokenSwap({
+          input_token_info,
+          quote_input_amount: convertDenomToMicroDenom(input_token.amount, POOL_TOKENS_DECIMALS),
+          min_quote_output_amount: convertDenomToMicroDenom(output_token.amount, POOL_TOKENS_DECIMALS),
+          input_amm_address: input_token.swap_address,
+          output_amm_address: output_token.swap_address,
           client,
-        })*/
+          sender_address: address
+        })
       }
     },
     {

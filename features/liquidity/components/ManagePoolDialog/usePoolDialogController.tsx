@@ -142,7 +142,7 @@ const useMutateLiquidity = ({
           client,
         })
       } else {
-        const lp_amount_to_remove = Math.floor(percentage * liquidity.provided_lp_amount)
+        const lp_amount_to_remove = percentage * liquidity.provided_lp_amount
         const lp_ratio = lp_amount_to_remove / liquidity.total_lp_amount
         const min_base_token_output = lp_ratio * liquidity.base_reserve
         const min_quote_token_output = lp_ratio * liquidity.quote_reserve

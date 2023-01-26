@@ -55,9 +55,9 @@ export const TokenSelector = ({
   const is_base_token = token_info?.denom === baseToken?.denom;
   const [dollar_price] = useBaseTokenDollarValue()
   const show_usd_estimate = is_base_token && amount > 0
-  const handleAmountChange = (amount) => onChange({ symbol: token_symbol, amount })
+  const handleAmountChange = (amount) => onChange({ symbol: token_symbol, amount, swap_address: '' })
   const handleSelectToken = (selectedTokenSymbol) => {
-    onChange({ symbol: selectedTokenSymbol, amount })
+    onChange({ symbol: selectedTokenSymbol, amount, swap_address: '' })
     setTokenListShowing(false)
   }
 
