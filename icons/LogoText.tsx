@@ -3,7 +3,7 @@ import { SVGProps } from 'react'
 export const LogoText = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      width="215"
+      width="190"
       height="80"
       viewBox="0 0 18500 3556"
       fill="currentColor"

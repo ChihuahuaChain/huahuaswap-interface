@@ -12,93 +12,68 @@ import {
 } from '../../util/messages'
 
 type ExecuteAddLiquidityArgs = {
-  tokenA: TokenInfo
-  tokenB: TokenInfo
-  tokenAAmount: number
-  /*
-   * The contract calculates `tokenBAmount` automatically.
-   * However, the user needs to set max amount of `tokenB` they're willing to spend.
-   * If the calculated amount exceeds the max amount, the transaction then fails.
-   */
-  maxTokenBAmount: number
-  senderAddress: string
-  swapAddress: string
+  base_token_info: TokenInfo
+  quote_token_info: TokenInfo
+  base_amount_to_add: number
+  quote_amount_to_add: number
+  swap_address: string
+  sender_address: string
   client: SigningCosmWasmClient
 }
 
 export const executeAddLiquidity = async ({
-  tokenA,
-  tokenB,
-  tokenAAmount,
-  maxTokenBAmount,
+  base_token_info,
+  quote_token_info,
+  base_amount_to_add,
+  quote_amount_to_add,
+  swap_address,
+  sender_address,
   client,
-  swapAddress,
-  senderAddress,
 }: ExecuteAddLiquidityArgs): Promise<any> => {
-  const addLiquidityMessage = {
+  const add_liquidity_message = {
     add_liquidity: {
-      token1_amount: `${tokenAAmount}`,
-      max_token2: `${maxTokenBAmount}`,
-      min_liquidity: `${0}`,
+      base_token_amount: `${base_amount_to_add}`,
+      max_quote_token_amount: `${quote_amount_to_add}`,
     },
   }
 
-  if (!tokenA.native || !tokenB.native) {
-    const increaseAllowanceMessages: Array<MsgExecuteContractEncodeObject> = []
+  if (!quote_token_info.native) {
+    const increase_allowance_message: MsgExecuteContractEncodeObject = createIncreaseAllowanceMessage({
+      tokenAmount: quote_amount_to_add,
+      tokenAddress: quote_token_info.token_address,
+      senderAddress: sender_address,
+      swapAddress: swap_address,
+    })
 
-    /* increase allowance for each non-native token */
-    if (!tokenA.native) {
-      increaseAllowanceMessages.push(
-        createIncreaseAllowanceMessage({
-          tokenAmount: tokenAAmount,
-          tokenAddress: tokenA.token_address,
-          senderAddress,
-          swapAddress,
-        })
-      )
-    }
-    if (!tokenB.native) {
-      increaseAllowanceMessages.push(
-        createIncreaseAllowanceMessage({
-          tokenAmount: maxTokenBAmount,
-          tokenAddress: tokenB.token_address,
-          senderAddress,
-          swapAddress,
-        })
-      )
-    }
-
-    const executeAddLiquidityMessage = createExecuteMessage({
-      message: addLiquidityMessage,
-      senderAddress,
-      contractAddress: swapAddress,
-      /* each native token needs to be added to the funds */
+    const execute_add_liquidity_message = createExecuteMessage({
+      message: add_liquidity_message,
+      senderAddress: sender_address,
+      contractAddress: swap_address,
       funds: [
-        tokenA.native && coin(tokenAAmount, tokenA.denom),
-        tokenB.native && coin(maxTokenBAmount, tokenB.denom),
-      ].filter(Boolean),
+        coin(base_amount_to_add, base_token_info.denom),
+      ],
     })
 
     return validateTransactionSuccess(
       await client.signAndBroadcast(
-        senderAddress,
-        [...increaseAllowanceMessages, executeAddLiquidityMessage],
+        sender_address,
+        [increase_allowance_message, execute_add_liquidity_message],
         'auto'
       )
     )
+  } else {
+    const funds = [
+      coin(base_amount_to_add, base_token_info.denom),
+      coin(quote_amount_to_add, quote_token_info.denom),
+    ].sort((a, b) => (a.denom > b.denom ? 1 : -1))
+
+    return await client.execute(
+      sender_address,
+      swap_address,
+      add_liquidity_message,
+      'auto',
+      undefined,
+      funds
+    )
   }
-
-  const funds = [
-    coin(tokenAAmount, tokenA.denom),
-    coin(maxTokenBAmount, tokenB.denom),
-  ].sort((a, b) => (a.denom > b.denom ? 1 : -1))
-
-  return await client.execute(
-    senderAddress,
-    swapAddress,
-    addLiquidityMessage,
-    'auto',
-    undefined,
-    funds
-  )
 }

@@ -16,7 +16,7 @@ import {
   styled,
   Text,
 } from 'junoblocks'
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { useQueriesDataSelector } from '../../hooks/useQueriesDataSelector'
 import { usePoolsListQuery } from '../../queries/usePoolsListQuery'
@@ -104,26 +104,19 @@ export default function Pools() {
 
               <StyledDivForPoolsGrid>
                 {myPools.map(
-                  ({
-                    liquidity,
-                    pool_id,
-                    pool_assets: [tokenA, tokenB],
-                    rewards_tokens,
-                  }) => (
+                  ({ pool_id, liquidity, pool_assets }) => (
                     <PoolCard
                       key={pool_id}
-                      tokenASymbol={tokenA.symbol}
                       poolId={pool_id}
-                      rewardsTokens={rewards_tokens}
-                      tokenBSymbol={tokenB.symbol}
-                      providedTotalLiquidity={liquidity.providedTotal}
-                      stakedLiquidity={liquidity.staked}
-                      availableLiquidity={liquidity.available}
-                      aprValue={liquidity.rewards.annualYieldPercentageReturn}
+                      base_token={pool_assets.base}
+                      quote_token={pool_assets.quote}
+                      liquidity={liquidity}
                     />
                   )
                 )}
               </StyledDivForPoolsGrid>
+
+
               {Boolean(allPools?.length) && (
                 <Inline
                   gap={4}
@@ -143,18 +136,16 @@ export default function Pools() {
               )}
             </>
           )}
+
           <StyledDivForPoolsGrid>
             {allPools?.map(
-              ({ liquidity, pool_id, pool_assets: [tokenA, tokenB] }) => (
+              ({ liquidity, pool_id, pool_assets }) => (
                 <PoolCard
                   key={pool_id}
-                  tokenASymbol={tokenA.symbol}
                   poolId={pool_id}
-                  tokenBSymbol={tokenB.symbol}
-                  providedTotalLiquidity={liquidity.providedTotal}
-                  stakedLiquidity={liquidity.staked}
-                  availableLiquidity={liquidity.available}
-                  aprValue={liquidity.rewards.annualYieldPercentageReturn}
+                  base_token={pool_assets.base}
+                  quote_token={pool_assets.quote}
+                  liquidity={liquidity}
                 />
               )
             )}

@@ -13,16 +13,13 @@ export type TokenInfo = {
   native: boolean
 }
 
-export type TokenInfoWithReward = TokenInfo & {
-  rewards_address: string
-}
-
 export type PoolEntityType = {
   pool_id: string
-  pool_assets: [TokenInfo, TokenInfo]
+  pool_assets: {
+    base: TokenInfo,
+    quote: TokenInfo
+  },
   swap_address: string
-  staking_address: string
-  rewards_tokens: Array<TokenInfoWithReward>
 }
 
 type PoolsListQueryResponse = {

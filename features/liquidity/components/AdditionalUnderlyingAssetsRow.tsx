@@ -1,4 +1,4 @@
-import { useTokenDollarValue } from 'hooks/useTokenDollarValue'
+import { useBaseTokenDollarValue } from '../../../hooks/useBaseTokenDollarValue'
 import {
   Button,
   Column,
@@ -72,7 +72,7 @@ export const AdditionalUnderlyingAssetsRow = ({
 }
 
 const DisplayTokenPrice = ({ tokenSymbol, tokenAmount }) => {
-  const [dollarPrice] = useTokenDollarValue(tokenSymbol)
+  const [dollarPrice] = useBaseTokenDollarValue()
   const formattedDollarPrice = dollarValueFormatterWithDecimals(
     protectAgainstNaN(tokenAmount * dollarPrice),
     { includeCommaSeparation: true }

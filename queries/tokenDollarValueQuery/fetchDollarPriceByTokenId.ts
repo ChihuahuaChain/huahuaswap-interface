@@ -1,11 +1,9 @@
 type ApiResponse = Record<string, { usd: number }>
 
-export const fetchDollarPriceByTokenIds = debounce(
-  async (tokenIds: Array<string>): Promise<ApiResponse> => {
-    const apiIds = tokenIds.flat().join(',')
-
+export const fetchDollarPriceByTokenId = debounce(
+  async (tokenId: string): Promise<ApiResponse> => {
     const response = await fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${apiIds}&vs_currencies=usd`,
+      `https://api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=usd`,
       {
         method: 'GET',
       }

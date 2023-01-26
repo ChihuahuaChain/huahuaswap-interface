@@ -10,7 +10,7 @@ import {
   Toast,
   UpRightArrow,
 } from 'junoblocks'
-import React, { useEffect, useReducer } from 'react'
+import { useEffect, useReducer } from 'react'
 import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'
@@ -97,7 +97,6 @@ export default function Transfer() {
   useEffect(() => {
     async function connectInternalAndExternalWallets() {
       if (status !== WalletStatusType.connected) {
-        console.log('going to connect internal wallet first')
         await connectInternalWallet(null)
       }
 
@@ -116,7 +115,7 @@ export default function Transfer() {
         <StyledWrapper>
           <PageHeader
             title="IBC Transfer"
-            subtitle="Easily and quickly initiate payments across IBC."
+            subtitle="Deposit or withdraw IBC assets."
           />
           <AssetsList onActionClick={handleAssetCardActionClick} />
         </StyledWrapper>

@@ -1,60 +1,85 @@
 import { useTokenBalance } from 'hooks/useTokenBalance'
 import {
+  BasicNumberInput,
   Button,
   IconWrapper,
   Inline,
   styled,
   Union,
   useOnClickOutside,
+  Text,
+  Column,
+  dollarValueFormatterWithDecimals
 } from 'junoblocks'
-import React, { useRef, useState } from 'react'
-
+import React, { useEffect, useRef, useState } from 'react'
+import { useTokenInfo } from '../../../hooks/useTokenInfo'
+import { TokenItemState } from '../swapAtoms'
+import { useBaseTokenInfo } from 'hooks/useTokenInfo'
 import { ConvenienceBalanceButtons } from './ConvenienceBalanceButtons'
 import { QueryInput } from './QueryInput'
-import { SelectorInput } from './SelectorInput'
 import { SelectorToggle } from './SelectorToggle'
 import { TokenOptionsList } from './TokenOptionsList'
+import { useBaseTokenDollarValue } from 'hooks/useBaseTokenDollarValue'
+
 
 type TokenSelectorProps = {
+  amount: number
+  token_symbol: string
   readOnly?: boolean
   disabled?: boolean
-  amount: number
-  tokenSymbol: string
-  onChange: (token: { tokenSymbol; amount }) => void
   size?: 'small' | 'large'
+  onChange: (token: TokenItemState) => void
 }
 
 export const TokenSelector = ({
   readOnly,
   disabled,
-  tokenSymbol,
+  token_symbol,
   amount,
   onChange,
   size = 'large',
 }: TokenSelectorProps) => {
   const wrapperRef = useRef<HTMLDivElement>()
   const inputRef = useRef<HTMLInputElement>()
-
   const [isTokenListShowing, setTokenListShowing] = useState(false)
-
-  const { balance: availableAmount } = useTokenBalance(tokenSymbol)
+  const token_info = useTokenInfo(token_symbol)
   const [tokenSearchQuery, setTokenSearchQuery] = useState('')
   const [isInputForSearchFocused, setInputForSearchFocused] = useState(false)
   const [isInputForAmountFocused, setInputForAmountFocused] = useState(false)
-
+  const { balance: available_amount } = useTokenBalance(token_symbol)
+  const [max_applicable_amount, set_max_applicable_amount] = useState(available_amount)
   const shouldShowConvenienceBalanceButtons = Boolean(
-    !isTokenListShowing && tokenSymbol && !readOnly && availableAmount > 0
+    !isTokenListShowing && token_symbol && !readOnly && max_applicable_amount > 0
   )
-
-  const handleAmountChange = (amount) => onChange({ tokenSymbol, amount })
+  const baseToken = useBaseTokenInfo()
+  const is_base_token = token_info?.denom === baseToken?.denom;
+  const [dollar_price] = useBaseTokenDollarValue()
+  const show_usd_estimate = is_base_token && amount > 0
+  const handleAmountChange = (amount) => onChange({ symbol: token_symbol, amount, swap_address: '' })
   const handleSelectToken = (selectedTokenSymbol) => {
-    onChange({ tokenSymbol: selectedTokenSymbol, amount })
+    onChange({ symbol: selectedTokenSymbol, amount, swap_address: '' })
     setTokenListShowing(false)
   }
+
+  // If is_base_token, we multiply the amount by base_token_price_in_usd
+  const formattedDollarValue = dollarValueFormatterWithDecimals(
+    is_base_token ? dollar_price * amount : 0, {
+    includeCommaSeparation: true,
+  })
 
   useOnClickOutside([wrapperRef], () => {
     setTokenListShowing(false)
   })
+
+  // set_max_applicable_amount when token_info, and available_amount changes
+  useEffect(() => {
+    // TODO: Get tx_fee from config
+    const tx_fee = 1   // defaults to 1huahua
+    set_max_applicable_amount(
+      is_base_token ? Math.max(available_amount - tx_fee, 0) : available_amount
+    );
+  }, [token_info, available_amount, set_max_applicable_amount])
+
 
   if (size === 'small') {
     return (
@@ -85,8 +110,8 @@ export const TokenSelector = ({
         {!isTokenListShowing && (
           <Inline css={{ padding: '$6 $4', display: 'grid' }}>
             <SelectorToggle
-              availableAmount={availableAmount}
-              tokenSymbol={tokenSymbol}
+              availableAmount={available_amount}
+              tokenSymbol={token_symbol}
               isSelecting={isTokenListShowing}
               onToggle={
                 !disabled
@@ -107,29 +132,41 @@ export const TokenSelector = ({
             {shouldShowConvenienceBalanceButtons && (
               <Inline gap={4}>
                 <ConvenienceBalanceButtons
-                  tokenSymbol={tokenSymbol}
-                  availableAmount={availableAmount}
+                  tokenSymbol={token_symbol}
+                  availableAmount={max_applicable_amount}
                   onChange={handleAmountChange}
                 />
               </Inline>
             )}
-            <SelectorInput
-              inputRef={inputRef}
-              amount={amount}
-              disabled={!tokenSymbol || readOnly || disabled}
-              onAmountChange={handleAmountChange}
-              onFocus={() => {
-                setInputForAmountFocused(true)
-              }}
-              onBlur={() => {
-                setInputForAmountFocused(false)
-              }}
-            />
+            <Column gap={2}>
+              <Text variant="primary">
+                <BasicNumberInput
+                  ref={inputRef}
+                  value={amount}
+                  min={0}
+                  max={max_applicable_amount}
+                  disabled={!token_symbol || readOnly || disabled}
+                  onChange={handleAmountChange}
+                  onFocus={() => {
+                    setInputForAmountFocused(true)
+                  }}
+                  onBlur={() => {
+                    setInputForAmountFocused(false)
+                  }}
+                />
+              </Text>
+
+              {show_usd_estimate && (
+                <Text variant="caption" color="disabled" wrap={false}>
+                  ≈ ${formattedDollarValue}
+                </Text>
+              )}
+            </Column>
           </StyledInlineForInputWrapper>
         )}
         {isTokenListShowing && (
           <TokenOptionsList
-            activeTokenSymbol={tokenSymbol}
+            activeTokenSymbol={token_symbol}
             onSelect={handleSelectToken}
             css={{ padding: '$4 $6 $12' }}
             queryFilter={tokenSearchQuery}
@@ -162,8 +199,8 @@ export const TokenSelector = ({
           )}
           {!isTokenListShowing && (
             <SelectorToggle
-              availableAmount={availableAmount}
-              tokenSymbol={tokenSymbol}
+              availableAmount={available_amount}
+              tokenSymbol={token_symbol}
               isSelecting={isTokenListShowing}
               onToggle={
                 !disabled
@@ -175,10 +212,10 @@ export const TokenSelector = ({
           {shouldShowConvenienceBalanceButtons && (
             <Inline gap={4} css={{ paddingLeft: '$8' }}>
               <ConvenienceBalanceButtons
-                disabled={availableAmount <= 0}
-                tokenSymbol={tokenSymbol}
-                availableAmount={availableAmount}
-                onChange={!disabled ? handleAmountChange : () => {}}
+                disabled={max_applicable_amount <= 0}
+                tokenSymbol={token_symbol}
+                availableAmount={max_applicable_amount}
+                onChange={!disabled ? handleAmountChange : () => { }}
               />
             </Inline>
           )}
@@ -193,18 +230,30 @@ export const TokenSelector = ({
             />
           )}
           {!isTokenListShowing && (
-            <SelectorInput
-              inputRef={inputRef}
-              amount={amount}
-              disabled={!tokenSymbol || readOnly || disabled}
-              onAmountChange={handleAmountChange}
-              onFocus={() => {
-                setInputForAmountFocused(true)
-              }}
-              onBlur={() => {
-                setInputForAmountFocused(false)
-              }}
-            />
+            <Column gap={2}>
+              <Text variant="primary">
+                <BasicNumberInput
+                  ref={inputRef}
+                  value={amount}
+                  min={0}
+                  max={max_applicable_amount}
+                  disabled={!token_symbol || readOnly || disabled}
+                  onChange={handleAmountChange}
+                  onFocus={() => {
+                    setInputForAmountFocused(true)
+                  }}
+                  onBlur={() => {
+                    setInputForAmountFocused(false)
+                  }}
+                />
+              </Text>
+
+              {show_usd_estimate && (
+                <Text variant="caption" color="disabled" wrap={false}>
+                  ≈ ${formattedDollarValue}
+                </Text>
+              )}
+            </Column>
           )}
         </StyledDivForAmountWrapper>
         <StyledDivForOverlay
@@ -222,7 +271,7 @@ export const TokenSelector = ({
       </StyledDivForWrapper>
       {isTokenListShowing && (
         <TokenOptionsList
-          activeTokenSymbol={tokenSymbol}
+          activeTokenSymbol={token_symbol}
           onSelect={handleSelectToken}
           queryFilter={tokenSearchQuery}
           css={{ padding: '$4 $6 $12' }}

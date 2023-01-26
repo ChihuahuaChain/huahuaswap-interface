@@ -10,7 +10,6 @@ export const useGetSupportedAssetsBalancesOnChain = () => {
   )
 
   const [tokenBalances, loadingBalances] = useMultipleTokenBalance(tokensList)
-
   const categorizedBalances = useMemo((): [
     typeof tokenBalances,
     typeof tokenBalances

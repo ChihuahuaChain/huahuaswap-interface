@@ -1,7 +1,7 @@
 import { useIBCAssetInfo } from 'hooks/useIBCAssetInfo'
 import { useIBCTokenBalance } from 'hooks/useIBCTokenBalance'
 import { useRefetchQueries } from 'hooks/useRefetchQueries'
-import { useTokenBalance } from 'hooks/useTokenBalance'
+import { useMultipleTokenBalance, useTokenBalance } from 'hooks/useTokenBalance'
 import {
   Button,
   Dialog,
@@ -49,6 +49,8 @@ export const TransferDialog = ({
   const { balance: externalIbcAssetBalance } = useIBCTokenBalance(tokenSymbol)
   const { balance: nativeAssetBalance } = useTokenBalance(tokenSymbol)
 
+  // const [tokenBalances, loadingBalances] = useMultipleTokenBalance([tokensList])
+
   const [tokenAmount, setTokenAmount] = useState(0)
   const refetchQueries = useRefetchQueries(['tokenBalance', 'ibcTokenBalance'])
 
@@ -64,9 +66,8 @@ export const TransferDialog = ({
       toast.custom((t) => (
         <Toast
           icon={<IconWrapper icon={<Valid />} color="valid" />}
-          title={`${tokenSymbol} ${
-            transactionKind === 'deposit' ? 'deposit' : 'withdrawal'
-          } successfully initiated`}
+          title={`${tokenSymbol} ${transactionKind === 'deposit' ? 'deposit' : 'withdrawal'
+            } successfully initiated`}
           onClose={() => toast.dismiss(t.id)}
         />
       ))
@@ -78,9 +79,8 @@ export const TransferDialog = ({
       toast.custom((t) => (
         <Toast
           icon={<IconWrapper icon={<Error />} color="error" />}
-          title={`Couldn't ${
-            transactionKind === 'deposit' ? 'Deposit' : 'Withdraw'
-          } the asset`}
+          title={`Couldn't ${transactionKind === 'deposit' ? 'Deposit' : 'Withdraw'
+            } the asset`}
           body={(error as any)?.message ?? error?.toString()}
           buttons={
             <Button
@@ -99,13 +99,14 @@ export const TransferDialog = ({
     },
   })
 
+  const is_deposit = transactionKind === 'deposit';
   const capitalizedTransactionType =
-    transactionKind === 'deposit' ? 'Deposit' : 'Withdraw'
+    is_deposit ? 'Deposit' : 'Withdraw'
 
   const WalletInfoPerformingActionFrom =
-    transactionKind === 'deposit' ? externalWalletInfo : AppWalletInfo
+    is_deposit ? externalWalletInfo : AppWalletInfo
   const WalletInfoPerformingActionAgainst =
-    transactionKind === 'withdraw' ? externalWalletInfo : AppWalletInfo
+    !is_deposit ? externalWalletInfo : AppWalletInfo
 
   return (
     <Dialog isShowing={isShowing} onRequestClose={onRequestClose}>
@@ -113,7 +114,7 @@ export const TransferDialog = ({
         <Text variant="header">{capitalizedTransactionType}</Text>
       </DialogHeader>
       <DialogContent>
-        <WalletInfoPerformingActionFrom css={{ paddingBottom: '$12' }} />
+        <WalletInfoPerformingActionFrom css={{ paddingBottom: '$12' }} depositing={is_deposit} />
         <AssetSelector
           activeTokenSymbol={tokenSymbol}
           onTokenSymbolSelect={onTokenSelect}
@@ -139,7 +140,7 @@ export const TransferDialog = ({
       </DialogContent>
       <DialogDivider offsetY="$10" />
       <DialogContent css={{ paddingBottom: '$8' }}>
-        <WalletInfoPerformingActionAgainst depositing={true} />
+        <WalletInfoPerformingActionAgainst depositing={is_deposit} />
       </DialogContent>
       <DialogButtons>
         <Button onClick={onRequestClose} variant="secondary">

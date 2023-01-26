@@ -27,17 +27,17 @@
       "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/juno.png"
     },
     {
-      "id": "secret",
-      "name": "Secret",
-      "symbol": "SCRT",
-      "chain_id": "secret-4",
-      "rpc": "https://lcd-secret.scrtlabs.com/rpc/",
-      "denom": "uscrt",
+      "id": "cerberus",
+      "name": "CERBERUS",
+      "symbol": "CRBRUS",
+      "chain_id": "cerberus-chain-1",
+      "rpc": "https://cerberus-rpc.polkachu.com:443",
+      "denom": "ucrbrus",
       "decimals": 6,
-      "channel": "channel-11",
-      "chihuahua_channel": "channel-16",
-      "chihuahua_denom": "ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09",
-      "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/scrt.png"
+      "channel": "channel-13",
+      "chihuahua_channel": "channel-35",
+      "chihuahua_denom": "ibc/D428F789942CF00C82B7AF8F40AE149905927B41B2EA07EA796F07AED185C96E",
+      "logoURI": "https://polkachu.com/images/chains/cerberus.png"
     }
   ]
 }

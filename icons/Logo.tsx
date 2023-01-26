@@ -3,8 +3,8 @@ import { SVGProps } from 'react'
 export const Logo = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      width="100"
-      height="80"
+      width="70"
+      height="70"
       viewBox="0 0 5500 4556"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"

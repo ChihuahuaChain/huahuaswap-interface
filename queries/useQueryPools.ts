@@ -2,54 +2,26 @@ import { protectAgainstNaN, usePersistance } from 'junoblocks'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
 import { useRecoilValue } from 'recoil'
-
 import { useCosmWasmClient } from '../hooks/useCosmWasmClient'
 import { walletState } from '../state/atoms/walletAtoms'
+import { queryMyLiquidity } from './queryMyLiquidity'
+import { querySwapInfo } from './querySwapInfo'
+import { useGetBaseTokenDollarValueQuery } from './useGetBaseTokenDollarValueQuery'
+import { convertMicroDenomToDenom } from 'util/conversion'
+import { POOL_TOKENS_DECIMALS } from 'util/constants'
+import { PoolEntityType, usePoolsListQuery } from './usePoolsListQuery'
 import {
-  __POOL_REWARDS_ENABLED__,
   DEFAULT_TOKEN_BALANCE_REFETCH_INTERVAL,
 } from '../util/constants'
-import { calcPoolTokenDollarValue } from '../util/conversion'
-import { queryMyLiquidity } from './queryMyLiquidity'
-import {
-  queryRewardsContracts,
-  SerializedRewardsContract,
-} from './queryRewardsContracts'
-import { queryStakedLiquidity } from './queryStakedLiquidity'
-import { querySwapInfo } from './querySwapInfo'
-import { useGetTokenDollarValueQuery } from './useGetTokenDollarValueQuery'
-import { PoolEntityType, usePoolsListQuery } from './usePoolsListQuery'
-
-export type ReserveType = [number, number]
-
-export type PoolTokenValue = {
-  tokenAmount: number
-  dollarValue: number
-}
-
-export type PoolState = {
-  total: PoolTokenValue
-  provided: PoolTokenValue
-}
 
 export type PoolLiquidityState = {
-  available: PoolState
-  staked: PoolState
-
-  providedTotal: PoolTokenValue
-
-  reserves: {
-    total: ReserveType
-    provided: ReserveType
-    totalStaked: ReserveType
-    providedStaked: ReserveType
-    totalProvided: ReserveType
-  }
-
-  rewards: {
-    annualYieldPercentageReturn: number
-    contracts?: Array<SerializedRewardsContract>
-  }
+  total_lp_amount: number,
+  provided_lp_amount: number,
+  base_reserve: number,
+  quote_reserve: number,
+  total_liquidity_in_usd: number,
+  provided_liquidity_in_usd: number,
+  base_token_price_in_usd: number,
 }
 
 export type PoolEntityTypeWithLiquidity = PoolEntityType & {
@@ -65,127 +37,48 @@ export const useQueryMultiplePoolsLiquidity = ({
   pools,
   refetchInBackground = false,
 }: QueryMultiplePoolsArgs) => {
-  const [getTokenDollarValue, enabledGetTokenDollarValue] =
-    useGetTokenDollarValueQuery()
-
+  const [get_base_token_dollar_value, enabledGetTokenDollarValue] =
+    useGetBaseTokenDollarValueQuery()
   const { address, client: signingClient } = useRecoilValue(walletState)
-  const client = useCosmWasmClient()
-
   const context = {
-    client,
+    client: useCosmWasmClient(),
     signingClient,
-    getTokenDollarValue,
+    get_base_token_dollar_value,
   }
 
   async function queryPoolLiquidity(
     pool: PoolEntityType
   ): Promise<PoolEntityTypeWithLiquidity> {
-    const [tokenA] = pool.pool_assets
+    const base_token_price_in_usd = await get_base_token_dollar_value()
 
-    const swap = await querySwapInfo({
+    const swap_info = await querySwapInfo({
       context,
       swap_address: pool.swap_address,
     })
 
-    const { totalReserve, providedLiquidityInMicroDenom, providedReserve } =
+    const { provided_lp_in_micro_denom } =
       await queryMyLiquidity({
         context,
-        swap,
+        swap: swap_info,
         address,
       })
 
-    const {
-      providedStakedAmountInMicroDenom,
-      totalStakedAmountInMicroDenom,
-      totalStakedReserve,
-      providedStakedReserve,
-    } = await queryStakedLiquidity({
-      context,
-      address,
-      stakingAddress: pool.staking_address,
-      totalReserve,
-      swap,
-    })
+    const total_lp_amount = convertMicroDenomToDenom(swap_info.lp_token_supply, POOL_TOKENS_DECIMALS)
+    const provided_lp_amount = convertMicroDenomToDenom(provided_lp_in_micro_denom, POOL_TOKENS_DECIMALS)
+    const base_reserve = convertMicroDenomToDenom(swap_info.base_reserve, POOL_TOKENS_DECIMALS)
+    const quote_reserve = convertMicroDenomToDenom(swap_info.quote_reserve, POOL_TOKENS_DECIMALS)
+    const total_liquidity_in_usd = 2 * (base_reserve * base_token_price_in_usd);
+    const lp_ratio = protectAgainstNaN(provided_lp_amount / total_lp_amount);
+    const provided_liquidity_in_usd = lp_ratio * total_liquidity_in_usd;
 
-    const tokenADollarPrice = await getTokenDollarValue({
-      tokenInfo: tokenA,
-      tokenAmountInDenom: 1,
-    })
-
-    function getPoolTokensValue({ tokenAmountInMicroDenom }) {
-      return {
-        tokenAmount: tokenAmountInMicroDenom,
-        dollarValue: calcPoolTokenDollarValue({
-          tokenAmountInMicroDenom,
-          tokenSupply: swap.lp_token_supply,
-          tokenReserves: totalReserve[0],
-          tokenDollarPrice: tokenADollarPrice,
-        }),
-      }
-    }
-
-    const [totalLiquidity, providedLiquidity, totalStaked, providedStaked] = [
-      /* calc total liquidity dollar value */
-      getPoolTokensValue({
-        tokenAmountInMicroDenom: swap.lp_token_supply,
-      }),
-      /* calc provided liquidity dollar value */
-      getPoolTokensValue({
-        tokenAmountInMicroDenom: providedLiquidityInMicroDenom,
-      }),
-      /* calc total staked liquidity dollar value */
-      getPoolTokensValue({
-        tokenAmountInMicroDenom: totalStakedAmountInMicroDenom,
-      }),
-      /* calc provided liquidity dollar value */
-      getPoolTokensValue({
-        tokenAmountInMicroDenom: providedStakedAmountInMicroDenom,
-      }),
-    ]
-
-    let annualYieldPercentageReturn = 0
-    let rewardsContracts: Array<SerializedRewardsContract> | undefined
-
-    const shouldQueryRewardsContracts = pool.rewards_tokens?.length > 0
-    if (shouldQueryRewardsContracts) {
-      rewardsContracts = await queryRewardsContracts({
-        swapAddress: pool.swap_address,
-        rewardsTokens: pool.rewards_tokens,
-        context,
-      })
-      annualYieldPercentageReturn = calculateRewardsAnnualYieldRate({
-        rewardsContracts,
-        totalStakedDollarValue: totalStaked.dollarValue || 1,
-      })
-    }
-
-    const liquidity = {
-      available: {
-        total: totalLiquidity,
-        provided: providedLiquidity,
-      },
-      staked: {
-        total: totalStaked,
-        provided: providedStaked,
-      },
-      providedTotal: {
-        tokenAmount: providedLiquidity.tokenAmount + providedStaked.tokenAmount,
-        dollarValue: providedLiquidity.dollarValue + providedStaked.dollarValue,
-      },
-      reserves: {
-        total: totalReserve,
-        provided: providedReserve,
-        totalStaked: totalStakedReserve,
-        providedStaked: providedStakedReserve,
-        totalProvided: [
-          providedReserve[0] + providedStakedReserve[0],
-          providedReserve[1] + providedStakedReserve[1],
-        ] as ReserveType,
-      },
-      rewards: {
-        annualYieldPercentageReturn,
-        contracts: rewardsContracts,
-      },
+    const liquidity: PoolLiquidityState = {
+      total_lp_amount,
+      provided_lp_amount,
+      base_reserve,
+      quote_reserve,
+      total_liquidity_in_usd,
+      provided_liquidity_in_usd,
+      base_token_price_in_usd,
     }
 
     return {
@@ -198,7 +91,6 @@ export const useQueryMultiplePoolsLiquidity = ({
     (pools ?? []).map((pool) => ({
       queryKey: `@pool-liquidity/${pool.pool_id}/${address}`,
       enabled: Boolean(enabledGetTokenDollarValue && pool.pool_id),
-
       refetchOnMount: false as const,
       refetchInterval: refetchInBackground
         ? DEFAULT_TOKEN_BALANCE_REFETCH_INTERVAL
@@ -235,18 +127,3 @@ export const useQueryPoolLiquidity = ({ poolId }) => {
   ] as const
 }
 
-export function calculateRewardsAnnualYieldRate({
-  rewardsContracts,
-  totalStakedDollarValue,
-}) {
-  if (!__POOL_REWARDS_ENABLED__) return 0
-
-  const totalRewardRatePerYearInDollarValue = rewardsContracts.reduce(
-    (value, { rewardRate }) => value + rewardRate.ratePerYear.dollarValue,
-    0
-  )
-
-  return protectAgainstNaN(
-    (totalRewardRatePerYearInDollarValue / totalStakedDollarValue) * 100
-  )
-}

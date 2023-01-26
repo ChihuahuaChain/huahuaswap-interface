@@ -26,9 +26,7 @@ export const LiquidityInput: FC<LiquidityInputProps> = ({
 }) => {
   const [focusedOnInput, setFocusedOnInput] = useState(false)
   const inputRef = useRef<HTMLInputElement>()
-
   const { name: tokenName, logoURI } = useTokenInfo(tokenSymbol)
-
   const handleAmountChange = (value: number) => onAmountChange(value)
 
   return (

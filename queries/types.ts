@@ -1,8 +1,8 @@
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 
-import { useGetTokenDollarValueQuery } from './useGetTokenDollarValueQuery'
+import { useGetBaseTokenDollarValueQuery } from './useGetBaseTokenDollarValueQuery'
 
 export type InternalQueryContext = {
   client: CosmWasmClient
-  getTokenDollarValue: ReturnType<typeof useGetTokenDollarValueQuery>[0]
+  getTokenDollarValue: ReturnType<typeof useGetBaseTokenDollarValueQuery>[0]
 }

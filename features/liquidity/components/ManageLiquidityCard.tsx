@@ -12,56 +12,33 @@ import {
   Text,
   useSubscribeInteractions,
 } from 'junoblocks'
-import { PoolState, PoolTokenValue, ReserveType } from 'queries/useQueryPools'
-
 import { UnderlyingAssetRow } from './UnderlyingAssetRow'
+import { TokenInfo } from '../../../queries/usePoolsListQuery'
+import { PoolLiquidityState } from '../../../queries/useQueryPools'
 
 type ManageLiquidityCardProps = {
-  stakedLiquidity: PoolState
-  providedLiquidity: PoolTokenValue
-  providedTotalLiquidity: PoolTokenValue
-  providedLiquidityReserve: ReserveType
-  stakedLiquidityReserve: ReserveType
+  base_token: TokenInfo
+  quote_token: TokenInfo
+  liquidity: PoolLiquidityState
   onClick: () => void
-  tokenASymbol: string
-  tokenBSymbol: string
-  supportsIncentives?: boolean
 }
 
 export const ManageLiquidityCard = ({
+  base_token,
+  quote_token,
+  liquidity,
   onClick,
-  providedLiquidityReserve,
-  stakedLiquidityReserve,
-  providedTotalLiquidity,
-  providedLiquidity,
-  stakedLiquidity,
-  tokenASymbol,
-  tokenBSymbol,
-  supportsIncentives,
 }: ManageLiquidityCardProps) => {
-  const tokenA = useTokenInfo(tokenASymbol)
-  const tokenB = useTokenInfo(tokenBSymbol)
-
   const [refForCard, cardInteractionState] = useSubscribeInteractions()
-
-  const didBondLiquidity = stakedLiquidity?.provided.tokenAmount > 0
   const didProvideLiquidity =
-    providedLiquidityReserve?.[0] > 0 || didBondLiquidity
-
-  const tokenAReserve = convertMicroDenomToDenom(
-    providedLiquidityReserve?.[0] + stakedLiquidityReserve?.[0],
-    tokenA.decimals
-  )
-
-  const tokenBReserve = convertMicroDenomToDenom(
-    providedLiquidityReserve?.[1] + stakedLiquidityReserve?.[1],
-    tokenB.decimals
-  )
-
+    liquidity.provided_lp_amount > 0
   const providedLiquidityDollarValue = dollarValueFormatterWithDecimals(
-    protectAgainstNaN(providedTotalLiquidity?.dollarValue) || '0.00',
+    liquidity.provided_liquidity_in_usd,
     { includeCommaSeparation: true }
   )
+  const lp_ratio = protectAgainstNaN(liquidity.provided_lp_amount / liquidity.total_lp_amount)
+  const provided_base_token_balance = lp_ratio * liquidity.base_reserve
+  const provided_quote_token_balance = lp_ratio * liquidity.quote_reserve
 
   return (
     <Card
@@ -69,22 +46,15 @@ export const ManageLiquidityCard = ({
       tabIndex={-1}
       role="button"
       variant={
-        didProvideLiquidity || didBondLiquidity ? 'primary' : 'secondary'
-      }
-      onClick={onClick}
-    >
+        didProvideLiquidity ? 'primary' : 'secondary'
+      }>
       <CardContent>
         <Text variant="legend" color="body" css={{ padding: '$16 0 $6' }}>
           Your liquidity
         </Text>
         <Text variant="hero">${providedLiquidityDollarValue}</Text>
         <Text variant="link" color="brand" css={{ paddingTop: '$2' }}>
-          $
-          {dollarValueFormatterWithDecimals(providedLiquidity?.dollarValue, {
-            includeCommaSeparation: true,
-          })}{' '}
-          available
-          {supportsIncentives ? ' to bond' : ''}
+          ${providedLiquidityDollarValue}{' available'}
         </Text>
       </CardContent>
       <Divider offsetTop="$14" offsetBottom="$12" />
@@ -94,12 +64,16 @@ export const ManageLiquidityCard = ({
         </Text>
         <Column gap={6} css={{ paddingBottom: '$16' }}>
           <UnderlyingAssetRow
-            tokenSymbol={tokenA.symbol}
-            tokenAmount={tokenAReserve}
+            provided_liquidity_in_usd={liquidity.provided_liquidity_in_usd / 2}
+            token_amount={provided_base_token_balance}
+            logoURI={base_token.logoURI}
+            symbol={base_token.symbol}
           />
           <UnderlyingAssetRow
-            tokenSymbol={tokenB.symbol}
-            tokenAmount={tokenBReserve}
+            provided_liquidity_in_usd={liquidity.provided_liquidity_in_usd / 2}
+            token_amount={provided_quote_token_balance}
+            logoURI={quote_token.logoURI}
+            symbol={quote_token.symbol}
           />
         </Column>
         <Inline css={{ paddingBottom: '$12' }}>

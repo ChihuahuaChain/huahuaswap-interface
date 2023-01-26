@@ -11,62 +11,47 @@ import {
   Text,
 } from 'junoblocks'
 import Link from 'next/link'
-import { PoolEntityType } from 'queries/usePoolsListQuery'
-import { PoolState, PoolTokenValue } from 'queries/useQueryPools'
-import { __POOL_REWARDS_ENABLED__ } from 'util/constants'
+import { PoolEntityType, TokenInfo } from 'queries/usePoolsListQuery'
+import { PoolLiquidityState } from 'queries/useQueryPools'
 import { formatCompactNumber } from 'util/formatCompactNumber'
 
 type PoolCardProps = {
-  poolId: string
-  providedTotalLiquidity: PoolTokenValue
-  stakedLiquidity: PoolState
-  availableLiquidity: PoolState
-  tokenASymbol: string
-  tokenBSymbol: string
-  aprValue: number
-  rewardsTokens?: PoolEntityType['rewards_tokens']
+  poolId: string,
+  base_token: TokenInfo,
+  quote_token: TokenInfo,
+  liquidity: PoolLiquidityState
 }
 
 export const PoolCard = ({
   poolId,
-  tokenASymbol,
-  tokenBSymbol,
-  providedTotalLiquidity,
-  stakedLiquidity,
-  availableLiquidity,
-  rewardsTokens,
-  aprValue,
+  base_token,
+  quote_token,
+  liquidity,
 }: PoolCardProps) => {
-  const tokenA = useTokenInfo(tokenASymbol)
-  const tokenB = useTokenInfo(tokenBSymbol)
-
-  const hasProvidedLiquidity = Boolean(providedTotalLiquidity.tokenAmount)
-
-  const stakedTokenBalanceDollarValue = stakedLiquidity.provided.dollarValue
-
-  const providedLiquidityDollarValueFormatted = hasProvidedLiquidity
-    ? formatCompactNumber(providedTotalLiquidity.dollarValue)
+  const has_provided_liquidity = Boolean(liquidity.provided_lp_amount)
+  const provided_liquidity_in_usd = has_provided_liquidity
+    ? formatCompactNumber(liquidity.provided_liquidity_in_usd)
     : 0
 
-  const totalDollarValueLiquidityFormatted = formatCompactNumber(
-    availableLiquidity.total.dollarValue
+  const total_liquidity_in_usd = formatCompactNumber(
+    liquidity.total_liquidity_in_usd
   )
 
   return (
     <Link href={`/pools/${poolId}`} passHref>
-      <Card variant="secondary" active={hasProvidedLiquidity}>
+      <Card variant="secondary" active={has_provided_liquidity} style={{ paddingBottom: "2em" }}>
         <CardContent size="medium">
           <Column align="center">
             <StyledDivForTokenLogos css={{ paddingTop: '$20' }}>
               <ImageForTokenLogo
                 size="big"
-                logoURI={tokenA.logoURI}
-                alt={tokenA.symbol}
+                logoURI={base_token.logoURI}
+                alt={base_token.symbol}
               />
               <ImageForTokenLogo
                 size="big"
-                logoURI={tokenB.logoURI}
-                alt={tokenB.symbol}
+                logoURI={quote_token.logoURI}
+                alt={quote_token.symbol}
               />
             </StyledDivForTokenLogos>
             <StyledTextForTokenNames
@@ -74,7 +59,7 @@ export const PoolCard = ({
               align="center"
               css={{ paddingTop: '$8' }}
             >
-              {tokenA.symbol} <span /> {tokenB.symbol}
+              {base_token.symbol} <span /> {quote_token.symbol}
             </StyledTextForTokenNames>
           </Column>
         </CardContent>
@@ -85,66 +70,18 @@ export const PoolCard = ({
               Total liquidity
             </Text>
             <Text variant="primary">
-              {hasProvidedLiquidity ? (
+              {has_provided_liquidity ? (
                 <>
                   <StyledSpanForHighlight>
-                    ${providedLiquidityDollarValueFormatted}{' '}
+                    ${provided_liquidity_in_usd}{' '}
                   </StyledSpanForHighlight>
-                  of ${totalDollarValueLiquidityFormatted}
+                  of ${total_liquidity_in_usd}
                 </>
               ) : (
-                <>${totalDollarValueLiquidityFormatted}</>
+                <>${total_liquidity_in_usd}</>
               )}
             </Text>
           </Column>
-          <Inline justifyContent="space-between" css={{ padding: '$14 0' }}>
-            <StyledDivForStatsColumn align="left">
-              <Text
-                variant="legend"
-                color={hasProvidedLiquidity ? 'brand' : 'primary'}
-                align="left"
-              >
-                Bonded
-              </Text>
-              <Text
-                variant="primary"
-                color={hasProvidedLiquidity ? 'brand' : 'primary'}
-              >
-                {hasProvidedLiquidity &&
-                typeof stakedTokenBalanceDollarValue === 'number' ? (
-                  <>${formatCompactNumber(stakedTokenBalanceDollarValue)}</>
-                ) : (
-                  '--'
-                )}
-              </Text>
-            </StyledDivForStatsColumn>
-            {__POOL_REWARDS_ENABLED__ && Boolean(rewardsTokens?.length) && (
-              <StyledDivForStatsColumn align="center">
-                <Text variant="legend" color="secondary" align="center">
-                  Rewards
-                </Text>
-                <StyledDivForTokenLogos css={{ paddingTop: '0' }}>
-                  {rewardsTokens.map((token) => (
-                    <ImageForTokenLogo
-                      key={token.symbol}
-                      size="medium"
-                      logoURI={token.logoURI}
-                      alt={token.symbol}
-                    />
-                  ))}
-                </StyledDivForTokenLogos>
-              </StyledDivForStatsColumn>
-            )}
-            <StyledDivForStatsColumn align="right">
-              <Text variant="legend" color="secondary" align="right">
-                APR
-              </Text>
-
-              <Text variant="primary" align="right">
-                {dollarValueFormatterWithDecimals(aprValue ?? 0)}%
-              </Text>
-            </StyledDivForStatsColumn>
-          </Inline>
         </CardContent>
       </Card>
     </Link>
@@ -176,31 +113,6 @@ const StyledTextForTokenNames: typeof Text = styled(Text, {
     margin: '0 $3',
     borderRadius: '50%',
     backgroundColor: '$textColors$primary',
-  },
-})
-
-const StyledDivForStatsColumn = styled('div', {
-  display: 'flex',
-  flexDirection: 'column',
-  flex: 0.3,
-  justifyContent: 'center',
-  alignItems: 'center',
-  rowGap: '$space$3',
-  variants: {
-    align: {
-      left: {
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-      },
-      center: {
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      right: {
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-      },
-    },
   },
 })
 

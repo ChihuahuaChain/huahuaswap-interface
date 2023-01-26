@@ -33,6 +33,7 @@ export const SelectorInput = ({
         lang="en-US"
         placeholder="0.0"
         min={0}
+        max={100}
         value={value}
         onChange={
           !disabled ? ({ target: { value } }) => setValue(value) : undefined

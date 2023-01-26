@@ -1,5 +1,5 @@
 import { useIBCAssetInfo } from 'hooks/useIBCAssetInfo'
-import { useTokenDollarValue } from 'hooks/useTokenDollarValue'
+import { useBaseTokenDollarValue } from '../../../hooks/useBaseTokenDollarValue'
 import {
   ArrowUpIcon,
   Button,
@@ -39,8 +39,6 @@ export const AssetCard = ({
     useIBCAssetInfo(tokenSymbol) || {}
   const [showingRedirectDepositDialog, setShowingRedirectDepositDialog] =
     useState(false)
-
-  const [dollarValue] = useTokenDollarValue(tokenSymbol)
 
   const shouldPerformDepositOutsideApp = Boolean(external_deposit_uri)
 
@@ -91,14 +89,6 @@ export const AssetCard = ({
               <Text variant="primary">
                 {rendersActiveAppearance ? balance : null} {name}
               </Text>
-              {rendersActiveAppearance && (
-                <Text variant="caption" css={{ paddingTop: '$1' }}>
-                  $
-                  {dollarValueFormatterWithDecimals(dollarValue * balance, {
-                    includeCommaSeparation: true,
-                  })}
-                </Text>
-              )}
             </div>
           </StyledElementForToken>
         </StyledElementForCard>
