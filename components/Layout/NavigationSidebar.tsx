@@ -278,14 +278,14 @@ export function NavigationSidebar({
             </Button>
             <Button
               as="a"
-              href={process.env.NEXT_PUBLIC_GOVERNANCE_LINK_URL}
+              href={process.env.NEXT_PUBLIC_LIST_ASSET_LINK_URL}
               target="__blank"
               variant="ghost"
               size="large"
               iconLeft={<TreasuryIcon />}
               iconRight={<IconWrapper icon={<UpRightArrow />} />}
             >
-              {process.env.NEXT_PUBLIC_GOVERNANCE_LINK_LABEL}
+              {process.env.NEXT_PUBLIC_LIST_ASSET_LINK_LABEL}
             </Button>
           </Column>
           <Inline gap={2} css={{ padding: '$20 0 $13' }}>
