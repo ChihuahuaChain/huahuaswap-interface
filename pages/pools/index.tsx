@@ -16,7 +16,7 @@ import {
   styled,
   Text,
 } from 'junoblocks'
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { useQueriesDataSelector } from '../../hooks/useQueriesDataSelector'
 import { usePoolsListQuery } from '../../queries/usePoolsListQuery'

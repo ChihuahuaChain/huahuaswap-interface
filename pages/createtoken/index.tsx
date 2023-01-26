@@ -1,7 +1,6 @@
 import { AppLayout, PageHeader } from 'components'
 import { CreateTokenModule, CreateTokenSummary } from 'features/createtoken'
 import { styled } from 'junoblocks'
-import React from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { createTokenStatusState } from 'state/atoms/transactionAtoms'
 

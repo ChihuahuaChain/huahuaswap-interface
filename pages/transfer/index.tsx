@@ -10,7 +10,7 @@ import {
   Toast,
   UpRightArrow,
 } from 'junoblocks'
-import React, { useEffect, useReducer } from 'react'
+import { useEffect, useReducer } from 'react'
 import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
 import { walletState, WalletStatusType } from 'state/atoms/walletAtoms'

@@ -1,9 +1,6 @@
 import { AppLayout, PageHeader } from 'components'
 import { TokenSwapModule } from 'features/swap'
 import { styled } from 'junoblocks'
-import React from 'react'
-
-import { APP_NAME } from '../util/constants'
 
 function getInitialTokenPairFromSearchParams() {
   const params = new URLSearchParams(location.search)

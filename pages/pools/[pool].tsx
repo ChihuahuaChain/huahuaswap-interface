@@ -20,7 +20,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useQueryPoolLiquidity } from 'queries/useQueryPools'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   APP_NAME,
 } from 'util/constants'
