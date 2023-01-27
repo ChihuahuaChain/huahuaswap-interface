@@ -1,32 +1,6 @@
 {
   "tokens": [
     {
-      "id": "osmosis",
-      "name": "OSMO",
-      "symbol": "OSMO",
-      "chain_id": "osmosis-1",
-      "rpc": "https://rpc-osmosis.itastakers.com:443",
-      "denom": "uosmo",
-      "decimals": 6,
-      "channel": "channel-113",
-      "chihuahua_channel": "channel-7",
-      "chihuahua_denom": "ibc/FAC1BAAA6ECDCB88408A6EEEA13AD4736DA687F85ACD22B5BBD00D36754AC0FA",
-      "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/osmo.png"
-    },
-    {
-      "id": "juno",
-      "name": "JUNO",
-      "symbol": "JUNO",
-      "chain_id": "juno-1",
-      "rpc": "https://rpc-juno.itastakers.com:443",
-      "denom": "ujuno",
-      "decimals": 6,
-      "channel": "channel-28",
-      "chihuahua_channel": "channel-11",
-      "chihuahua_denom": "ibc/89C79BD28DCCF300B9EE87740B061011AD870EC480777FAB95D85B3ED36BC06C",
-      "logoURI": "https://raw.githubusercontent.com/CosmosContracts/junoswap-asset-list/main/images/juno.png"
-    },
-    {
       "id": "cerberus",
       "name": "CERBERUS",
       "symbol": "CRBRUS",

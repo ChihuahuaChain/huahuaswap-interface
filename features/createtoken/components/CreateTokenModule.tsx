@@ -108,7 +108,7 @@ export const CreateTokenModule = () => {
             data.decimals = parseInt(inputValue)
             setData(data)
           }}
-          disabled={isUiDisabled}
+          disabled={true}
         />
       </StyledDivForWrapper>
 
@@ -117,7 +117,7 @@ export const CreateTokenModule = () => {
       </StyledText>
       <StyledSubText>
         <Text variant="secondary">
-          Enter at least one wallet address and initial balance
+        Enter Wallet Address and Initial Balance (include 6 extra decimals, e.g. 1,000,000 tokens = 1,000,000,000,000)
         </Text>
       </StyledSubText>
       <StyledDivForWrapper>
