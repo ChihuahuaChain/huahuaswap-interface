@@ -114,7 +114,7 @@ export const TokenSwapModule = ({ initialTokenPair }: TokenSwapModuleProps) => {
     if (updated_input.symbol !== current_input.symbol && updated_input.symbol !== current_output.symbol) {
       current_input = { ...updated_input, amount: 0 }
       current_output = { ...current_output, amount: 0 }
-    } else if (updated_input.amount !== current_input.amount) {
+    } else if (updated_input.amount !== current_input.amount && Boolean(current_output.symbol)) {
       current_input = updated_input;
 
       // compute output_amount
@@ -172,7 +172,7 @@ export const TokenSwapModule = ({ initialTokenPair }: TokenSwapModuleProps) => {
     output_token_symbol: string
   ): { output_amount: number, input_amm_address: string, output_amm_address: string } {
     // filter matching pools for swap
-    const matching_pools = pools.filter(
+    const matching_pools = (pools || []).filter(
       p => p.pool_assets.quote.symbol === output_token_symbol
         || p.pool_assets.quote.symbol === input_token.symbol
     )
