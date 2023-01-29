@@ -1,17 +1,3 @@
 {
-  "tokens": [
-    {
-      "id": "cerberus",
-      "name": "CERBERUS",
-      "symbol": "CRBRUS",
-      "chain_id": "cerberus-chain-1",
-      "rpc": "https://cerberus-rpc.polkachu.com:443",
-      "denom": "ucrbrus",
-      "decimals": 6,
-      "channel": "channel-13",
-      "chihuahua_channel": "channel-35",
-      "chihuahua_denom": "ibc/D428F789942CF00C82B7AF8F40AE149905927B41B2EA07EA796F07AED185C96E",
-      "logoURI": "https://polkachu.com/images/chains/cerberus.png"
-    }
-  ]
+  "tokens": []
 }
