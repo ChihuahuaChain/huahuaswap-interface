@@ -59,40 +59,6 @@
         }
       },
       "swap_address": "chihuahua15yxcxjmppj2qjt3kfltkakc539vzf5encnr0ld3hcwdwqjtstxpqcvt0le"
-    },
-    {
-      "pool_id": "HUAHUA-CRBRUS",
-      "pool_assets": {
-        "base": {
-          "id": "chihuahua-token",
-          "chain_id": "chihuahua-1",
-          "token_address": "",
-          "symbol": "HUAHUA",
-          "name": "HUAHUA",
-          "decimals": 6,
-          "logoURI": "https://raw.githubusercontent.com/ChihuahuaChain/resources/main/logo/logo_transparent_notext.png",
-          "tags": [
-            "native"
-          ],
-          "native": true,
-          "denom": "uhuahua"
-        },
-        "quote": {
-          "id": "CERBERUSHUAHUA",
-          "chain_id": "chihuahua-1",
-          "token_address": "",
-          "symbol": "CRBRUS",
-          "name": "CERBERUS",
-          "decimals": 6,
-          "logoURI": "https://polkachu.com/images/chains/cerberus.png",
-          "tags": [
-            "native"
-          ],
-          "native": true,
-          "denom": "ibc/D428F789942CF00C82B7AF8F40AE149905927B41B2EA07EA796F07AED185C96E"
-        }
-      },
-      "swap_address": "chihuahua1fjkqcefxxval452ftp0p375498g0fasx8aahl7kxz4jupwnl34tq2kr5y9"
     }
   ],
   "version": {
