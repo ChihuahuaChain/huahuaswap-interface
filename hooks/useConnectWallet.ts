@@ -6,7 +6,7 @@ import { useRecoilState } from 'recoil'
 import { walletState, WalletStatusType } from '../state/atoms/walletAtoms'
 import { GAS_PRICE } from '../util/constants'
 import { useChainInfo } from './useChainInfo'
-import { getOfflineSigner } from '@cosmostation/cosmos-client'
+// import { getOfflineSigner } from '@cosmostation/cosmos-client'
 import { useLocalStorage } from '@rehooks/local-storage'
 
 export const useConnectWallet = (
@@ -76,7 +76,11 @@ export const useConnectWallet = (
       }
 
       try {
-        const offlineSigner = await getOfflineSigner(chainInfo.chainId)
+        await window.cosmostation.providers.keplr.enable(chainInfo.chainId);
+
+        const offlineSigner =
+          window.cosmostation.providers.keplr.getOfflineSigner(chainInfo.chainId);
+
         const wasmChainClient = await SigningCosmWasmClient.connectWithSigner(
           chainInfo.rpc,
           offlineSigner,
@@ -149,6 +153,7 @@ export const useConnectWallet = (
       }
 
       window.addEventListener('keplr_keystorechange', reconnectWallet)
+
       return () => {
         window.removeEventListener('keplr_keystorechange', reconnectWallet)
       }
@@ -166,7 +171,8 @@ export const useConnectWallet = (
       }
 
       window?.cosmostation?.cosmos.on('accountChanged', () => reconnectWallet)
-      return () => {}
+
+      return () => { }
     },
     // eslint-disable-next-line
     [status]
