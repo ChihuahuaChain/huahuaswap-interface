@@ -44,7 +44,7 @@ export const ManagePoolDialog = ({
   const [isAddingLiquidity, setAddingLiquidity] = useState(
     initialActionType !== 'remove'
   )
-
+  const provided_lp_ratio = protectAgainstNaN(liquidity.provided_lp_amount / liquidity.total_lp_amount)
   const [addLiquidityPercent, setAddLiquidityPercent] = useState(0)
   const [removeLiquidityPercent, setRemoveLiquidityPercent] = useState(0)
 
@@ -142,6 +142,7 @@ export const ManagePoolDialog = ({
           base_reserve={liquidity.base_reserve}
           quote_reserve={liquidity.quote_reserve}
           provided_liquidity_in_usd={liquidity.provided_liquidity_in_usd}
+          provided_lp_ratio={provided_lp_ratio}
           liquidity_percentage={removeLiquidityPercent}
           on_change_liquidity={setRemoveLiquidityPercent}
         />
@@ -238,16 +239,21 @@ type RemoveLiquidityContentProps = {
   base_reserve: number,
   quote_reserve: number,
   provided_liquidity_in_usd: number,
+  provided_lp_ratio: number,
   liquidity_percentage: number,
   on_change_liquidity: (liquidity: number) => void
 }
 
+
+
+// TODO fix this to display the correct amount to be removed
 function RemoveLiquidityContent({
   base_token_info,
   quote_token_info,
   base_reserve,
   quote_reserve,
   provided_liquidity_in_usd,
+  provided_lp_ratio,
   liquidity_percentage,
   on_change_liquidity,
 }: RemoveLiquidityContentProps) {
@@ -304,7 +310,7 @@ function RemoveLiquidityContent({
               alt={base_token_info.name}
             />
             <Text variant="caption">
-              {formatTokenBalance(base_reserve * liquidity_percentage)}{' '}
+              {formatTokenBalance((base_reserve * provided_lp_ratio) * liquidity_percentage)}{' '}
               {base_token_info.symbol}
             </Text>
           </StyledDivForToken>
@@ -315,7 +321,7 @@ function RemoveLiquidityContent({
               alt={quote_token_info.name}
             />
             <Text variant="caption">
-              {formatTokenBalance(quote_reserve * liquidity_percentage)}{' '}
+              {formatTokenBalance((quote_reserve * provided_lp_ratio) * liquidity_percentage)}{' '}
               {quote_token_info.symbol}
             </Text>
           </StyledDivForToken>
