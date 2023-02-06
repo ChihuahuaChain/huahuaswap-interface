@@ -47,6 +47,7 @@ export const ManagePoolDialog = ({
   const provided_lp_ratio = protectAgainstNaN(liquidity.provided_lp_amount / liquidity.total_lp_amount)
   const [addLiquidityPercent, setAddLiquidityPercent] = useState(0)
   const [removeLiquidityPercent, setRemoveLiquidityPercent] = useState(0)
+  const has_provided_lp = liquidity.provided_lp_amount > 0;
 
   const {
     state: {
@@ -105,7 +106,7 @@ export const ManagePoolDialog = ({
           <DialogContent>
             <StateSwitchButtons
               activeValue={isAddingLiquidity ? 'add' : 'remove'}
-              values={['add', 'remove']}
+              values={has_provided_lp ? ['add', 'remove'] : ['add']}
               onStateChange={(value) => {
                 setAddingLiquidity(value === 'add')
               }}
