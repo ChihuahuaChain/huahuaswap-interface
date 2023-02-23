@@ -59,6 +59,108 @@
         }
       },
       "swap_address": "chihuahua15yxcxjmppj2qjt3kfltkakc539vzf5encnr0ld3hcwdwqjtstxpqcvt0le"
+    },
+    {
+      "pool_id": "HUAHUA-BDOG",
+      "pool_assets": {
+        "base": {
+          "id": "chihuahua-token",
+          "chain_id": "chihuahua-1",
+          "token_address": "",
+          "symbol": "HUAHUA",
+          "name": "HUAHUA",
+          "decimals": 6,
+          "logoURI": "https://raw.githubusercontent.com/ChihuahuaChain/resources/main/logo/logo_transparent_notext.png",
+          "tags": [
+            "native"
+          ],
+          "native": true,
+          "denom": "uhuahua"
+        },
+        "quote": {
+          "id": "BDOGHUAHUA",
+          "chain_id": "chihuahua-1",
+          "token_address": "chihuahua1077rtmdp5dd5xr83hqx3m9r4gepzp0xj0q9e2rl2c7e92qtcewzqf6gdaz",
+          "symbol": "BDOG",
+          "name": "BDOG",
+          "decimals": 6,
+          "logoURI": "https://raw.githubusercontent.com/ChihuahuaChain/resources/fortis/fortis/bdog.svg",
+          "tags": [
+            "cw20"
+          ],
+          "native": false,
+          "denom": "BDOGHUAHUA"
+        }
+      },
+      "swap_address": "chihuahua1xkklan5uel62eg4cqahc2srmgyerdq5xhtdt83ypny4y06sh6dgq5u6hdk"
+    },
+    {
+      "pool_id": "HUAHUA-ASH",
+      "pool_assets": {
+        "base": {
+          "id": "chihuahua-token",
+          "chain_id": "chihuahua-1",
+          "token_address": "",
+          "symbol": "HUAHUA",
+          "name": "HUAHUA",
+          "decimals": 6,
+          "logoURI": "https://raw.githubusercontent.com/ChihuahuaChain/resources/main/logo/logo_transparent_notext.png",
+          "tags": [
+            "native"
+          ],
+          "native": true,
+          "denom": "uhuahua"
+        },
+        "quote": {
+          "id": "ASHHUAHUA",
+          "chain_id": "chihuahua-1",
+          "token_address": "chihuahua1y5tm6vstar43r65umu7tvv9lyxncfnlyyxyhzqq4pxqfq9uwz8xqakjg6v",
+          "symbol": "ASH",
+          "name": "ASH",
+          "decimals": 6,
+          "logoURI": "https://raw.githubusercontent.com/ChihuahuaChain/resources/fortis/fortis/ash.svg",
+          "tags": [
+            "cw20"
+          ],
+          "native": false,
+          "denom": "ASHHUAHUA"
+        }
+      },
+      "swap_address": "chihuahua12zxvwkqes9apll6apwv00z2pkrv3yvnx8ntsv36ukxcucp729gdqva4txf"
+    },
+    {
+      "pool_id": "HUAHUA-GDOG",
+      "pool_assets": {
+        "base": {
+          "id": "chihuahua-token",
+          "chain_id": "chihuahua-1",
+          "token_address": "",
+          "symbol": "HUAHUA",
+          "name": "HUAHUA",
+          "decimals": 6,
+          "logoURI": "https://raw.githubusercontent.com/ChihuahuaChain/resources/main/logo/logo_transparent_notext.png",
+          "tags": [
+            "native"
+          ],
+          "native": true,
+          "denom": "uhuahua"
+        },
+        "quote": {
+          "id": "GDOGHUAHUA",
+          "chain_id": "chihuahua-1",
+          "token_address": "chihuahua10qe2wuwcjcavg2waazmjlekhmsh4m9g7l3dtmu9vaxylla6697tszmp0c0",
+          "symbol": "GDOG",
+          "name": "GDOG",
+          "decimals": 6,
+          "logoURI": "https://raw.githubusercontent.com/ChihuahuaChain/resources/fortis/fortis/gdog.svg",
+          "tags": [
+            "cw20"
+          ],
+          "native": false,
+          "denom": "GDOGHUAHUA"
+        }
+      },
+      "swap_address": "chihuahua1dgx2w6w3td8xus7xs0a55u37wh2nuz8etjvyezpgndeqkyn7fuyqzvswwm"
     }
   ],
   "version": {
